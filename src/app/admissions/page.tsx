@@ -38,8 +38,8 @@ export default function AdmissionsPage() {
         image="/assets/real/student-group.jpg"
         imageAlt="Élèves du lycée en démarche d'admission"
         actions={[
-          { label: "Préinscrire un élève", href: "#demarche" },
-          { label: "Prendre rendez-vous", href: "/#contact", variant: "secondary" },
+          { label: "Préinscrire un élève", href: "/preinscription" },
+          { label: "Prendre rendez-vous", href: "/contact#rendez-vous", variant: "secondary" },
         ]}
       />
 

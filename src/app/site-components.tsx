@@ -4,6 +4,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   Camera,
   ChevronRight,
+  Clock3,
   Download,
   Mail,
   MapPin,
@@ -15,7 +16,7 @@ import {
 } from "lucide-react";
 import { contactInfo, navItems } from "./site-data";
 
-type ActiveKey = (typeof navItems)[number]["key"];
+type ActiveKey = (typeof navItems)[number]["key"] | "preinscription";
 
 type IconCardData = {
   icon: LucideIcon;
@@ -71,7 +72,10 @@ export function SiteHeader({ active }: { active: ActiveKey }) {
           ))}
         </nav>
 
-        <Link className="preinscription-button" href="/admissions">
+        <Link
+          className={`preinscription-button${active === "preinscription" ? " active" : ""}`}
+          href="/preinscription"
+        >
           Préinscription
         </Link>
 
@@ -85,7 +89,7 @@ export function SiteHeader({ active }: { active: ActiveKey }) {
                 {item.label}
               </Link>
             ))}
-            <Link className="mobile-cta" href="/admissions">
+            <Link className="mobile-cta" href="/preinscription">
               Préinscription
             </Link>
           </div>
@@ -96,11 +100,18 @@ export function SiteHeader({ active }: { active: ActiveKey }) {
 }
 
 export function SiteFooter() {
+  const primaryPhone = contactInfo.phones[0];
+  const telHref = `tel:${primaryPhone.replace(/\s/g, "")}`;
+
   return (
-    <footer id="contact" className="footer">
+    <footer className="footer" aria-label="Pied de page">
       <div className="footer-inner">
         <div className="footer-brand">
           <SchoolLogo />
+          <p>
+            Un cadre structuré à Essassa pour apprendre, grandir et préparer
+            l&apos;avenir avec discipline et ambition.
+          </p>
         </div>
 
         <div className="footer-column">
@@ -112,13 +123,16 @@ export function SiteFooter() {
             <MapPin size={18} /> {contactInfo.postal}
           </p>
           {contactInfo.emails.map((email) => (
-            <p key={email}>
+            <a className="footer-contact-link" href={`mailto:${email}`} key={email}>
               <Mail size={18} /> {email}
-            </p>
+            </a>
           ))}
-          {contactInfo.phones.map((phone) => (
-            <p key={phone}>
-              <Phone size={18} /> {phone}
+          <a className="footer-contact-link" href={telHref}>
+            <Phone size={18} /> {primaryPhone}
+          </a>
+          {contactInfo.hours.map((item) => (
+            <p key={item}>
+              <Clock3 size={18} /> {item}
             </p>
           ))}
         </div>
@@ -131,22 +145,26 @@ export function SiteFooter() {
                 {item.label}
               </Link>
             ))}
+            <Link href="/preinscription">Préinscription</Link>
           </div>
         </div>
 
         <div className="footer-column">
           <h2>Suivez-nous</h2>
           <div className="social-links" aria-label="Réseaux sociaux">
-            <a href="#contact" aria-label="Facebook">
+            <Link href="/contact" aria-label="Facebook">
               <Medal size={20} />
-            </a>
-            <a href="#contact" aria-label="Instagram">
+            </Link>
+            <Link href="/contact" aria-label="Instagram">
               <Camera size={20} />
-            </a>
-            <a href="#contact" aria-label="YouTube">
+            </Link>
+            <Link href="/contact" aria-label="YouTube">
               <Play size={21} />
-            </a>
+            </Link>
           </div>
+          <Link className="footer-admission-link" href="/preinscription">
+            Demander une admission
+          </Link>
         </div>
       </div>
       <p className="copyright">
@@ -310,7 +328,7 @@ export function ImageCard({
 export function ClosingCta({
   title,
   text,
-  href = "/admissions",
+  href = "/preinscription",
   label = "Demander une admission",
 }: {
   title: string;

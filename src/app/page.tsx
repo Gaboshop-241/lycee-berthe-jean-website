@@ -43,7 +43,7 @@ export default function Home() {
             <Link className="primary-button" href="/a-propos">
               Découvrir le lycée
             </Link>
-            <Link className="secondary-button" href="/admissions">
+            <Link className="secondary-button" href="/preinscription">
               Demander une admission
             </Link>
           </div>
@@ -214,7 +214,7 @@ export default function Home() {
               <div>
                 <h3>{item.title}</h3>
                 <p>{item.text}</p>
-                <Link href="/a-propos">
+                <Link href="/actualites">
                   Lire la suite <ArrowRight size={16} />
                 </Link>
               </div>
@@ -291,7 +291,7 @@ export default function Home() {
               disponible en téléchargement.
             </p>
           </div>
-          <Link className="primary-button" href="/admissions">
+          <Link className="primary-button" href="/contact">
             Nous contacter
           </Link>
         </div>

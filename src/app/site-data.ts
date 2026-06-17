@@ -34,16 +34,17 @@ export const navItems = [
   { label: "À propos", href: "/a-propos", key: "a-propos" },
   { label: "Programmes", href: "/programmes", key: "programmes" },
   { label: "Admissions", href: "/admissions", key: "admissions" },
-  { label: "Vie scolaire", href: "/#vie-scolaire", key: "vie-scolaire" },
-  { label: "Actualités", href: "/#actualites", key: "actualites" },
-  { label: "Contact", href: "/#contact", key: "contact" },
+  { label: "Vie scolaire", href: "/vie-scolaire", key: "vie-scolaire" },
+  { label: "Actualités", href: "/actualites", key: "actualites" },
+  { label: "Contact", href: "/contact", key: "contact" },
 ];
 
 export const contactInfo = {
-  location: "Route Nationale 1, PK 23 Essassa, Ntoum",
-  postal: "B.P. 20411, Libreville, République Gabonaise",
-  emails: ["contact@uil-universite.com", "infos@univ-inter-libreville.com"],
-  phones: ["+241 66 76 32 89 / +241 66 63 08 56", "+241 (0)62 26 51 28"],
+  location: "Essassa, Gabon",
+  postal: "Route Nationale 1, PK 23 Essassa, Ntoum",
+  emails: ["contact@bertheetjean.ga"],
+  phones: ["+241 00 00 00 00"],
+  hours: ["Lun - Ven : 7h30 - 17h00", "Sam : 9h00 - 12h00"],
 };
 
 export const pillars = [
