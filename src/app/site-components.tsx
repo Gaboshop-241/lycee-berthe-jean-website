@@ -40,7 +40,7 @@ export function SchoolLogo() {
         alt=""
         width={88}
         height={92}
-        priority
+        preload
       />
       <span>
         <strong className="brand-title">
@@ -224,9 +224,8 @@ export function PageHero({
             src={image}
             alt={imageAlt}
             fill
-            priority
+            preload
             unoptimized
-            loading="eager"
             sizes="(max-width: 900px) 100vw, 55vw"
           />
         </div>

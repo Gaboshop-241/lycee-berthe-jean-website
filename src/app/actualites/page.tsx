@@ -16,6 +16,7 @@ import {
   SectionHeading,
   SiteFooter,
 } from "../site-components";
+import { newsArticles } from "../site-data";
 
 export const metadata: Metadata = {
   title: "Actualités | Lycée Privé International Berthe & Jean",
@@ -46,50 +47,8 @@ const newsHighlights = [
   },
 ];
 
-const latestNews = [
-  {
-    tag: "Vie scolaire",
-    date: "10 mai 2025",
-    title: "Journée culturelle à Essassa",
-    text: "Une journée riche en couleurs, en traditions et en partage pour célébrer notre diversité culturelle.",
-    image: "/assets/real/cdi-library.jpg",
-  },
-  {
-    tag: "Admissions",
-    date: "8 mai 2025",
-    title: "Ouverture des préinscriptions 2025-2026",
-    text: "Les préinscriptions pour l'année scolaire sont ouvertes. Réservez votre place dès maintenant.",
-    image: "/assets/real/student-group.jpg",
-  },
-  {
-    tag: "Vie scolaire",
-    date: "5 mai 2025",
-    title: "Tournoi interclasses : esprit d'équipe et fair-play",
-    text: "Un tournoi sportif mémorable qui a renforcé l'esprit d'équipe et la solidarité entre les classes.",
-    image: "/assets/real/student-cohort.jpg",
-  },
-  {
-    tag: "Résultats",
-    date: "2 mai 2025",
-    title: "Semaine de l'excellence et du mérite",
-    text: "Célébration des meilleurs élèves et encouragement à l'effort, à la discipline et au dépassement de soi.",
-    image: "/assets/real/campus-building.jpg",
-  },
-  {
-    tag: "Activités",
-    date: "30 avril 2025",
-    title: "Sortie éducative et découverte scientifique",
-    text: "Visite du Centre National de Recherches pour découvrir le monde des sciences en action.",
-    image: "/assets/real/science-workshop.jpg",
-  },
-  {
-    tag: "Vie scolaire",
-    date: "25 avril 2025",
-    title: "Rencontre parents-administration",
-    text: "Un échange constructif avec les parents pour faire le point sur les progrès et projets de l'établissement.",
-    image: "/assets/real/class-session.jpg",
-  },
-];
+const featuredArticle = newsArticles[0];
+const latestNews = newsArticles.slice(1, 7);
 
 const agendaItems = [
   {
@@ -182,24 +141,20 @@ export default function ActualitesPage() {
         <article className="featured-news">
           <div className="featured-news-image">
             <Image
-              src="/assets/real/campus-building.jpg"
-              alt="Élèves distingués au Lycée Berthe et Jean"
+              src={featuredArticle.image}
+              alt={featuredArticle.alt}
               fill
               sizes="(max-width: 900px) 100vw, 38vw"
             />
           </div>
           <div>
             <div className="news-meta-row">
-              <span>Résultats</span>
-              <time dateTime="2025-04-28">28 avril 2025</time>
+              <span>{featuredArticle.tag}</span>
+              <time dateTime={featuredArticle.dateTime}>{featuredArticle.date}</time>
             </div>
-            <h2>Excellents résultats aux examens 2025</h2>
-            <p>
-              Nos élèves ont une fois de plus brillé aux examens nationaux avec
-              un taux de réussite remarquable. Félicitations à tous pour leur
-              travail, leur persévérance et leur excellence.
-            </p>
-            <Link href="/actualites#dernieres-actualites">
+            <h2>{featuredArticle.title}</h2>
+            <p>{featuredArticle.excerpt}</p>
+            <Link href={`/actualites/${featuredArticle.slug}`}>
               Lire l&apos;article <ArrowRight size={16} />
             </Link>
           </div>
@@ -212,15 +167,18 @@ export default function ActualitesPage() {
           {latestNews.map((item) => (
             <article className="news-card" key={item.title}>
               <div className="news-card-image">
-                <Image src={item.image} alt="" fill sizes="(max-width: 900px) 100vw, 30vw" />
+                <Image src={item.image} alt={item.alt} fill sizes="(max-width: 900px) 100vw, 30vw" />
               </div>
               <div>
                 <div className="news-meta-row">
                   <span>{item.tag}</span>
-                  <time>{item.date}</time>
+                  <time dateTime={item.dateTime}>{item.date}</time>
                 </div>
                 <h3>{item.title}</h3>
-                <p>{item.text}</p>
+                <p>{item.excerpt}</p>
+                <Link href={`/actualites/${item.slug}`}>
+                  Lire l&apos;article <ArrowRight size={16} />
+                </Link>
               </div>
             </article>
           ))}

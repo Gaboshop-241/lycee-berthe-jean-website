@@ -92,6 +92,7 @@ const activities = [
 const yearMoments = [
   {
     image: "/assets/real/cdi-library.jpg",
+    href: "/actualites/journee-culturelle-essassa",
     date: "15",
     month: "MAI",
     year: "2025",
@@ -100,6 +101,7 @@ const yearMoments = [
   },
   {
     image: "/assets/real/student-cohort.jpg",
+    href: "/actualites/tournoi-interclasses-esprit-equipe",
     date: "22",
     month: "JUIN",
     year: "2025",
@@ -108,6 +110,7 @@ const yearMoments = [
   },
   {
     image: "/assets/real/student-group.jpg",
+    href: "/actualites/semaine-excellence-merite",
     date: "05",
     month: "JUIL.",
     year: "2025",
@@ -210,7 +213,7 @@ export default function VieScolairePage() {
               <div>
                 <h3>{item.title}</h3>
                 <p>{item.text}</p>
-                <Link href="/actualites">
+                <Link href={item.href}>
                   En savoir plus <ArrowRight size={16} />
                 </Link>
               </div>

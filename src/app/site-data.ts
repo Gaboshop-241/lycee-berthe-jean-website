@@ -26,7 +26,7 @@ import {
   Trophy,
   UserRound,
   UsersRound,
-  Video,
+  Volume2,
 } from "lucide-react";
 
 export const navItems = [
@@ -84,18 +84,21 @@ export const programs = [
     title: "Collège",
     text: "De la sixième à la troisième, un socle exigeant pour consolider les méthodes, la discipline et l'autonomie.",
     image: "/assets/real/class-session.jpg",
+    href: "/programmes#parcours-college",
     alt: "Élèves en séance de classe au Lycée Berthe et Jean",
   },
   {
     title: "Lycée",
     text: "Un cycle de la seconde à la terminale avec les séries générales A1, B, C et D.",
     image: "/assets/real/science-workshop.jpg",
+    href: "/programmes#parcours-lycee",
     alt: "Élèves réalisant une activité scientifique",
   },
   {
     title: "Préparation aux examens",
     text: "Un suivi régulier, des évaluations et des études encadrées pour préparer le BEPC et le Baccalauréat.",
     image: "/assets/real/student-group.jpg",
+    href: "/programmes#preparation-examens",
     alt: "Groupe d'élèves du Lycée Berthe et Jean",
   },
 ];
@@ -138,12 +141,14 @@ export const lifeItems = [
     title: "Discipline & leadership",
     text: "L'Esprit Berthe & Jean valorise le dépassement de soi, le respect mutuel et le vivre-ensemble.",
     image: "/assets/real/student-cohort.jpg",
+    href: "/vie-scolaire",
     alt: "Élèves du lycée réunis en groupe",
   },
   {
     title: "Recherche & culture",
     text: "Le CDI et les clubs socio-culturels développent la curiosité, l'expression et l'ouverture.",
     image: "/assets/real/cdi-library.jpg",
+    href: "/vie-scolaire#activites",
     alt: "Centre de documentation et d'information du lycée",
   },
 ];
@@ -156,6 +161,7 @@ export const newsItems = [
     year: "2026",
     title: "Prospectus 2026-2027 disponible",
     text: "Les familles peuvent consulter les conditions d'inscription, les horaires et les frais publiés.",
+    href: "/actualites/prospectus-2026-2027-disponible",
   },
   {
     dateTime: "2025-10-01",
@@ -164,6 +170,7 @@ export const newsItems = [
     year: "2025",
     title: "Nouvelle configuration institutionnelle",
     text: "Le pôle privé poursuit son activité comme entité autonome, distincte du Lycée public d'Excellence d'Essassa.",
+    href: "/actualites/nouvelle-configuration-institutionnelle",
   },
   {
     dateTime: "2009-02-05",
@@ -172,6 +179,170 @@ export const newsItems = [
     year: "2009",
     title: "Reconnaissance officielle",
     text: "La reconnaissance d'utilité publique inscrit l'établissement dans la carte scolaire nationale.",
+    href: "/actualites/reconnaissance-officielle",
+  },
+];
+
+export const newsArticles = [
+  {
+    slug: "excellents-resultats-examens-2025",
+    tag: "Résultats",
+    date: "28 avril 2025",
+    dateTime: "2025-04-28",
+    title: "Excellents résultats aux examens 2025",
+    excerpt:
+      "Nos élèves ont une fois de plus brillé aux examens nationaux avec un taux de réussite remarquable.",
+    image: "/assets/real/campus-building.jpg",
+    alt: "Élèves distingués pour leurs résultats scolaires",
+    body: [
+      "Le Lycée Privé International Berthe & Jean félicite ses élèves pour leur travail, leur persévérance et leur discipline tout au long de l'année.",
+      "Ces résultats confirment l'importance d'un encadrement régulier, de la rigueur académique et d'un accompagnement personnalisé de chaque élève.",
+      "L'équipe pédagogique poursuit son engagement pour préparer les apprenants au BEPC, au Baccalauréat et à leurs projets d'avenir.",
+    ],
+  },
+  {
+    slug: "journee-culturelle-essassa",
+    tag: "Vie scolaire",
+    date: "10 mai 2025",
+    dateTime: "2025-05-10",
+    title: "Journée culturelle à Essassa",
+    excerpt:
+      "Une journée riche en couleurs, en traditions et en partage pour célébrer notre diversité culturelle.",
+    image: "/assets/real/cdi-library.jpg",
+    alt: "Activité culturelle au lycée",
+    body: [
+      "La journée culturelle met en valeur les talents des élèves, l'expression artistique et le respect des identités.",
+      "À travers les présentations, les échanges et les activités, les élèves apprennent à mieux se connaître et à développer leur confiance.",
+      "Cette initiative renforce la vie scolaire et rappelle que l'éducation se construit aussi par la culture, la créativité et le vivre-ensemble.",
+    ],
+  },
+  {
+    slug: "preinscriptions-2025-2026",
+    tag: "Admissions",
+    date: "8 mai 2025",
+    dateTime: "2025-05-08",
+    title: "Ouverture des préinscriptions 2025-2026",
+    excerpt:
+      "Les préinscriptions pour l'année scolaire sont ouvertes. Les familles peuvent réserver une place dès maintenant.",
+    image: "/assets/real/student-group.jpg",
+    alt: "Groupe d'élèves du Lycée Berthe et Jean",
+    body: [
+      "Les familles intéressées peuvent lancer une demande de préinscription en ligne ou prendre contact avec le service admissions.",
+      "Le dossier permet à l'administration d'étudier le niveau demandé, les pièces scolaires et les besoins d'accompagnement de l'élève.",
+      "Une réponse est ensuite transmise aux parents afin de préparer sereinement les étapes suivantes de l'inscription.",
+    ],
+  },
+  {
+    slug: "tournoi-interclasses-esprit-equipe",
+    tag: "Vie scolaire",
+    date: "5 mai 2025",
+    dateTime: "2025-05-05",
+    title: "Tournoi interclasses : esprit d'équipe et fair-play",
+    excerpt:
+      "Un tournoi sportif mémorable qui a renforcé l'esprit d'équipe et la solidarité entre les classes.",
+    image: "/assets/real/student-cohort.jpg",
+    alt: "Élèves réunis pour une activité sportive",
+    body: [
+      "Le tournoi interclasses encourage le dépassement de soi, le respect des règles et la cohésion entre les élèves.",
+      "Au-delà du résultat sportif, ces rencontres permettent de cultiver le fair-play, l'entraide et la responsabilité.",
+      "La vie scolaire du lycée s'appuie sur ces moments pour équilibrer exigence académique et épanouissement personnel.",
+    ],
+  },
+  {
+    slug: "semaine-excellence-merite",
+    tag: "Résultats",
+    date: "2 mai 2025",
+    dateTime: "2025-05-02",
+    title: "Semaine de l'excellence et du mérite",
+    excerpt:
+      "Célébration des meilleurs élèves et encouragement à l'effort, à la discipline et au dépassement de soi.",
+    image: "/assets/real/campus-building.jpg",
+    alt: "Bâtiment scolaire du lycée",
+    body: [
+      "La semaine de l'excellence récompense les efforts constants et met en avant les parcours exemplaires.",
+      "Elle encourage chaque élève à viser plus haut, avec humilité, discipline et confiance dans ses capacités.",
+      "L'établissement valorise ainsi une culture du mérite, du travail bien fait et de la progression continue.",
+    ],
+  },
+  {
+    slug: "sortie-educative-decouverte-scientifique",
+    tag: "Activités",
+    date: "30 avril 2025",
+    dateTime: "2025-04-30",
+    title: "Sortie éducative et découverte scientifique",
+    excerpt:
+      "Une activité pour découvrir le monde des sciences et apprendre autrement, en dehors de la salle de classe.",
+    image: "/assets/real/science-workshop.jpg",
+    alt: "Élèves en atelier scientifique",
+    body: [
+      "Les sorties éducatives enrichissent les apprentissages en reliant les cours à des expériences concrètes.",
+      "Elles développent la curiosité, l'esprit d'observation et la capacité des élèves à poser des questions.",
+      "Ces activités complètent l'enseignement scientifique et renforcent l'ouverture sur le monde professionnel et universitaire.",
+    ],
+  },
+  {
+    slug: "rencontre-parents-administration",
+    tag: "Vie scolaire",
+    date: "25 avril 2025",
+    dateTime: "2025-04-25",
+    title: "Rencontre parents-administration",
+    excerpt:
+      "Un échange constructif avec les parents pour faire le point sur les progrès et projets de l'établissement.",
+    image: "/assets/real/class-session.jpg",
+    alt: "Réunion pédagogique au lycée",
+    body: [
+      "La relation avec les familles est essentielle pour accompagner efficacement les élèves.",
+      "Ces rencontres permettent de présenter les projets, d'écouter les attentes et de renforcer le suivi individualisé.",
+      "Le lycée encourage un dialogue régulier entre parents, administration et équipe pédagogique.",
+    ],
+  },
+  {
+    slug: "prospectus-2026-2027-disponible",
+    tag: "Admissions",
+    date: "16 juin 2026",
+    dateTime: "2026-06-16",
+    title: "Prospectus 2026-2027 disponible",
+    excerpt:
+      "Les familles peuvent consulter les conditions d'inscription, les horaires et les frais publiés.",
+    image: "/assets/real/student-group.jpg",
+    alt: "Élèves du lycée réunis",
+    body: [
+      "Le prospectus officiel présente les informations utiles pour préparer l'année scolaire 2026-2027.",
+      "Il détaille les niveaux concernés, les pièces à fournir, les conditions financières et les étapes d'admission.",
+      "Le document peut être téléchargé depuis le site ou consulté directement en ligne.",
+    ],
+  },
+  {
+    slug: "nouvelle-configuration-institutionnelle",
+    tag: "Institution",
+    date: "1 octobre 2025",
+    dateTime: "2025-10-01",
+    title: "Nouvelle configuration institutionnelle",
+    excerpt:
+      "Le pôle privé poursuit son activité comme entité autonome, distincte du Lycée public d'Excellence d'Essassa.",
+    image: "/assets/real/campus-aerial.jpg",
+    alt: "Vue du campus d'Essassa",
+    body: [
+      "Le Lycée Privé International Berthe & Jean poursuit son projet éducatif dans une dynamique autonome.",
+      "Cette organisation permet de mieux affirmer l'identité du lycée, sa devise et son accompagnement des familles.",
+      "L'établissement continue de renforcer son cadre pédagogique, son suivi des élèves et ses outils d'information.",
+    ],
+  },
+  {
+    slug: "reconnaissance-officielle",
+    tag: "Institution",
+    date: "5 février 2009",
+    dateTime: "2009-02-05",
+    title: "Reconnaissance officielle",
+    excerpt:
+      "La reconnaissance d'utilité publique inscrit l'établissement dans la carte scolaire nationale.",
+    image: "/assets/real/campus-building.jpg",
+    alt: "Bâtiment du lycée",
+    body: [
+      "La reconnaissance officielle marque une étape importante dans l'histoire du Lycée Privé International Berthe & Jean.",
+      "Elle confirme l'inscription de l'établissement dans un cadre éducatif structuré et reconnu.",
+      "Cette base institutionnelle soutient le développement d'un enseignement exigeant, ouvert et durable.",
+    ],
   },
 ];
 
@@ -295,8 +466,8 @@ export const approachItems = [
   },
   {
     icon: UsersRound,
-    title: "Encadrement attentif",
-    text: "Des classes à effectifs raisonnables pour un suivi personnalisé.",
+    title: "Classes à taille humaine",
+    text: "Des effectifs raisonnables pour mieux suivre chaque élève et encourager sa progression.",
   },
   {
     icon: Trophy,
@@ -397,6 +568,29 @@ export const learningDomains = [
     icon: Compass,
     title: "Orientation & méthode",
     text: "Méthodes de travail, accompagnement à l'orientation et projets d'avenir.",
+  },
+];
+
+export const programSeries = [
+  {
+    icon: BookOpen,
+    title: "Série A1",
+    text: "Orientation littéraire, langues, culture générale et expression écrite et orale.",
+  },
+  {
+    icon: NotebookTabs,
+    title: "Série B",
+    text: "Sciences économiques et sociales, raisonnement, analyse et méthodes de travail.",
+  },
+  {
+    icon: FlaskConical,
+    title: "Série C",
+    text: "Mathématiques renforcées, sciences physiques et préparation aux filières scientifiques.",
+  },
+  {
+    icon: Globe,
+    title: "Série D",
+    text: "Sciences de la vie, sciences physiques, mathématiques et ouverture vers les études supérieures.",
   },
 ];
 
@@ -550,7 +744,7 @@ export const hymnItems = [
   {
     icon: Music2,
     title: "Hymne Berthe & Jean",
-    text: "Une vidéo officielle transmise pour valoriser l'esprit, la devise et l'identité du lycée.",
+    text: "Un support audio transmis pour valoriser l'esprit, la devise et l'identité du lycée.",
   },
   {
     icon: MicVocal,
@@ -558,9 +752,9 @@ export const hymnItems = [
     text: "L'hymne accompagne la vie scolaire et rappelle l'engagement collectif de la communauté éducative.",
   },
   {
-    icon: Video,
-    title: "À regarder sur le site",
-    text: "Le lecteur vidéo est intégré avec contrôles natifs pour ordinateur et mobile.",
+    icon: Volume2,
+    title: "À écouter sur le site",
+    text: "Le lecteur audio intègre les contrôles natifs pour ordinateur et mobile.",
   },
 ];
 

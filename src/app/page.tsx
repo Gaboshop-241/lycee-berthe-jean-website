@@ -1,19 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  CalendarDays,
-  Download,
-  FileText,
-  Landmark,
-  MapPin,
-} from "lucide-react";
+import { ArrowRight, Landmark, MapPin } from "lucide-react";
 import { SiteFooter, SiteHeader } from "./site-components";
 import {
-  admissionDocs,
-  admissionSteps,
-  downloadItems,
-  financialItems,
   galleryImages,
   hymnItems,
   infrastructures,
@@ -21,7 +10,6 @@ import {
   newsItems,
   pillars,
   programs,
-  prospectusFacts,
   stats,
 } from "./site-data";
 
@@ -55,12 +43,11 @@ export default function Home() {
 
         <div className="hero-image">
           <Image
-            src="/assets/real/campus-aerial.jpg"
-            alt="Vue aérienne du campus du Lycée Berthe et Jean à Essassa"
+            src="/assets/real/hero-berthe-jean-gabon4you.jpg"
+            alt="Bâtiment du Lycée Privé International Berthe et Jean"
             fill
-            priority
+            preload
             unoptimized
-            loading="eager"
             sizes="(max-width: 900px) 100vw, 58vw"
           />
         </div>
@@ -150,7 +137,7 @@ export default function Home() {
               <div className="program-body">
                 <h3>{program.title}</h3>
                 <p>{program.text}</p>
-                <Link href="/programmes">
+                <Link href={program.href}>
                   En savoir plus <ArrowRight size={16} />
                 </Link>
               </div>
@@ -198,6 +185,9 @@ export default function Home() {
                 </div>
                 <h3>{item.title}</h3>
                 <p>{item.text}</p>
+                <Link href={item.href}>
+                  Lire la suite <ArrowRight size={16} />
+                </Link>
               </article>
             ))}
           </div>
@@ -214,7 +204,7 @@ export default function Home() {
               <div>
                 <h3>{item.title}</h3>
                 <p>{item.text}</p>
-                <Link href="/actualites">
+                <Link href={item.href}>
                   Lire la suite <ArrowRight size={16} />
                 </Link>
               </div>
@@ -230,18 +220,38 @@ export default function Home() {
         <div className="gallery-grid">
           {galleryImages.map((image, index) => (
             <figure className={index === 0 ? "featured" : ""} key={image.src}>
-              <Image
-                src={image.src}
-                alt={image.alt}
-                fill
-                sizes={
-                  index === 0
-                    ? "(max-width: 900px) 100vw, 48vw"
-                    : "(max-width: 900px) 50vw, 24vw"
-                }
-              />
+              <Link href={`#photo-${index + 1}`} aria-label={`Agrandir : ${image.label}`}>
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  fill
+                  sizes={
+                    index === 0
+                      ? "(max-width: 900px) 100vw, 48vw"
+                      : "(max-width: 900px) 50vw, 24vw"
+                  }
+                />
+              </Link>
               <figcaption>{image.label}</figcaption>
             </figure>
+          ))}
+        </div>
+        <div className="gallery-modals" aria-label="Aperçu des photos">
+          {galleryImages.map((image, index) => (
+            <div className="gallery-modal" id={`photo-${index + 1}`} key={`modal-${image.src}`}>
+              <Link className="gallery-close" href="#accueil" aria-label="Fermer l'image">
+                Fermer
+              </Link>
+              <figure>
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  fill
+                  sizes="100vw"
+                />
+                <figcaption>{image.label}</figcaption>
+              </figure>
+            </div>
           ))}
         </div>
       </section>
@@ -253,20 +263,30 @@ export default function Home() {
             <h2>L&apos;hymne Berthe & Jean</h2>
           </div>
           <p>
-            La vidéo transmise est intégrée comme hymne du lycée afin de
-            valoriser l&apos;identité, la devise et l&apos;esprit de la communauté
-            éducative.
+            L&apos;hymne du lycée est proposé en écoute audio avec des contrôles
+            simples pour valoriser l&apos;identité, la devise et l&apos;esprit de la
+            communauté éducative.
           </p>
         </div>
         <div className="hymn-layout">
-          <video
-            className="hymn-video"
-            controls
-            preload="metadata"
-            poster="/assets/real/campus-building.jpg"
-          >
-            <source src="/assets/hymne-berthe-jean.mp4" type="video/mp4" />
-          </video>
+          <div className="audio-player-card">
+            <div className="audio-player-cover">
+              <Image
+                src="/assets/real/campus-gardens.jpeg"
+                alt=""
+                fill
+                sizes="(max-width: 900px) 100vw, 46vw"
+              />
+              <div>
+                <span>Hymne officiel</span>
+                <strong>Berthe & Jean</strong>
+              </div>
+            </div>
+            <audio className="hymn-audio" controls preload="metadata">
+              <source src="/assets/hymne-berthe-jean.mp4" type="audio/mp4" />
+              Votre navigateur ne prend pas en charge la lecture audio.
+            </audio>
+          </div>
           <div className="hymn-cards">
             {hymnItems.map(({ icon: Icon, title, text }) => (
               <article key={title}>
@@ -279,111 +299,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="admissions" className="admission-section">
-        <div className="admission-intro">
-          <CalendarDays size={28} />
-          <div>
-            <span className="eyebrow">Admissions & préinscriptions</span>
-            <h2>Préparer l&apos;année scolaire 2026-2027</h2>
-            <p>
-              L&apos;admission se fait sur dossier scolaire complet, puis validation
-              par la commission de recrutement. Le prospectus officiel est
-              disponible en téléchargement.
-            </p>
-          </div>
-          <Link className="primary-button" href="/contact">
-            Nous contacter
-          </Link>
-        </div>
-
-        <div className="admission-layout">
-          <div className="admission-details">
-            <div className="steps-panel">
-              <h3>Modalités d&apos;inscription</h3>
-              <ol>
-                {admissionSteps.map((step) => (
-                  <li key={step}>{step}</li>
-                ))}
-              </ol>
-            </div>
-
-            <div>
-              <h3>Pièces à fournir obligatoirement</h3>
-              <div className="documents-grid">
-                {admissionDocs.map((doc) => (
-                  <article key={doc}>
-                    <FileText size={22} />
-                    <span>{doc}</span>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <aside className="prospectus-panel">
-            <FileText size={30} />
-            <span className="eyebrow">Prospectus officiel</span>
-            <h3>« L&apos;excellence prend un nouveau départ ! »</h3>
-            <p>
-              Le document présente le lycée, les formations, le fonctionnement,
-              les performances scolaires et les conditions financières de la
-              rentrée 2026-2027.
-            </p>
-            <dl className="prospectus-facts">
-              {prospectusFacts.map(([label, value]) => (
-                <div key={label}>
-                  <dt>{label}</dt>
-                  <dd>{value}</dd>
-                </div>
-              ))}
-            </dl>
-            <div className="download-list">
-              {downloadItems.map((item) => (
-                <article key={item.href}>
-                  <div>
-                    <h4>{item.title}</h4>
-                    <p>{item.text}</p>
-                  </div>
-                  <div className="download-actions">
-                    <a className="download-button" href={item.href} download>
-                      <Download size={18} />
-                      Télécharger
-                    </a>
-                    <a
-                      className="secondary-button compact"
-                      href={item.href}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Ouvrir le PDF
-                    </a>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </aside>
-        </div>
-
-        <div className="fees-panel" aria-label="Conditions financières 2026-2027">
-          <div>
-            <span className="eyebrow">Conditions financières</span>
-            <h3>Frais publiés dans le prospectus 2026-2027</h3>
-            <p>
-              Ces montants sont repris du prospectus transmis et restent à
-              confirmer directement auprès de l&apos;administration au moment de
-              l&apos;inscription.
-            </p>
-          </div>
-          <dl className="fees-grid">
-            {financialItems.map(([label, value]) => (
-              <div key={label}>
-                <dt>{label}</dt>
-                <dd>{value}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
 
       <SiteFooter />
     </main>

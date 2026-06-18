@@ -8,6 +8,7 @@ import {
   learningDomains,
   lyceeLevels,
   programHighlights,
+  programSeries,
 } from "../site-data";
 import {
   ClosingCta,
@@ -34,7 +35,7 @@ export default function ProgrammesPage() {
         image="/assets/real/class-session.jpg"
         imageAlt="Élèves du lycée accompagnés par un enseignant"
         actions={[
-          { label: "Voir les parcours", href: "#parcours" },
+          { label: "Voir les parcours", href: "#parcours-college" },
           { label: "Préinscription", href: "/preinscription", variant: "secondary" },
         ]}
       />
@@ -43,7 +44,7 @@ export default function ProgrammesPage() {
         <IconGrid items={programHighlights} className="four-columns" />
       </section>
 
-      <section id="parcours" className="page-section media-split">
+      <section id="parcours-college" className="page-section media-split">
         <div className="image-frame">
           <Image
             src="/assets/real/class-session.jpg"
@@ -71,7 +72,7 @@ export default function ProgrammesPage() {
         </div>
       </section>
 
-      <section className="page-section media-split reverse">
+      <section id="parcours-lycee" className="page-section media-split reverse">
         <div className="section-copy">
           <h2>Parcours Lycée</h2>
           <p>
@@ -103,8 +104,13 @@ export default function ProgrammesPage() {
         <IconGrid items={learningDomains} className="six-columns compact-icons" />
       </section>
 
+      <section className="page-section">
+        <SectionHeading title="Séries et orientations au lycée" centered />
+        <IconGrid items={programSeries} className="four-columns compact-icons series-grid" />
+      </section>
+
       <section className="page-section split-programs">
-        <div>
+        <div id="preparation-examens">
           <SectionHeading title="Préparation aux examens" centered />
           <div className="image-card-grid compact">
             {examPrepItems.map((item) => (
