@@ -14,7 +14,7 @@ type RateRecord = {
 };
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
-const DEFAULT_MODEL = "~openai/gpt-latest";
+const DEFAULT_MODEL = "openai/gpt-4o-mini";
 const MAX_USER_MESSAGE_LENGTH = 700;
 const MAX_HISTORY_MESSAGES = 14;
 const RATE_LIMIT_WINDOW_MS = 60_000;
@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
         "HTTP-Referer": getSiteUrl(request),
-        "X-OpenRouter-Title": "Lycée Privé International Berthe & Jean",
+        "X-Title": "Lycée Privé International Berthe & Jean",
       },
       body: JSON.stringify({
         model: process.env.OPENROUTER_MODEL || DEFAULT_MODEL,
