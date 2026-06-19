@@ -16,7 +16,12 @@ import {
   SectionHeading,
   SiteFooter,
 } from "../site-components";
-import { newsArticles } from "../site-data";
+import {
+  NewsExplorer,
+  NewsGallery,
+  NewsletterSignup,
+} from "@/components/ActualitesInteractive";
+import { galleryImages, newsArticles } from "../site-data";
 
 export const metadata: Metadata = {
   title: "Actualités | Lycée Privé International Berthe & Jean",
@@ -48,7 +53,6 @@ const newsHighlights = [
 ];
 
 const featuredArticle = newsArticles[0];
-const latestNews = newsArticles.slice(1, 7);
 
 const agendaItems = [
   {
@@ -56,7 +60,7 @@ const agendaItems = [
     month: "MAI",
     year: "2025",
     title: "Réunion des délégués de classe",
-    text: "Rencontre mensuelle pour faire le point sur les activités et besoins des classes.",
+    text: "Lundi 12 mai 2025 : rencontre mensuelle pour faire le point sur les activités et besoins des classes. Participation interne.",
     meta: "08h00 - Salle de réunion",
   },
   {
@@ -64,7 +68,7 @@ const agendaItems = [
     month: "JUIN",
     year: "2025",
     title: "Fête de fin d'année scolaire",
-    text: "Célébration, remise de prix et spectacles des élèves.",
+    text: "Dimanche 22 juin 2025 : célébration, remise de prix et spectacles des élèves. Les familles sont invitées à confirmer leur présence.",
     meta: "09h00 - Cour principale",
   },
   {
@@ -72,8 +76,9 @@ const agendaItems = [
     month: "JUIL.",
     year: "2025",
     title: "Portes ouvertes du lycée",
-    text: "Visitez notre campus, rencontrez nos équipes et découvrez nos programmes.",
+    text: "Samedi 5 juillet 2025 : visite du campus, rencontre avec les équipes et présentation des programmes. Inscription recommandée.",
     meta: "09h00 - Campus du lycée",
+    href: "/contact#visite-campus",
   },
 ];
 
@@ -87,33 +92,14 @@ const announcements = [
   {
     icon: UsersRound,
     title: "Réunion des parents",
-    text: "Les parents sont invités à la réunion trimestrielle le samedi 17 mai à 09h00.",
-    href: "/contact",
+    text: "Les parents sont invités à la réunion trimestrielle le samedi 17 mai 2025 à 09h00. Confirmation souhaitée auprès de l'administration.",
+    href: "/contact#message",
   },
   {
     icon: CalendarDays,
     title: "Visite du campus",
-    text: "Des visites guidées sont organisées chaque mercredi et samedi.",
-    href: "/contact#rendez-vous",
-  },
-];
-
-const gallery = [
-  {
-    image: "/assets/real/class-session.jpg",
-    label: "Apprendre, comprendre, réussir",
-  },
-  {
-    image: "/assets/real/student-cohort.jpg",
-    label: "Esprit d'équipe et dépassement de soi",
-  },
-  {
-    image: "/assets/real/cdi-library.jpg",
-    label: "Culture, créativité et expression",
-  },
-  {
-    image: "/assets/real/student-group.jpg",
-    label: "Reconnaître l'effort, encourager l'excellence",
+    text: "Des visites guidées sont organisées chaque mercredi et samedi sur rendez-vous.",
+    href: "/contact#visite-campus",
   },
 ];
 
@@ -154,6 +140,13 @@ export default function ActualitesPage() {
             </div>
             <h2>{featuredArticle.title}</h2>
             <p>{featuredArticle.excerpt}</p>
+            {featuredArticle.summaryStats ? (
+              <ul className="news-stat-list featured-stat-list">
+                {featuredArticle.summaryStats.map((stat) => (
+                  <li key={stat}>{stat}</li>
+                ))}
+              </ul>
+            ) : null}
             <span className="article-link">
               Lire l&apos;article <ArrowRight size={16} />
             </span>
@@ -163,31 +156,7 @@ export default function ActualitesPage() {
 
       <section id="dernieres-actualites" className="page-section">
         <SectionHeading title="Dernières actualités" />
-        <div className="news-card-grid">
-          {latestNews.map((item) => (
-            <Link className="news-card" href={`/actualites/${item.slug}`} key={item.title}>
-              <div className="news-card-image">
-                <Image src={item.image} alt={item.alt} fill sizes="(max-width: 900px) 100vw, 30vw" />
-              </div>
-              <div>
-                <div className="news-meta-row">
-                  <span>{item.tag}</span>
-                  <time dateTime={item.dateTime}>{item.date}</time>
-                </div>
-                <h3>{item.title}</h3>
-                <p>{item.excerpt}</p>
-                <span className="article-link">
-                  Lire l&apos;article <ArrowRight size={16} />
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
-        <div className="center-action">
-          <Link className="text-action" href="#dernieres-actualites">
-            Voir toutes les actualités <ArrowRight size={16} />
-          </Link>
-        </div>
+        <NewsExplorer articles={newsArticles} />
       </section>
 
       <section className="page-section agenda-announcements">
@@ -205,6 +174,11 @@ export default function ActualitesPage() {
                   <h3>{item.title}</h3>
                   <p>{item.text}</p>
                   <small>{item.meta}</small>
+                  {"href" in item && item.href ? (
+                    <Link className="agenda-link" href={item.href}>
+                      S&apos;inscrire <ArrowRight size={16} />
+                    </Link>
+                  ) : null}
                 </div>
               </article>
             ))}
@@ -236,15 +210,10 @@ export default function ActualitesPage() {
 
       <section className="page-section">
         <SectionHeading title="Galerie de la vie du lycée" />
-        <div className="gallery-strip">
-          {gallery.map((item) => (
-            <figure key={item.label}>
-              <Image src={item.image} alt="" fill sizes="(max-width: 900px) 100vw, 24vw" />
-              <figcaption>{item.label}</figcaption>
-            </figure>
-          ))}
-        </div>
+        <NewsGallery images={galleryImages} />
       </section>
+
+      <NewsletterSignup />
 
       <ClosingCta
         title="Suivez notre actualité et faites partie de notre communauté scolaire !"

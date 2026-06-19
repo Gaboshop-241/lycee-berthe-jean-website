@@ -109,7 +109,7 @@ export default function AdmissionsPage() {
           </p>
           <div className="download-actions">
             {downloadItems.map((item) => (
-              <DownloadLink key={item.href} href={item.href} title="Télécharger le prospectus" />
+              <DownloadLink key={item.href} href={item.href} title={item.title} />
             ))}
             <Link
               className="secondary-button compact"

@@ -1,12 +1,22 @@
 "use client";
 
+import Image from "next/image";
 import { FormEvent, KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import type { LucideIcon } from "lucide-react";
 import {
-  Bot,
+  BookOpen,
+  CheckCheck,
+  Clock3,
+  GraduationCap,
   MessageCircle,
   Minus,
+  Paperclip,
+  Phone,
   Send,
+  ShieldCheck,
   Trash2,
+  UserRound,
+  UsersRound,
   X,
 } from "lucide-react";
 
@@ -22,6 +32,7 @@ type ChatMessage = {
 type QuickReply = {
   label: string;
   message: string;
+  icon: LucideIcon;
 };
 
 const STORAGE_KEY = "berthe-jean-chatbot-history-v1";
@@ -31,22 +42,40 @@ const quickReplies: QuickReply[] = [
   {
     label: "Admissions",
     message: "Je veux des informations sur les admissions.",
+    icon: UserRound,
   },
   {
-    label: "Programmes",
-    message: "Pouvez-vous me présenter les programmes du lycée ?",
+    label: "Horaires",
+    message: "Quels sont les horaires du Lycée Privé International Berthe & Jean ?",
+    icon: Clock3,
   },
   {
     label: "Vie scolaire",
     message: "Quelles informations avez-vous sur la vie scolaire ?",
+    icon: UsersRound,
   },
   {
     label: "Contact",
     message: "Comment contacter le Lycée Privé International Berthe & Jean ?",
+    icon: Phone,
   },
   {
-    label: "Actualités",
-    message: "Où puis-je consulter les actualités du lycée ?",
+    label: "Programmes",
+    message: "Pouvez-vous me présenter les programmes du lycée ?",
+    icon: BookOpen,
+  },
+];
+
+const suggestedReplies: QuickReply[] = [
+  {
+    label: "Quels sont les documents à fournir ?",
+    message: "Quels sont les documents à fournir pour une inscription ?",
+    icon: BookOpen,
+  },
+  {
+    label: "Y a-t-il des frais d'inscription ?",
+    message: "Y a-t-il des frais d'inscription au lycée ?",
+    icon: GraduationCap,
   },
 ];
 
@@ -67,6 +96,13 @@ function createMessage(role: ChatRole, content: string): ChatMessage {
     content,
     createdAt: Date.now(),
   };
+}
+
+function formatMessageTime(timestamp: number) {
+  return new Intl.DateTimeFormat("fr-FR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(timestamp));
 }
 
 function isStoredMessage(value: unknown): value is ChatMessage {
@@ -131,6 +167,20 @@ function renderMessageContent(content: string) {
 
     return <span key={`${piece}-${index}`}>{piece}</span>;
   });
+}
+
+function AssistantAvatar({ compact = false }: { compact?: boolean }) {
+  return (
+    <span className={compact ? "chatbot-message-avatar" : "chatbot-avatar"} aria-hidden="true">
+      <Image
+        src="/assets/logo-berthe-jean.png"
+        alt=""
+        width={compact ? 30 : 48}
+        height={compact ? 30 : 48}
+        sizes={compact ? "30px" : "48px"}
+      />
+    </span>
+  );
 }
 
 export function Chatbot() {
@@ -252,26 +302,12 @@ export function Chatbot() {
       {isOpen ? (
         <section className="chatbot-window" aria-label="Assistant Berthe & Jean">
           <header className="chatbot-header">
-            <div className="chatbot-avatar" aria-hidden="true">
-              <Bot size={24} />
-            </div>
+            <AssistantAvatar />
             <div className="chatbot-heading">
               <h2>Assistant Berthe & Jean</h2>
-              <p>
-                <span aria-hidden="true" />
-                En ligne
-              </p>
+              <p>Bonjour ! Comment puis-je vous aider ?</p>
             </div>
             <div className="chatbot-header-actions">
-              <button
-                type="button"
-                className="chatbot-icon-button"
-                onClick={clearConversation}
-                aria-label="Effacer la conversation"
-                title="Effacer la conversation"
-              >
-                <Trash2 size={18} />
-              </button>
               <button
                 type="button"
                 className="chatbot-icon-button"
@@ -279,7 +315,7 @@ export function Chatbot() {
                 aria-label="Réduire le chatbot"
                 title="Réduire"
               >
-                <Minus size={19} />
+                <Minus size={20} />
               </button>
               <button
                 type="button"
@@ -288,10 +324,30 @@ export function Chatbot() {
                 aria-label="Fermer le chatbot"
                 title="Fermer"
               >
-                <X size={19} />
+                <X size={18} />
               </button>
             </div>
           </header>
+
+          <div className="chatbot-quick-zone">
+            <div className="chatbot-quick-replies" aria-label="Réponses rapides">
+              {quickReplies.map((reply) => {
+                const Icon = reply.icon;
+
+                return (
+                  <button
+                    type="button"
+                    key={reply.label}
+                    onClick={() => void sendMessage(reply.message)}
+                    disabled={isLoading}
+                  >
+                    <Icon size={16} aria-hidden="true" />
+                    {reply.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
           <div className="chatbot-messages" role="log" aria-label="Conversation">
             {messages.map((message) => (
@@ -299,65 +355,66 @@ export function Chatbot() {
                 className={`chatbot-message ${message.role === "user" ? "from-user" : "from-assistant"}`}
                 key={message.id}
               >
-                {message.role === "assistant" ? (
-                  <span className="chatbot-message-avatar" aria-hidden="true">
-                    <Bot size={17} />
+                {message.role === "assistant" ? <AssistantAvatar compact /> : null}
+                <div className="chatbot-bubble">
+                  <div className="chatbot-bubble-content">{renderMessageContent(message.content)}</div>
+                  <span className="chatbot-message-meta">
+                    {formatMessageTime(message.createdAt)}
+                    {message.role === "user" ? <CheckCheck size={14} aria-hidden="true" /> : null}
                   </span>
-                ) : null}
-                <div className="chatbot-bubble">{renderMessageContent(message.content)}</div>
+                </div>
               </article>
             ))}
             {isLoading ? (
               <article className="chatbot-message from-assistant">
-                <span className="chatbot-message-avatar" aria-hidden="true">
-                  <Bot size={17} />
-                </span>
-                <div className="chatbot-bubble is-typing">
-                  Assistant en train d&apos;écrire...
-                </div>
+                <AssistantAvatar compact />
+                <div className="chatbot-bubble is-typing">Assistant en train d&apos;écrire...</div>
               </article>
             ) : null}
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="chatbot-quick-zone">
-            <div className="chatbot-quick-replies" aria-label="Réponses rapides">
-              {quickReplies.map((reply) => (
-                <button
-                  type="button"
-                  key={reply.label}
-                  onClick={() => void sendMessage(reply.message)}
-                  disabled={isLoading}
-                >
-                  {reply.label}
-                </button>
-              ))}
-            </div>
-            <button
-              type="button"
-              className="chatbot-clear-text"
-              onClick={clearConversation}
-            >
-              Effacer la conversation
-            </button>
+          <div className="chatbot-suggestion-row" aria-label="Suggestions">
+            {suggestedReplies.map((reply) => (
+              <button
+                type="button"
+                key={reply.label}
+                onClick={() => void sendMessage(reply.message)}
+                disabled={isLoading}
+              >
+                {reply.label}
+              </button>
+            ))}
           </div>
 
           <form className="chatbot-form" onSubmit={handleSubmit}>
-            <label htmlFor="chatbot-input" className="sr-only">
-              Écrivez votre message
-            </label>
-            <textarea
-              id="chatbot-input"
-              ref={inputRef}
-              value={input}
-              maxLength={MAX_INPUT_LENGTH}
-              onChange={(event) => setInput(event.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Écrivez votre message..."
-              rows={1}
-              disabled={isLoading}
-            />
+            <div className="chatbot-input-shell">
+              <button
+                type="button"
+                className="chatbot-attach-button"
+                aria-label="Pièce jointe indisponible"
+                title="Pièce jointe"
+                disabled
+              >
+                <Paperclip size={18} />
+              </button>
+              <label htmlFor="chatbot-input" className="sr-only">
+                Écrivez votre message
+              </label>
+              <textarea
+                id="chatbot-input"
+                ref={inputRef}
+                value={input}
+                maxLength={MAX_INPUT_LENGTH}
+                onChange={(event) => setInput(event.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Écrivez votre message..."
+                rows={1}
+                disabled={isLoading}
+              />
+            </div>
             <button
+              className="chatbot-send-button"
               type="submit"
               aria-label="Envoyer le message"
               disabled={isLoading || input.trim().length === 0}
@@ -365,6 +422,17 @@ export function Chatbot() {
               <Send size={19} />
             </button>
           </form>
+
+          <footer className="chatbot-footer">
+            <span>
+              Réponses fournies par le Lycée Privé International Berthe & Jean
+              <ShieldCheck size={15} aria-hidden="true" />
+            </span>
+            <button type="button" onClick={clearConversation}>
+              <Trash2 size={14} aria-hidden="true" />
+              Effacer
+            </button>
+          </footer>
         </section>
       ) : null}
 
@@ -375,7 +443,8 @@ export function Chatbot() {
         aria-label="Ouvrir l'assistant Berthe & Jean"
         aria-expanded={isOpen}
       >
-        <MessageCircle size={28} />
+        <MessageCircle className="chatbot-toggle-chat" size={32} aria-hidden="true" />
+        <GraduationCap className="chatbot-toggle-cap" size={20} aria-hidden="true" />
         <span aria-hidden="true" />
       </button>
     </div>

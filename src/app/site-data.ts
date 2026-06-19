@@ -230,9 +230,10 @@ export const newsArticles = [
     dateTime: "2025-04-28",
     title: "Excellents résultats aux examens 2025",
     excerpt:
-      "Nos élèves ont une fois de plus brillé aux examens nationaux avec un taux de réussite remarquable.",
+      "Nos élèves ont une fois de plus brillé aux examens nationaux : Baccalauréat à 100% et BEPC à 98,31%.",
     image: "/assets/real/campus-building.jpg",
     alt: "Élèves distingués pour leurs résultats scolaires",
+    summaryStats: ["Bac : 100%", "BEPC : 98,31%", "Examens 2025"],
     body: [
       "Le Lycée Privé International Berthe & Jean félicite ses élèves pour leur travail, leur persévérance et leur discipline tout au long de l'année.",
       "Ces résultats confirment l'importance d'un encadrement régulier, de la rigueur académique et d'un accompagnement personnalisé de chaque élève.",
@@ -249,6 +250,7 @@ export const newsArticles = [
       "Une journée riche en couleurs, en traditions et en partage pour célébrer notre diversité culturelle.",
     image: "/assets/real/cdi-library.jpg",
     alt: "Activité culturelle au lycée",
+    summaryStats: ["Culture", "Expression", "Vie scolaire"],
     body: [
       "La journée culturelle met en valeur les talents des élèves, l'expression artistique et le respect des identités.",
       "À travers les présentations, les échanges et les activités, les élèves apprennent à mieux se connaître et à développer leur confiance.",
@@ -265,6 +267,9 @@ export const newsArticles = [
       "Les demandes d'admission pour l'année scolaire sont ouvertes. Les familles peuvent contacter l'établissement dès maintenant.",
     image: "/assets/real/student-group.jpg",
     alt: "Groupe d'élèves du Lycée Berthe et Jean",
+    ctaHref: "/admissions",
+    ctaLabel: "Voir les admissions",
+    summaryStats: ["Préinscription", "Dossier", "Validation"],
     body: [
       "Les familles intéressées peuvent lancer une demande d'admission ou prendre contact avec le service admissions.",
       "Le dossier permet à l'administration d'étudier le niveau demandé, les pièces scolaires et les besoins d'accompagnement de l'élève.",
@@ -281,6 +286,7 @@ export const newsArticles = [
       "Un tournoi sportif mémorable qui a renforcé l'esprit d'équipe et la solidarité entre les classes.",
     image: "/assets/real/student-cohort.jpg",
     alt: "Élèves réunis pour une activité sportive",
+    summaryStats: ["Sport", "Fair-play", "Cohésion"],
     body: [
       "Le tournoi interclasses encourage le dépassement de soi, le respect des règles et la cohésion entre les élèves.",
       "Au-delà du résultat sportif, ces rencontres permettent de cultiver le fair-play, l'entraide et la responsabilité.",
@@ -297,6 +303,7 @@ export const newsArticles = [
       "Célébration des meilleurs élèves et encouragement à l'effort, à la discipline et au dépassement de soi.",
     image: "/assets/real/campus-building.jpg",
     alt: "Bâtiment scolaire du lycée",
+    summaryStats: ["Mérite", "Discipline", "Distinctions"],
     body: [
       "La semaine de l'excellence récompense les efforts constants et met en avant les parcours exemplaires.",
       "Elle encourage chaque élève à viser plus haut, avec humilité, discipline et confiance dans ses capacités.",
@@ -313,6 +320,7 @@ export const newsArticles = [
       "Une activité pour découvrir le monde des sciences et apprendre autrement, en dehors de la salle de classe.",
     image: "/assets/real/science-workshop.jpg",
     alt: "Élèves en atelier scientifique",
+    summaryStats: ["Sciences", "Découverte", "Orientation"],
     body: [
       "Les sorties éducatives enrichissent les apprentissages en reliant les cours à des expériences concrètes.",
       "Elles développent la curiosité, l'esprit d'observation et la capacité des élèves à poser des questions.",
@@ -329,6 +337,9 @@ export const newsArticles = [
       "Un échange constructif avec les parents pour faire le point sur les progrès et projets de l'établissement.",
     image: "/assets/real/class-session.jpg",
     alt: "Réunion pédagogique au lycée",
+    ctaHref: "/contact#message",
+    ctaLabel: "Contacter l'administration",
+    summaryStats: ["Parents", "Suivi", "Dialogue"],
     body: [
       "La relation avec les familles est essentielle pour accompagner efficacement les élèves.",
       "Ces rencontres permettent de présenter les projets, d'écouter les attentes et de renforcer le suivi individualisé.",
@@ -345,6 +356,9 @@ export const newsArticles = [
       "Les familles peuvent consulter les conditions d'inscription, les horaires et les frais publiés.",
     image: "/assets/real/student-group.jpg",
     alt: "Élèves du lycée réunis",
+    ctaHref: "/admissions",
+    ctaLabel: "Consulter les démarches",
+    summaryStats: ["2026-2027", "Pièces", "Frais"],
     body: [
       "Le prospectus officiel présente les informations utiles pour préparer l'année scolaire 2026-2027.",
       "Il détaille les niveaux concernés, les pièces à fournir, les conditions financières et les étapes d'admission.",
@@ -361,6 +375,7 @@ export const newsArticles = [
       "Le pôle privé poursuit son activité comme entité autonome, distincte du Lycée public d'Excellence d'Essassa.",
     image: "/assets/real/campus-aerial.jpg",
     alt: "Vue du campus d'Essassa",
+    summaryStats: ["Institution", "Autonomie", "Projet éducatif"],
     body: [
       "Le Lycée Privé International Berthe & Jean poursuit son projet éducatif dans une dynamique autonome.",
       "Cette organisation permet de mieux affirmer l'identité du lycée, sa devise et son accompagnement des familles.",
@@ -377,6 +392,7 @@ export const newsArticles = [
       "La reconnaissance d'utilité publique inscrit l'établissement dans la carte scolaire nationale.",
     image: "/assets/real/campus-building.jpg",
     alt: "Bâtiment du lycée",
+    summaryStats: ["2009", "Reconnaissance", "Carte scolaire"],
     body: [
       "La reconnaissance officielle marque une étape importante dans l'histoire du Lycée Privé International Berthe & Jean.",
       "Elle confirme l'inscription de l'établissement dans un cadre éducatif structuré et reconnu.",
@@ -456,6 +472,16 @@ export const downloadItems = [
     title: "Prospectus Berthe & Jean 2026-2027",
     text: "Présentation, admission, pièces à fournir, performances et conditions financières.",
     href: "/downloads/prospectus-berthe-jean-2026-2027.pdf",
+  },
+  {
+    title: "Liste des manuels 2026-2027",
+    text: "Manuels scolaires demandés pour la rentrée 2026-2027.",
+    href: "/downloads/liste-des-manuels-2026-2027.pdf",
+  },
+  {
+    title: "Liste de fournitures rentrée 2026-2027",
+    text: "Fournitures scolaires à prévoir pour la rentrée 2026-2027.",
+    href: "/downloads/liste-de-fournitures-rentree-2026-2027.pdf",
   },
 ];
 
