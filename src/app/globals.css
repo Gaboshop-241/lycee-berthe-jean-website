@@ -3429,22 +3429,32 @@ dd {
   }
 
   .chatbot-header {
-    grid-template-columns: 44px minmax(0, 1fr) auto;
-    padding: 14px;
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+    gap: 8px;
+    padding: 12px;
   }
 
   .chatbot-avatar {
-    width: 44px;
-    height: 44px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .chatbot-heading h2 {
+    font-size: 1rem;
+  }
+
+  .chatbot-heading p {
+    margin-top: 4px;
+    font-size: 0.78rem;
   }
 
   .chatbot-header-actions {
-    gap: 2px;
+    gap: 0;
   }
 
   .chatbot-icon-button {
-    width: 31px;
-    height: 31px;
+    width: 28px;
+    height: 28px;
   }
 
   .chatbot-bubble {
