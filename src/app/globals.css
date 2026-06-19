@@ -3052,15 +3052,18 @@ dd {
 
 .chatbot-window {
   display: grid;
-  grid-template-rows: auto auto minmax(240px, 1fr) auto auto auto;
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto auto;
   width: min(430px, calc(100vw - 32px));
   height: min(690px, calc(100vh - 112px));
+  max-height: calc(100dvh - 112px);
+  min-height: 0;
   overflow: hidden;
   border: 1px solid rgba(6, 61, 32, 0.16);
   border-radius: 14px;
   background: #ffffff;
   box-shadow: 0 24px 60px rgba(6, 32, 18, 0.24);
   animation: chatbotIn 220ms ease both;
+  overscroll-behavior: contain;
 }
 
 .chatbot-header {
@@ -3149,7 +3152,9 @@ dd {
   display: grid;
   align-content: start;
   gap: 14px;
+  min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 18px 18px 10px;
   background: linear-gradient(180deg, #ffffff, #fafbf8);
 }
@@ -4204,6 +4209,7 @@ dd {
   .chatbot-window {
     width: 100%;
     height: min(690px, calc(100vh - 88px));
+    max-height: calc(100dvh - 88px);
     border-radius: 13px;
   }
 

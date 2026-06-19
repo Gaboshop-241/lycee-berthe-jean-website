@@ -1,7 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { FormEvent, KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  FormEvent,
+  KeyboardEvent,
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   BookOpen,
@@ -34,6 +43,20 @@ type QuickReply = {
   message: string;
   icon: LucideIcon;
 };
+
+type MessageContentPart =
+  | {
+      id: string;
+      kind: "text";
+      text: string;
+    }
+  | {
+      href: string;
+      id: string;
+      isExternal: boolean;
+      kind: "link";
+      text: string;
+    };
 
 const STORAGE_KEY = "berthe-jean-chatbot-history-v1";
 const MAX_INPUT_LENGTH = 700;
@@ -139,33 +162,25 @@ function loadStoredMessages(): ChatMessage[] {
   return [];
 }
 
-function renderMessageContent(content: string) {
+function getMessageContentParts(content: string): MessageContentPart[] {
   const linkPattern =
     /(https?:\/\/[^\s]+|\/(?:admissions|preinscription|programmes|vie-scolaire|actualites|contact)(?:#[a-z0-9-]+)?)/gi;
   const pieces = content.split(linkPattern);
 
-  return pieces.map((piece, index) => {
+  return pieces.flatMap((piece, index): MessageContentPart[] => {
     if (!piece) {
-      return null;
+      return [];
     }
 
     if (piece.startsWith("http")) {
-      return (
-        <a key={`${piece}-${index}`} href={piece} target="_blank" rel="noreferrer">
-          {piece}
-        </a>
-      );
+      return [{ href: piece, id: `${piece}-${index}`, isExternal: true, kind: "link", text: piece }];
     }
 
     if (piece.startsWith("/")) {
-      return (
-        <a key={`${piece}-${index}`} href={piece}>
-          {piece}
-        </a>
-      );
+      return [{ href: piece, id: `${piece}-${index}`, isExternal: false, kind: "link", text: piece }];
     }
 
-    return <span key={`${piece}-${index}`}>{piece}</span>;
+    return [{ id: `${piece}-${index}`, kind: "text", text: piece }];
   });
 }
 
@@ -184,12 +199,16 @@ function AssistantAvatar({ compact = false }: { compact?: boolean }) {
 }
 
 export function Chatbot() {
+  const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>(loadStoredMessages);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesViewportRef = useRef<HTMLDivElement>(null);
+  const activeRequestRef = useRef<AbortController | null>(null);
+  const previousPathnameRef = useRef(pathname);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -204,8 +223,40 @@ export function Chatbot() {
       return;
     }
 
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    const animationFrame = window.requestAnimationFrame(() => {
+      const viewport = messagesViewportRef.current;
+
+      if (viewport) {
+        viewport.scrollTop = viewport.scrollHeight;
+      }
+    });
+
+    return () => window.cancelAnimationFrame(animationFrame);
   }, [isOpen, messages, isLoading]);
+
+  useEffect(() => {
+    if (previousPathnameRef.current === pathname) {
+      return;
+    }
+
+    previousPathnameRef.current = pathname;
+
+    const animationFrame = window.requestAnimationFrame(() => {
+      activeRequestRef.current?.abort();
+      activeRequestRef.current = null;
+      setIsLoading(false);
+      setInput("");
+      setIsOpen(false);
+    });
+
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, [pathname]);
+
+  useEffect(() => {
+    return () => {
+      activeRequestRef.current?.abort();
+    };
+  }, []);
 
   useEffect(() => {
     if (!isOpen || isLoading) {
@@ -229,6 +280,9 @@ export function Chatbot() {
   }
 
   function closeChat() {
+    activeRequestRef.current?.abort();
+    activeRequestRef.current = null;
+    setIsLoading(false);
     setIsOpen(false);
   }
 
@@ -253,6 +307,10 @@ export function Chatbot() {
     setMessages(outgoingMessages);
     setInput("");
     setIsLoading(true);
+    activeRequestRef.current?.abort();
+
+    const requestController = new AbortController();
+    activeRequestRef.current = requestController;
 
     try {
       const response = await fetch("/api/chat", {
@@ -263,6 +321,7 @@ export function Chatbot() {
         body: JSON.stringify({
           messages: outgoingMessages.map(({ role, content }) => ({ role, content })),
         }),
+        signal: requestController.signal,
       });
 
       const data = (await response.json()) as { message?: string };
@@ -272,7 +331,11 @@ export function Chatbot() {
       }
 
       setMessages((current) => [...current, createMessage("assistant", data.message ?? "")]);
-    } catch {
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      }
+
       setMessages((current) => [
         ...current,
         createMessage(
@@ -281,7 +344,10 @@ export function Chatbot() {
         ),
       ]);
     } finally {
-      setIsLoading(false);
+      if (activeRequestRef.current === requestController) {
+        activeRequestRef.current = null;
+        setIsLoading(false);
+      }
     }
   }
 
@@ -295,6 +361,16 @@ export function Chatbot() {
       event.preventDefault();
       void sendMessage(input);
     }
+  }
+
+  function handleInternalLinkClick(event: MouseEvent<HTMLAnchorElement>, href: string) {
+    event.preventDefault();
+    activeRequestRef.current?.abort();
+    activeRequestRef.current = null;
+    setIsLoading(false);
+    setInput("");
+    setIsOpen(false);
+    router.push(href);
   }
 
   return (
@@ -349,7 +425,12 @@ export function Chatbot() {
             </div>
           </div>
 
-          <div className="chatbot-messages" role="log" aria-label="Conversation">
+          <div
+            className="chatbot-messages"
+            role="log"
+            aria-label="Conversation"
+            ref={messagesViewportRef}
+          >
             {messages.map((message) => (
               <article
                 className={`chatbot-message ${message.role === "user" ? "from-user" : "from-assistant"}`}
@@ -357,7 +438,31 @@ export function Chatbot() {
               >
                 {message.role === "assistant" ? <AssistantAvatar compact /> : null}
                 <div className="chatbot-bubble">
-                  <div className="chatbot-bubble-content">{renderMessageContent(message.content)}</div>
+                  <div className="chatbot-bubble-content">
+                    {getMessageContentParts(message.content).map((part) => {
+                      if (part.kind === "link" && part.isExternal) {
+                        return (
+                          <a key={part.id} href={part.href} target="_blank" rel="noreferrer">
+                            {part.text}
+                          </a>
+                        );
+                      }
+
+                      if (part.kind === "link") {
+                        return (
+                          <a
+                            key={part.id}
+                            href={part.href}
+                            onClick={(event) => handleInternalLinkClick(event, part.href)}
+                          >
+                            {part.text}
+                          </a>
+                        );
+                      }
+
+                      return <span key={part.id}>{part.text}</span>;
+                    })}
+                  </div>
                   <span className="chatbot-message-meta">
                     {formatMessageTime(message.createdAt)}
                     {message.role === "user" ? <CheckCheck size={14} aria-hidden="true" /> : null}
@@ -371,7 +476,6 @@ export function Chatbot() {
                 <div className="chatbot-bubble is-typing">Assistant en train d&apos;écrire...</div>
               </article>
             ) : null}
-            <div ref={messagesEndRef} />
           </div>
 
           <div className="chatbot-suggestion-row" aria-label="Suggestions">
