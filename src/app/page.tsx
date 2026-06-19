@@ -6,6 +6,7 @@ import {
   galleryImages,
   hymnItems,
   infrastructures,
+  leadershipMessages,
   lifeItems,
   newsItems,
   pillars,
@@ -108,6 +109,70 @@ export default function Home() {
           annonce de nouvelles installations modernes, spacieuses et adaptées
           aux exigences d&apos;une éducation de qualité.
         </p>
+      </section>
+
+      <section
+        id="mot-direction"
+        className="leadership-section"
+        aria-labelledby="leadership-title"
+      >
+        <div className="split-heading leadership-heading">
+          <div>
+            <span className="eyebrow">Mot de la direction</span>
+            <h2 id="leadership-title">Une vision portée par des responsables engagés</h2>
+          </div>
+          <p>
+            La parole de la direction éclaire le projet éducatif du lycée, son
+            exigence quotidienne et le lien de confiance construit avec les
+            familles. Elle réunit ici le censeur, le proviseur et la fondatrice
+            autour d&apos;une même ambition : former avec rigueur et humanité.
+          </p>
+        </div>
+
+        <div className="leadership-spotlight">
+          <div className="leadership-spotlight-image">
+            <Image
+              src="/assets/real/leadership/direction-mavoungou-obolo.jpg"
+              alt="MAVOUNGOU Denis Marin et OBOLO Clément, équipe de direction du Lycée Berthe et Jean"
+              fill
+              sizes="(max-width: 900px) 100vw, 46vw"
+            />
+          </div>
+          <div className="leadership-spotlight-copy">
+            <span>Direction administrative</span>
+            <h3>M. OBOLO Clément & M. MAVOUNGOU Denis Marin</h3>
+            <p>
+              Depuis 2015, l&apos;encadrement du Lycée Privé International
+              Berthe & Jean s&apos;appuie sur une continuité administrative forte :
+              exigence pédagogique, discipline quotidienne et dialogue avec les
+              familles.
+            </p>
+          </div>
+        </div>
+
+        <div className="leadership-grid">
+          {leadershipMessages.map((person) => (
+            <article className="leadership-card" key={person.name}>
+              <div className="leadership-photo">
+                <Image
+                  src={person.image}
+                  alt={person.alt}
+                  fill
+                  sizes="(max-width: 900px) 100vw, 31vw"
+                />
+              </div>
+              <div className="leadership-body">
+                <span className="leadership-role">{person.role}</span>
+                <h3>{person.name}</h3>
+                <p className="leadership-tenure">{person.tenure}</p>
+                <p className="leadership-message">{person.message}</p>
+                {"credit" in person ? (
+                  <small className="leadership-credit">{person.credit}</small>
+                ) : null}
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="stats-section" aria-label="Chiffres clés">

@@ -311,6 +311,8 @@ dd {
 .about-image,
 .card-image,
 .life-image,
+.leadership-spotlight-image,
+.leadership-photo,
 .page-hero-image,
 .image-frame,
 .image-card-media {
@@ -327,6 +329,8 @@ dd {
 .about-image img,
 .card-image img,
 .life-image img,
+.leadership-spotlight-image img,
+.leadership-photo img,
 .gallery-grid img,
 .page-hero-image img,
 .image-frame img,
@@ -403,6 +407,7 @@ dd {
 .admission-section,
 .gallery-section,
 .infrastructure-section,
+.leadership-section,
 .stats-section,
 .clarity-section {
   max-width: 1230px;
@@ -502,6 +507,143 @@ dd {
   color: #253229;
   font-size: 1rem;
   line-height: 1.55;
+}
+
+.leadership-section {
+  padding: 30px 44px 28px;
+  border-bottom: 1px solid var(--line);
+}
+
+.leadership-heading {
+  align-items: start;
+}
+
+.leadership-spotlight {
+  display: grid;
+  grid-template-columns: minmax(380px, 0.88fr) minmax(360px, 1fr);
+  gap: 0;
+  margin-top: 24px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background:
+    linear-gradient(135deg, rgba(246, 248, 242, 0.95), rgba(255, 255, 255, 0.98)),
+    #ffffff;
+  box-shadow: 0 18px 42px rgba(6, 61, 32, 0.06);
+}
+
+.leadership-spotlight-image {
+  min-height: 300px;
+}
+
+.leadership-spotlight-copy {
+  display: grid;
+  align-content: center;
+  min-width: 0;
+  padding: 30px;
+}
+
+.leadership-spotlight-copy span,
+.leadership-role {
+  width: fit-content;
+  border: 1px solid rgba(180, 123, 31, 0.22);
+  border-radius: 4px;
+  background: rgba(180, 123, 31, 0.08);
+  color: var(--gold);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.leadership-spotlight-copy span {
+  padding: 7px 10px;
+}
+
+.leadership-spotlight-copy h3,
+.leadership-body h3 {
+  margin: 14px 0 0;
+  color: var(--green-950);
+  font-family: var(--font-playfair), Georgia, "Times New Roman", serif;
+  letter-spacing: 0;
+}
+
+.leadership-spotlight-copy h3 {
+  font-size: clamp(1.45rem, 2.1vw, 2rem);
+  line-height: 1.15;
+}
+
+.leadership-spotlight-copy p {
+  margin: 14px 0 0;
+  color: #26332b;
+  font-size: 1rem;
+  line-height: 1.58;
+}
+
+.leadership-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.leadership-card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #ffffff;
+  box-shadow: 0 14px 34px rgba(6, 61, 32, 0.05);
+}
+
+.leadership-photo {
+  min-height: 250px;
+}
+
+.leadership-photo img {
+  object-position: center top;
+}
+
+.leadership-body {
+  min-width: 0;
+  padding: 20px;
+}
+
+.leadership-role {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 9px;
+}
+
+.leadership-body h3 {
+  font-size: 1.25rem;
+  line-height: 1.16;
+}
+
+.leadership-tenure {
+  margin: 7px 0 0;
+  color: var(--green-900);
+  font-size: 0.9rem;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.leadership-message {
+  margin: 14px 0 0;
+  color: #26332b;
+  font-size: 0.95rem;
+  line-height: 1.56;
+}
+
+.leadership-credit {
+  display: block;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 0.74rem;
+  line-height: 1.35;
 }
 
 .stats-section {
@@ -1181,6 +1323,11 @@ dd {
     background 160ms ease;
 }
 
+.social-brand-icon {
+  width: 20px;
+  height: 20px;
+}
+
 .social-links a:hover {
   background: #f1c66d;
   transform: translateY(-1px);
@@ -1712,9 +1859,9 @@ dd {
   grid-template-columns: 78px 1fr auto;
   gap: 22px;
   align-items: center;
-  max-width: 1230px;
-  margin: 0 auto 0;
-  padding: 22px 44px;
+  width: 100%;
+  margin: 0;
+  padding: 22px max(44px, calc((100vw - 1230px) / 2 + 44px));
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.88);
@@ -2285,6 +2432,8 @@ dd {
 .stats-section article,
 .infrastructure-grid article,
 .gallery-grid figure,
+.leadership-spotlight,
+.leadership-card,
 .audio-player-card,
 .icon-card,
 .image-card,
@@ -2301,6 +2450,8 @@ dd {
 .card-image img,
 .life-image img,
 .gallery-grid img,
+.leadership-spotlight-image img,
+.leadership-photo img,
 .image-card-media img,
 .event-image img,
 .news-card-image img,
@@ -2318,6 +2469,8 @@ dd {
 .stats-section article:hover,
 .infrastructure-grid article:hover,
 .gallery-grid figure:hover,
+.leadership-spotlight:hover,
+.leadership-card:hover,
 .audio-player-card:hover,
 .icon-card:hover,
 .image-card:hover,
@@ -2333,6 +2486,8 @@ dd {
 .program-card:hover img,
 .life-card:hover img,
 .gallery-grid figure:hover img,
+.leadership-spotlight:hover img,
+.leadership-card:hover img,
 .image-card:hover img,
 .event-card:hover img,
 .news-card:hover img,
@@ -2397,6 +2552,7 @@ dd {
     .stats-section,
     .programs-section,
     .infrastructure-section,
+    .leadership-section,
     .life-news-section,
     .gallery-section,
     .hymn-section,
@@ -2409,6 +2565,8 @@ dd {
 
     .about-image,
     .hero-image,
+    .leadership-spotlight-image,
+    .leadership-photo,
     .page-hero-image,
     .image-frame {
       animation: imageReveal 840ms ease both;
@@ -2540,6 +2698,7 @@ dd {
   .section-grid,
   .life-news-section,
   .clarity-section,
+  .leadership-spotlight,
   .split-heading,
   .admission-layout,
   .fees-panel,
@@ -2558,6 +2717,7 @@ dd {
   .contact-layout,
   .contact-find,
   .article-layout,
+  .leadership-grid,
   .image-card-grid.two-rows,
   .gallery-strip,
   .cta-band {
@@ -2594,6 +2754,7 @@ dd {
   .admission-section,
   .gallery-section,
   .infrastructure-section,
+  .leadership-section,
   .stats-section,
   .clarity-section,
   .page-section,
@@ -2617,6 +2778,14 @@ dd {
   .process-grid,
   .faq-grid {
     grid-template-columns: 1fr;
+  }
+
+  .leadership-spotlight-image {
+    min-height: 280px;
+  }
+
+  .leadership-photo {
+    min-height: 290px;
   }
 
   .card-image {
@@ -2678,6 +2847,7 @@ dd {
   .admission-section,
   .gallery-section,
   .infrastructure-section,
+  .leadership-section,
   .stats-section,
   .clarity-section,
   .page-section,
@@ -2842,6 +3012,16 @@ dd {
 
   .audio-player-cover {
     min-height: 190px;
+  }
+
+  .leadership-spotlight-copy,
+  .leadership-body {
+    padding: 18px;
+  }
+
+  .leadership-spotlight-image,
+  .leadership-photo {
+    min-height: 230px;
   }
 
   .icon-card {

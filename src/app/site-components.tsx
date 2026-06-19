@@ -9,7 +9,6 @@ import {
   Mail,
   MapPin,
   MapPinned,
-  Medal,
   Menu,
   Phone,
   Play,
@@ -154,9 +153,14 @@ export function SiteFooter() {
         <div className="footer-column">
           <h2>Suivez-nous</h2>
           <div className="social-links" aria-label="Réseaux sociaux">
-            <Link href="/contact" aria-label="Facebook">
-              <Medal size={20} />
-            </Link>
+            <a
+              href={contactInfo.facebookUrl}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Facebook du Lycée Berthe et Jean"
+            >
+              <FacebookIcon />
+            </a>
             <Link href="/contact" aria-label="Instagram">
               <Camera size={20} />
             </Link>
@@ -173,6 +177,19 @@ export function SiteFooter() {
         © 2026 Lycée Privé International Berthe & Jean. Tous droits réservés.
       </p>
     </footer>
+  );
+}
+
+function FacebookIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="social-brand-icon"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+    >
+      <path d="M14.4 8.2V6.9c0-.6.4-.8.8-.8h2V2.8l-2.8-.1c-3.1 0-4.8 1.9-4.8 5.2v.3H6.8v3.7h2.8v9.4h3.8v-9.4h3.1l.5-3.7z" />
+    </svg>
   );
 }
 

@@ -49,6 +49,7 @@ export const contactInfo = {
     "https://www.google.com/maps/search/?api=1&query=Lyc%C3%A9e%20Priv%C3%A9%20International%20Berthe%20et%20Jean%20Essassa%20Gabon",
   mapsEmbedUrl:
     "https://www.google.com/maps?q=Lyc%C3%A9e%20Priv%C3%A9%20International%20Berthe%20et%20Jean%20Essassa%20Gabon&output=embed",
+  facebookUrl: "https://www.facebook.com/share/1FusHDJrWv/",
 };
 
 export const pillars = [
@@ -81,6 +82,38 @@ export const stats = [
   ["PK 23", "Route Nationale 1, Essassa"],
   ["25", "Élèves maximum par classe historiquement"],
   ["2026-2027", "Nouvelles installations modernes"],
+];
+
+export const leadershipMessages = [
+  {
+    role: "Mot du censeur",
+    name: "MAVOUNGOU Denis Marin",
+    tenure: "Censeur depuis septembre 2015",
+    image: "/assets/real/leadership/mavoungou-denis-marin.jpg",
+    alt: "MAVOUNGOU Denis Marin, censeur du Lycée Berthe et Jean",
+    message:
+      "Depuis septembre 2015, notre mission est de garantir un cadre de travail sérieux, discipliné et humain. Le censeur veille chaque jour à l'assiduité, au respect des règles et à l'accompagnement des élèves, afin que chacun puisse progresser avec confiance et donner le meilleur de lui-même.",
+  },
+  {
+    role: "Mot du proviseur",
+    name: "OBOLO Clément",
+    tenure:
+      "Proviseur adjoint de janvier à juin 2015, proviseur central depuis juillet 2015",
+    image: "/assets/real/leadership/obolo-clement.jpg",
+    alt: "OBOLO Clément, proviseur central du Lycée Berthe et Jean",
+    message:
+      "Notre ambition est de faire du Lycée Privé International Berthe & Jean un espace d'excellence, d'écoute et de responsabilité. Depuis juillet 2015, nous travaillons avec les enseignants, les familles et les élèves pour construire une réussite durable, fondée sur la rigueur, le mérite et l'ouverture.",
+  },
+  {
+    role: "Mot de la fondatrice",
+    name: "Dr. MARIE MADELEINE MBORANTSUO",
+    tenure: "Fondatrice du Lycée Privé International Berthe & Jean",
+    image: "/assets/real/leadership/marie-madeleine-mborantsuo.jpg",
+    alt: "Dr. Marie Madeleine Mborantsuo, fondatrice du Lycée Berthe et Jean",
+    credit: "Photo : UN Photo/ICJ-CIJ/Frank van Beek",
+    message:
+      "Fonder Berthe & Jean, c'est porter la conviction qu'une école peut transformer des parcours et révéler des talents. J'invite chaque élève à cultiver le goût de l'effort, l'élégance morale et l'amour du savoir, car l'excellence commence par la discipline personnelle et le respect des autres.",
+  },
 ];
 
 export const programs = [
