@@ -3,9 +3,11 @@ import Image from "next/image";
 import {
   Building2,
   Clock3,
+  ExternalLink,
   GraduationCap,
   Mail,
   MapPin,
+  Navigation,
   Phone,
   UsersRound,
 } from "lucide-react";
@@ -90,6 +92,9 @@ const practicalItems = [
 
 export default function ContactPage() {
   const email = contactInfo.emails[0];
+  const phone = contactInfo.phones[0];
+  const telHref = `tel:${phone.replace(/[^\d+]/g, "")}`;
+  const mailHref = `mailto:${email}?subject=Contact%20depuis%20le%20site%20Berthe%20%26%20Jean`;
 
   return (
     <main className="site-shell">
@@ -97,8 +102,8 @@ export default function ContactPage() {
         active="contact"
         title="Contact"
         text="Notre équipe est à votre écoute pour répondre à vos questions, vous accompagner dans vos démarches et vous accueillir au sein du Lycée Privé International Berthe & Jean à Essassa."
-        image="/assets/real/student-group.jpg"
-        imageAlt="Accueil des familles au Lycée Berthe et Jean"
+        image="/assets/real/building-courtyard.jpg"
+        imageAlt="Cour et bâtiments du Lycée Privé International Berthe et Jean"
         actions={[
           { label: "Nous écrire", href: "#message" },
           { label: "Prendre rendez-vous", href: "#rendez-vous", variant: "secondary" },
@@ -107,12 +112,31 @@ export default function ContactPage() {
 
       <section className="page-section">
         <IconGrid items={contactCards} className="four-columns contact-cards" />
+        <div className="contact-action-row" aria-label="Actions de contact rapides">
+          <a className="primary-button icon-button" href={telHref}>
+            <Phone size={18} />
+            Appeler le lycée
+          </a>
+          <a className="secondary-button icon-button" href={mailHref}>
+            <Mail size={18} />
+            Envoyer un e-mail
+          </a>
+          <a
+            className="secondary-button icon-button"
+            href={contactInfo.mapsUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Navigation size={18} />
+            Voir l&apos;itinéraire
+          </a>
+        </div>
       </section>
 
       <section id="message" className="page-section contact-layout">
         <form
           className="form-card"
-          action={`mailto:${email}`}
+          action={mailHref}
           method="post"
           encType="text/plain"
         >
@@ -120,15 +144,26 @@ export default function ContactPage() {
           <div className="form-grid">
             <label className="form-field">
               <span>Nom complet</span>
-              <input name="nom" placeholder="Votre nom complet" required />
+              <input name="nom" placeholder="Votre nom complet" autoComplete="name" required />
             </label>
             <label className="form-field">
               <span>Adresse e-mail</span>
-              <input name="email" type="email" placeholder="Votre adresse e-mail" required />
+              <input
+                name="email"
+                type="email"
+                placeholder="Votre adresse e-mail"
+                autoComplete="email"
+                required
+              />
             </label>
             <label className="form-field">
               <span>Téléphone</span>
-              <input name="telephone" type="tel" placeholder="Votre numéro de téléphone" />
+              <input
+                name="telephone"
+                type="tel"
+                placeholder="Votre numéro de téléphone"
+                autoComplete="tel"
+              />
             </label>
             <label className="form-field">
               <span>Sujet</span>
@@ -160,7 +195,7 @@ export default function ContactPage() {
           })}
           <div className="image-frame contact-image">
             <Image
-              src="/assets/real/campus-building.jpg"
+              src="/assets/real/hero-berthe-jean-gabon4you.jpg"
               alt="Entrée du Lycée Privé International Berthe et Jean"
               fill
               sizes="(max-width: 900px) 100vw, 48vw"
@@ -176,17 +211,27 @@ export default function ContactPage() {
             Le Lycée Privé International Berthe & Jean est situé à Essassa, dans
             un environnement calme, sécurisé et facilement accessible.
           </p>
-          <div className="map-card" aria-label="Localisation du lycée à Essassa">
-            <span className="map-pin">
-              <MapPin size={34} />
-            </span>
-            <strong>Essassa, Gabon</strong>
-            <small>N1</small>
+          <div className="google-map-card" aria-label="Carte Google Maps du lycée à Essassa">
+            <iframe
+              className="google-map"
+              title="Localisation Google Maps du Lycée Privé International Berthe et Jean à Essassa"
+              src={contactInfo.mapsEmbedUrl}
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+            <div className="map-details">
+              <strong>Lycée Privé International Berthe & Jean</strong>
+              <span>{contactInfo.postal}</span>
+              <a href={contactInfo.mapsUrl} target="_blank" rel="noreferrer">
+                Ouvrir dans Google Maps <ExternalLink size={15} />
+              </a>
+            </div>
           </div>
         </div>
         <div className="image-frame tall">
           <Image
-            src="/assets/real/campus-aerial.jpg"
+            src="/assets/real/campus-gardens.jpeg"
             alt="Vue du campus du Lycée Berthe et Jean"
             fill
             sizes="(max-width: 900px) 100vw, 52vw"

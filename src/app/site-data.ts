@@ -43,8 +43,12 @@ export const contactInfo = {
   location: "Essassa, Gabon",
   postal: "Route Nationale 1, PK 23 Essassa, Ntoum",
   emails: ["contact@bertheetjean.ga"],
-  phones: ["+241 00 00 00 00"],
+  phones: ["+241 66 76 32 89"],
   hours: ["Lun - Ven : 7h30 - 17h00", "Sam : 9h00 - 12h00"],
+  mapsUrl:
+    "https://www.google.com/maps/search/?api=1&query=Lyc%C3%A9e%20Priv%C3%A9%20International%20Berthe%20et%20Jean%20Essassa%20Gabon",
+  mapsEmbedUrl:
+    "https://www.google.com/maps?q=Lyc%C3%A9e%20Priv%C3%A9%20International%20Berthe%20et%20Jean%20Essassa%20Gabon&output=embed",
 };
 
 export const pillars = [
@@ -217,17 +221,17 @@ export const newsArticles = [
     ],
   },
   {
-    slug: "preinscriptions-2025-2026",
+    slug: "admissions-2025-2026",
     tag: "Admissions",
     date: "8 mai 2025",
     dateTime: "2025-05-08",
-    title: "Ouverture des préinscriptions 2025-2026",
+    title: "Ouverture des admissions 2025-2026",
     excerpt:
-      "Les préinscriptions pour l'année scolaire sont ouvertes. Les familles peuvent réserver une place dès maintenant.",
+      "Les demandes d'admission pour l'année scolaire sont ouvertes. Les familles peuvent contacter l'établissement dès maintenant.",
     image: "/assets/real/student-group.jpg",
     alt: "Groupe d'élèves du Lycée Berthe et Jean",
     body: [
-      "Les familles intéressées peuvent lancer une demande de préinscription en ligne ou prendre contact avec le service admissions.",
+      "Les familles intéressées peuvent lancer une demande d'admission ou prendre contact avec le service admissions.",
       "Le dossier permet à l'administration d'étudier le niveau demandé, les pièces scolaires et les besoins d'accompagnement de l'élève.",
       "Une réponse est ensuite transmise aux parents afin de préparer sereinement les étapes suivantes de l'inscription.",
     ],
@@ -389,7 +393,7 @@ export const admissionDocs = [
 ];
 
 export const admissionSteps = [
-  "Retrait et renseignement de la fiche de préinscription",
+  "Retrait et renseignement de la fiche d'admission",
   "Dépôt du dossier scolaire complet",
   "Examen et validation par une commission de recrutement",
   "Inscription administrative après avis favorable",
@@ -476,8 +480,8 @@ export const approachItems = [
   },
   {
     icon: CalendarDays,
-    title: "Préinscriptions ouvertes",
-    text: "Les préinscriptions pour l'année 2026-2027 sont ouvertes.",
+    title: "Admissions ouvertes",
+    text: "Les demandes d'admission pour l'année 2026-2027 sont ouvertes.",
   },
 ];
 
@@ -639,8 +643,8 @@ export const complementaryActivities = [
 export const admissionHighlights = [
   {
     icon: ClipboardCheck,
-    title: "Préinscription simple",
-    text: "Une démarche rapide en ligne ou sur place.",
+    title: "Demande simple",
+    text: "Une démarche rapide par contact direct ou sur place.",
   },
   {
     icon: FolderOpen,
@@ -662,8 +666,8 @@ export const admissionHighlights = [
 export const admissionProcess = [
   {
     icon: FileCheck2,
-    title: "Préinscription",
-    text: "Remplir la fiche de demande.",
+    title: "Demande",
+    text: "Remplir la fiche d'admission.",
   },
   {
     icon: FolderOpen,
@@ -727,7 +731,7 @@ export const faqItems = [
   {
     question: "Quand commencent les inscriptions ?",
     answer:
-      "Les préinscriptions sont ouvertes avant chaque rentrée scolaire et peuvent se poursuivre selon les places disponibles.",
+      "Les demandes d'admission sont ouvertes avant chaque rentrée scolaire et peuvent se poursuivre selon les places disponibles.",
   },
   {
     question: "Peut-on visiter le campus ?",
@@ -764,7 +768,7 @@ export const ctaText = {
   programs:
     "Explorez nos programmes, rencontrez notre équipe pédagogique et offrez à votre enfant un environnement d'excellence.",
   admissions:
-    "Contactez notre service admissions ou lancez votre préinscription dès aujourd'hui.",
+    "Contactez notre service admissions ou demandez un accompagnement dès aujourd'hui.",
 };
 
 export { CircleCheck, Handshake, Landmark, School };

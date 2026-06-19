@@ -80,9 +80,9 @@ const agendaItems = [
 const announcements = [
   {
     icon: ClipboardList,
-    title: "Préinscriptions 2025-2026",
-    text: "Les préinscriptions sont ouvertes. Réservez votre place dès maintenant sur notre plateforme.",
-    href: "/preinscription",
+    title: "Admissions 2025-2026",
+    text: "Les demandes d'admission sont ouvertes. Contactez le service admissions dès maintenant.",
+    href: "/admissions",
   },
   {
     icon: UsersRound,
@@ -138,7 +138,7 @@ export default function ActualitesPage() {
 
       <section className="page-section">
         <SectionHeading title="À la une" />
-        <article className="featured-news">
+        <Link className="featured-news" href={`/actualites/${featuredArticle.slug}`}>
           <div className="featured-news-image">
             <Image
               src={featuredArticle.image}
@@ -154,18 +154,18 @@ export default function ActualitesPage() {
             </div>
             <h2>{featuredArticle.title}</h2>
             <p>{featuredArticle.excerpt}</p>
-            <Link href={`/actualites/${featuredArticle.slug}`}>
+            <span className="article-link">
               Lire l&apos;article <ArrowRight size={16} />
-            </Link>
+            </span>
           </div>
-        </article>
+        </Link>
       </section>
 
       <section id="dernieres-actualites" className="page-section">
         <SectionHeading title="Dernières actualités" />
         <div className="news-card-grid">
           {latestNews.map((item) => (
-            <article className="news-card" key={item.title}>
+            <Link className="news-card" href={`/actualites/${item.slug}`} key={item.title}>
               <div className="news-card-image">
                 <Image src={item.image} alt={item.alt} fill sizes="(max-width: 900px) 100vw, 30vw" />
               </div>
@@ -176,15 +176,15 @@ export default function ActualitesPage() {
                 </div>
                 <h3>{item.title}</h3>
                 <p>{item.excerpt}</p>
-                <Link href={`/actualites/${item.slug}`}>
+                <span className="article-link">
                   Lire l&apos;article <ArrowRight size={16} />
-                </Link>
+                </span>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
         <div className="center-action">
-          <Link className="text-action" href="/actualites">
+          <Link className="text-action" href="#dernieres-actualites">
             Voir toutes les actualités <ArrowRight size={16} />
           </Link>
         </div>

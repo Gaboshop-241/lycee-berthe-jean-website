@@ -31,7 +31,7 @@ export default function Home() {
             <Link className="primary-button" href="/a-propos">
               Découvrir le lycée
             </Link>
-            <Link className="secondary-button" href="/preinscription">
+            <Link className="secondary-button" href="/contact#message">
               Demander une admission
             </Link>
           </div>

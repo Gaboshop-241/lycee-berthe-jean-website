@@ -36,7 +36,7 @@ export default function ProgrammesPage() {
         imageAlt="Élèves du lycée accompagnés par un enseignant"
         actions={[
           { label: "Voir les parcours", href: "#parcours-college" },
-          { label: "Préinscription", href: "/preinscription", variant: "secondary" },
+          { label: "Admissions", href: "/admissions", variant: "secondary" },
         ]}
       />
 

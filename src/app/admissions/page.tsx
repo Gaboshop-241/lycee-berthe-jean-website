@@ -25,7 +25,7 @@ import {
 export const metadata: Metadata = {
   title: "Admissions | Lycée Privé International Berthe & Jean",
   description:
-    "Préinscriptions, dossier d'admission, pièces à fournir, frais 2026-2027 et prospectus du Lycée Privé International Berthe & Jean.",
+    "Dossier d'admission, pièces à fournir, frais 2026-2027 et prospectus du Lycée Privé International Berthe & Jean.",
 };
 
 export default function AdmissionsPage() {
@@ -38,7 +38,7 @@ export default function AdmissionsPage() {
         image="/assets/real/student-group.jpg"
         imageAlt="Élèves du lycée en démarche d'admission"
         actions={[
-          { label: "Préinscrire un élève", href: "/preinscription" },
+          { label: "Demander une admission", href: "/contact#message" },
           { label: "Prendre rendez-vous", href: "/contact#rendez-vous", variant: "secondary" },
         ]}
       />

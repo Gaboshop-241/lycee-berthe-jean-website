@@ -153,7 +153,7 @@ export default function VieScolairePage() {
         imageAlt="Élèves échangeant dans le campus du Lycée Berthe et Jean"
         actions={[
           { label: "Découvrir nos activités", href: "#activites" },
-          { label: "Préinscription", href: "/preinscription", variant: "secondary" },
+          { label: "Nous contacter", href: "/contact#message", variant: "secondary" },
         ]}
       />
 

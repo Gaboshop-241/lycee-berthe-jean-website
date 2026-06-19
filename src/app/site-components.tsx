@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { contactInfo, navItems } from "./site-data";
 
-type ActiveKey = (typeof navItems)[number]["key"] | "preinscription";
+type ActiveKey = (typeof navItems)[number]["key"];
 
 type IconCardData = {
   icon: LucideIcon;
@@ -72,11 +72,8 @@ export function SiteHeader({ active }: { active: ActiveKey }) {
           ))}
         </nav>
 
-        <Link
-          className={`preinscription-button${active === "preinscription" ? " active" : ""}`}
-          href="/preinscription"
-        >
-          Préinscription
+        <Link className="header-contact-button" href="/contact#message">
+          Nous contacter
         </Link>
 
         <details className="mobile-nav">
@@ -89,8 +86,8 @@ export function SiteHeader({ active }: { active: ActiveKey }) {
                 {item.label}
               </Link>
             ))}
-            <Link className="mobile-cta" href="/preinscription">
-              Préinscription
+            <Link className="mobile-cta" href="/contact#message">
+              Nous contacter
             </Link>
           </div>
         </details>
@@ -104,7 +101,7 @@ export function SiteFooter() {
   const telHref = `tel:${primaryPhone.replace(/\s/g, "")}`;
 
   return (
-    <footer className="footer" aria-label="Pied de page">
+    <footer id="site-footer" className="footer" aria-label="Pied de page">
       <div className="footer-inner">
         <div className="footer-brand">
           <SchoolLogo />
@@ -116,9 +113,14 @@ export function SiteFooter() {
 
         <div className="footer-column">
           <h2>Nous contacter</h2>
-          <p>
+          <a
+            className="footer-contact-link"
+            href={contactInfo.mapsUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
             <MapPinned size={18} /> {contactInfo.location}
-          </p>
+          </a>
           <p>
             <MapPin size={18} /> {contactInfo.postal}
           </p>
@@ -145,7 +147,7 @@ export function SiteFooter() {
                 {item.label}
               </Link>
             ))}
-            <Link href="/preinscription">Préinscription</Link>
+            <Link href="/contact#message">Nous écrire</Link>
           </div>
         </div>
 
@@ -162,7 +164,7 @@ export function SiteFooter() {
               <Play size={21} />
             </Link>
           </div>
-          <Link className="footer-admission-link" href="/preinscription">
+          <Link className="footer-admission-link" href="/contact#message">
             Demander une admission
           </Link>
         </div>
@@ -327,7 +329,7 @@ export function ImageCard({
 export function ClosingCta({
   title,
   text,
-  href = "/preinscription",
+  href = "/contact#message",
   label = "Demander une admission",
 }: {
   title: string;

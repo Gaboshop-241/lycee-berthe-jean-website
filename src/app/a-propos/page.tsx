@@ -32,7 +32,7 @@ export default function AboutPage() {
         imageAlt="Élèves du Lycée Berthe et Jean accompagnés dans leurs apprentissages"
         actions={[
           { label: "Notre mission", href: "#mission" },
-          { label: "Préinscription", href: "/preinscription", variant: "secondary" },
+          { label: "Nous contacter", href: "/contact#message", variant: "secondary" },
         ]}
       />
 
