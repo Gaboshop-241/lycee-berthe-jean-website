@@ -533,7 +533,11 @@ dd {
 }
 
 .leadership-spotlight-image {
-  min-height: 300px;
+  min-height: 360px;
+}
+
+.leadership-spotlight-image img {
+  object-position: center top;
 }
 
 .leadership-spotlight-copy {

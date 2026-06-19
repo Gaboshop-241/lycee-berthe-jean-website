@@ -373,8 +373,8 @@ export const newsArticles = [
     title: "Nouvelle configuration institutionnelle",
     excerpt:
       "Le pôle privé poursuit son activité comme entité autonome, distincte du Lycée public d'Excellence d'Essassa.",
-    image: "/assets/real/campus-aerial.jpg",
-    alt: "Vue du campus d'Essassa",
+    image: "/assets/real/campus-building.jpg",
+    alt: "Bâtiment du Lycée Privé International Berthe et Jean",
     summaryStats: ["Institution", "Autonomie", "Projet éducatif"],
     body: [
       "Le Lycée Privé International Berthe & Jean poursuit son projet éducatif dans une dynamique autonome.",
@@ -403,9 +403,9 @@ export const newsArticles = [
 
 export const galleryImages = [
   {
-    src: "/assets/real/campus-aerial.jpg",
-    alt: "Vue aérienne du campus Berthe et Jean",
-    label: "Campus d'Essassa",
+    src: "/assets/real/campus-building.jpg",
+    alt: "Bâtiment du Lycée Privé International Berthe et Jean",
+    label: "Lycée Berthe & Jean",
   },
   {
     src: "/assets/real/campus-gardens.jpeg",
@@ -413,9 +413,9 @@ export const galleryImages = [
     label: "Cadre naturel",
   },
   {
-    src: "/assets/real/campus-building.jpg",
-    alt: "Bâtiment du lycée",
-    label: "Bâtiments scolaires",
+    src: "/assets/real/class-session.jpg",
+    alt: "Élèves du lycée en séance d'information",
+    label: "Vie scolaire",
   },
   {
     src: "/assets/real/cdi-library.jpg",

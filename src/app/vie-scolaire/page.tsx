@@ -149,8 +149,8 @@ export default function VieScolairePage() {
         active="vie-scolaire"
         title="Vie scolaire"
         text="Au Lycée Privé International Berthe & Jean, nous offrons à nos élèves une vie scolaire équilibrée qui allie discipline, activités sportives, culture, clubs, développement personnel et accompagnement académique."
-        image="/assets/real/campus-aerial.jpg"
-        imageAlt="Élèves échangeant dans le campus du Lycée Berthe et Jean"
+        image="/assets/real/class-session.jpg"
+        imageAlt="Élèves du Lycée Berthe et Jean en séance d'information"
         actions={[
           { label: "Découvrir nos activités", href: "#activites" },
           { label: "Nous contacter", href: "/contact#message", variant: "secondary" },
