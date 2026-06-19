@@ -31,10 +31,12 @@ yarn-error.log*
 .pnpm-debug.log*
 .next-dev-pages.*.log
 .next-start.*.log
+.next-start-*.log
 .verification-screens/
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
