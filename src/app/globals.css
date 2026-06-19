@@ -11,6 +11,11 @@
   --line: #dfe5df;
   --muted: #536156;
   --soft: #f7f8f5;
+  --motion-ease: cubic-bezier(0.2, 0.72, 0.18, 1);
+  --motion-ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-fast: 180ms;
+  --motion-medium: 420ms;
+  --motion-slow: 760ms;
 }
 
 @theme inline {
@@ -168,7 +173,7 @@ dd {
 .desktop-nav a {
   position: relative;
   padding: 14px 0;
-  transition: color 160ms ease;
+  transition: color var(--motion-fast) ease;
 }
 
 .desktop-nav a:hover,
@@ -176,8 +181,7 @@ dd {
   color: var(--green-900);
 }
 
-.desktop-nav a.active::after,
-.desktop-nav a:hover::after {
+.desktop-nav a::after {
   position: absolute;
   right: 0;
   bottom: 7px;
@@ -185,15 +189,26 @@ dd {
   height: 2px;
   background: var(--green-900);
   content: "";
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--motion-medium) var(--motion-ease);
+}
+
+.desktop-nav a.active::after,
+.desktop-nav a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
 }
 
 .header-contact-button,
 .primary-button,
 .secondary-button {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 44px;
+  overflow: hidden;
   border-radius: 7px;
   font-weight: 750;
   line-height: 1;
@@ -202,6 +217,22 @@ dd {
     border-color 160ms ease,
     background 160ms ease,
     color 160ms ease;
+}
+
+.header-contact-button::after,
+.primary-button::after,
+.secondary-button::after,
+.download-button::after,
+.form-button::after {
+  position: absolute;
+  inset: auto 18px 8px;
+  height: 1px;
+  background: currentColor;
+  content: "";
+  opacity: 0.46;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--motion-medium) var(--motion-ease);
 }
 
 .header-contact-button,
@@ -239,6 +270,15 @@ dd {
 .primary-button:hover,
 .secondary-button:hover {
   transform: translateY(-1px);
+}
+
+.header-contact-button:hover::after,
+.primary-button:hover::after,
+.secondary-button:hover::after,
+.download-button:hover::after,
+.form-button:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
 }
 
 .header-contact-button.active {
@@ -3434,6 +3474,54 @@ dd {
   }
 }
 
+@keyframes editorialRise {
+  from {
+    opacity: 0;
+    transform: translateY(34px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes editorialSoftScale {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes editorialImageReveal {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 0 24%);
+    filter: saturate(0.86);
+    transform: scale(1.055);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+    filter: saturate(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes editorialRule {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
 @keyframes fadeRight {
   from {
     opacity: 0;
@@ -3500,9 +3588,9 @@ dd {
 .featured-news,
 .related-list a {
   transition:
-    transform 220ms ease,
-    box-shadow 220ms ease,
-    border-color 220ms ease;
+    transform var(--motion-medium) var(--motion-ease),
+    box-shadow var(--motion-medium) var(--motion-ease),
+    border-color var(--motion-medium) ease;
 }
 
 .card-image img,
@@ -3518,7 +3606,9 @@ dd {
 .hero-image img,
 .about-image img,
 .image-frame img {
-  transition: transform 420ms ease;
+  transition:
+    filter var(--motion-medium) ease,
+    transform 620ms var(--motion-ease-soft);
 }
 
 .program-card:hover,
@@ -3538,7 +3628,7 @@ dd {
 .related-list a:hover {
   border-color: rgba(11, 74, 40, 0.26);
   box-shadow: 0 20px 46px rgba(6, 61, 32, 0.12);
-  transform: translateY(-4px);
+  transform: translateY(-6px);
 }
 
 .program-card:hover img,
@@ -3564,6 +3654,12 @@ dd {
   box-shadow: 0 16px 32px rgba(6, 61, 32, 0.18);
 }
 
+.download-button,
+.form-button {
+  position: relative;
+  overflow: hidden;
+}
+
 .program-body a:hover,
 .life-card a:hover,
 .news-item a:hover,
@@ -3575,17 +3671,91 @@ dd {
   color: var(--green-700);
 }
 
+.desktop-nav a:focus-visible,
+.footer-links a:focus-visible,
+.footer-contact-link:focus-visible,
+.contact-card-link:focus-visible,
+.program-body a:focus-visible,
+.life-card a:focus-visible,
+.news-item a:focus-visible,
+.event-card a:focus-visible,
+.announcement-list a:focus-visible,
+.text-action:focus-visible {
+  border-radius: 4px;
+  outline: 3px solid rgba(180, 123, 31, 0.24);
+  outline-offset: 4px;
+}
+
 @media (prefers-reduced-motion: no-preference) {
-  .hero-copy {
-    animation: fadeRight 720ms ease both;
+  .site-header {
+    animation: editorialRise 620ms var(--motion-ease) both;
   }
 
-  .hero-image {
-    animation: imageReveal 820ms ease 120ms both;
+  .brand,
+  .desktop-nav a,
+  .header-contact-button,
+  .mobile-nav summary {
+    animation: editorialSoftScale 560ms var(--motion-ease) both;
+  }
+
+  .desktop-nav a:nth-child(2) {
+    animation-delay: 70ms;
+  }
+
+  .desktop-nav a:nth-child(3) {
+    animation-delay: 110ms;
+  }
+
+  .desktop-nav a:nth-child(4) {
+    animation-delay: 150ms;
+  }
+
+  .desktop-nav a:nth-child(5) {
+    animation-delay: 190ms;
+  }
+
+  .desktop-nav a:nth-child(6) {
+    animation-delay: 230ms;
+  }
+
+  .desktop-nav a:nth-child(7) {
+    animation-delay: 270ms;
+  }
+
+  .hero-copy {
+    animation: fadeRight var(--motion-slow) var(--motion-ease) both;
+  }
+
+  .hero-copy .eyebrow {
+    animation: editorialRise 640ms var(--motion-ease) 90ms both;
+  }
+
+  .hero-copy h1,
+  .page-hero h1 {
+    animation: editorialRise 720ms var(--motion-ease) 140ms both;
+  }
+
+  .hero-copy p,
+  .page-hero p,
+  .breadcrumb {
+    animation: editorialRise 680ms var(--motion-ease) 220ms both;
+  }
+
+  .hero-actions {
+    animation: editorialRise 650ms var(--motion-ease) 300ms both;
+  }
+
+  .location-line {
+    animation: editorialRise 620ms var(--motion-ease) 360ms both;
+  }
+
+  .hero-image,
+  .page-hero-image {
+    animation: editorialImageReveal 820ms var(--motion-ease-soft) 120ms both;
   }
 
   .pillars-inner .pillar {
-    animation: fadeUp 680ms ease both;
+    animation: editorialRise 680ms var(--motion-ease) both;
   }
 
   .pillars-inner .pillar:nth-child(2) {
@@ -3601,7 +3771,13 @@ dd {
   }
 
   .stats-section strong {
-    animation: numberPop 720ms ease both;
+    animation: numberPop 720ms var(--motion-ease) both;
+  }
+
+  .section-copy h2::after,
+  .center-heading h2::after {
+    transform-origin: left;
+    animation: editorialRule 680ms var(--motion-ease) 180ms both;
   }
 
   @supports (animation-timeline: view()) {
@@ -3615,8 +3791,9 @@ dd {
     .gallery-section,
     .hymn-section,
     .page-section,
+    .newsletter-band,
     .cta-band {
-      animation: fadeUp 760ms ease both;
+      animation: editorialRise var(--motion-slow) var(--motion-ease) both;
       animation-range: entry 8% cover 32%;
       animation-timeline: view();
     }
@@ -3626,10 +3803,106 @@ dd {
     .leadership-spotlight-image,
     .leadership-photo,
     .page-hero-image,
-    .image-frame {
-      animation: imageReveal 840ms ease both;
+    .image-frame,
+    .image-card-media,
+    .card-image,
+    .life-image,
+    .news-card-image,
+    .featured-news-image,
+    .event-image,
+    .audio-player-cover {
+      animation: editorialImageReveal 840ms var(--motion-ease-soft) both;
       animation-range: entry 6% cover 30%;
       animation-timeline: view();
+    }
+
+    .page-heading,
+    .split-heading > *,
+    .admission-intro > *,
+    .contact-language-note,
+    .documents-followup,
+    .contact-social-panel,
+    .map-details,
+    .article-body,
+    .article-sidebar,
+    .service-stack,
+    .google-map-card {
+      animation: editorialRise 680ms var(--motion-ease) both;
+      animation-range: entry 12% cover 34%;
+      animation-timeline: view();
+    }
+
+    .icon-grid > *,
+    .program-grid > *,
+    .life-grid > *,
+    .infrastructure-grid > *,
+    .leadership-grid > *,
+    .image-card-grid > *,
+    .process-grid > *,
+    .documents-grid > *,
+    .level-grid > *,
+    .series-grid > *,
+    .event-card-grid > *,
+    .news-card-grid > *,
+    .gallery-grid > *,
+    .gallery-strip > *,
+    .hymn-cards > *,
+    .contact-support-grid > *,
+    .agenda-list > *,
+    .announcement-list > *,
+    .faq-grid > *,
+    .fees-grid > *,
+    .prospectus-facts > *,
+    .download-list > *,
+    .footer-column {
+      animation: editorialSoftScale 660ms var(--motion-ease) both;
+      animation-range: entry 10% cover 28%;
+      animation-timeline: view();
+    }
+
+    .icon-grid > *:nth-child(2),
+    .program-grid > *:nth-child(2),
+    .life-grid > *:nth-child(2),
+    .image-card-grid > *:nth-child(2),
+    .event-card-grid > *:nth-child(2),
+    .news-card-grid > *:nth-child(2),
+    .gallery-grid > *:nth-child(2),
+    .gallery-strip > *:nth-child(2),
+    .hymn-cards > *:nth-child(2),
+    .contact-support-grid > *:nth-child(2),
+    .agenda-list > *:nth-child(2),
+    .announcement-list > *:nth-child(2),
+    .footer-column:nth-child(2) {
+      animation-delay: 80ms;
+    }
+
+    .icon-grid > *:nth-child(3),
+    .program-grid > *:nth-child(3),
+    .life-grid > *:nth-child(3),
+    .image-card-grid > *:nth-child(3),
+    .event-card-grid > *:nth-child(3),
+    .news-card-grid > *:nth-child(3),
+    .gallery-grid > *:nth-child(3),
+    .gallery-strip > *:nth-child(3),
+    .hymn-cards > *:nth-child(3),
+    .contact-support-grid > *:nth-child(3),
+    .agenda-list > *:nth-child(3),
+    .announcement-list > *:nth-child(3),
+    .footer-column:nth-child(3) {
+      animation-delay: 140ms;
+    }
+
+    .icon-grid > *:nth-child(4),
+    .life-grid > *:nth-child(4),
+    .image-card-grid > *:nth-child(4),
+    .news-card-grid > *:nth-child(4),
+    .gallery-grid > *:nth-child(4),
+    .gallery-strip > *:nth-child(4),
+    .contact-support-grid > *:nth-child(4),
+    .agenda-list > *:nth-child(4),
+    .announcement-list > *:nth-child(4),
+    .footer-column:nth-child(4) {
+      animation-delay: 200ms;
     }
   }
 }
@@ -3642,6 +3915,14 @@ dd {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 700px) {
+  :root {
+    --motion-fast: 140ms;
+    --motion-medium: 300ms;
+    --motion-slow: 520ms;
   }
 }
 
