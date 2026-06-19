@@ -112,6 +112,35 @@ function getSiteUrl(request: NextRequest) {
   );
 }
 
+function callOpenRouter({
+  apiKey,
+  messages,
+  model,
+  siteUrl,
+}: {
+  apiKey: string;
+  messages: IncomingMessage[];
+  model: string;
+  siteUrl: string;
+}) {
+  return fetch(OPENROUTER_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+      "HTTP-Referer": siteUrl,
+      "X-Title": "Lycee Prive International Berthe & Jean",
+    },
+    body: JSON.stringify({
+      model,
+      messages: [{ role: "system", content: systemPrompt }, ...messages],
+      temperature: 0.35,
+      max_tokens: 650,
+    }),
+    signal: AbortSignal.timeout(30_000),
+  });
+}
+
 export async function POST(request: NextRequest) {
   const apiKey = process.env.OPENROUTER_API_KEY;
 
@@ -145,22 +174,23 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const response = await fetch(OPENROUTER_URL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": getSiteUrl(request),
-        "X-Title": "Lycée Privé International Berthe & Jean",
-      },
-      body: JSON.stringify({
-        model: process.env.OPENROUTER_MODEL || DEFAULT_MODEL,
-        messages: [{ role: "system", content: systemPrompt }, ...messages],
-        temperature: 0.35,
-        max_tokens: 650,
-      }),
-      signal: AbortSignal.timeout(30_000),
+    const siteUrl = getSiteUrl(request);
+    const preferredModel = process.env.OPENROUTER_MODEL || DEFAULT_MODEL;
+    let response = await callOpenRouter({
+      apiKey,
+      messages,
+      model: preferredModel,
+      siteUrl,
     });
+
+    if (!response.ok && preferredModel !== DEFAULT_MODEL) {
+      response = await callOpenRouter({
+        apiKey,
+        messages,
+        model: DEFAULT_MODEL,
+        siteUrl,
+      });
+    }
 
     if (!response.ok) {
       return NextResponse.json(
