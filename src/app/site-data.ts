@@ -47,6 +47,8 @@ export const contactInfo = {
   hours: ["Lun - Ven : 7h30 - 17h00", "Sam : 9h00 - 12h00"],
   mapsUrl:
     "https://www.google.com/maps/search/?api=1&query=Lyc%C3%A9e%20Priv%C3%A9%20International%20Berthe%20et%20Jean%20Essassa%20Gabon",
+  directionsFromLibrevilleUrl:
+    "https://www.google.com/maps/dir/?api=1&origin=Libreville%2C%20Gabon&destination=Lyc%C3%A9e%20Priv%C3%A9%20International%20Berthe%20et%20Jean%20Essassa%20Gabon",
   mapsEmbedUrl:
     "https://www.google.com/maps?q=Lyc%C3%A9e%20Priv%C3%A9%20International%20Berthe%20et%20Jean%20Essassa%20Gabon&output=embed",
   facebookUrl: "https://www.facebook.com/share/1FusHDJrWv/",
