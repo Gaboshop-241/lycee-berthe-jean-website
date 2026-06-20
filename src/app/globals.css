@@ -291,6 +291,7 @@ dd {
 .header-contact-button {
   min-width: 152px;
   padding: 0 22px;
+  white-space: nowrap;
 }
 
 .secondary-button {
@@ -4101,7 +4102,7 @@ dd {
   .gallery-strip,
   .interactive-gallery,
   .cta-band {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .hero-copy {
@@ -4250,6 +4251,7 @@ dd {
   .page-hero {
     width: 100%;
     max-width: 100%;
+    grid-template-columns: minmax(0, 1fr);
     overflow-x: clip;
   }
 
