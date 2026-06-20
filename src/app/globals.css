@@ -202,8 +202,10 @@ dd {
 
 .language-switcher {
   display: inline-flex;
+  flex: 0 0 auto;
   align-items: center;
   justify-content: center;
+  min-width: 92px;
   overflow: hidden;
   border: 1px solid rgba(6, 61, 32, 0.16);
   border-radius: 999px;
@@ -212,7 +214,8 @@ dd {
 }
 
 .language-switcher button {
-  min-width: 42px;
+  flex: 0 0 46px;
+  min-width: 46px;
   min-height: 34px;
   border: 0;
   background: transparent;
@@ -4044,7 +4047,7 @@ dd {
   }
 
   .mobile-nav .language-switcher {
-    width: fit-content;
+    width: 92px;
     margin-bottom: 4px;
   }
 
@@ -4243,6 +4246,22 @@ dd {
     padding-inline: 18px;
   }
 
+  .hero-section,
+  .page-hero {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  .hero-copy,
+  .page-hero-copy,
+  .hero-image,
+  .page-hero-image {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
   .hero-copy h1 {
     max-width: 100%;
     font-size: 1.9rem;
@@ -4272,7 +4291,8 @@ dd {
   }
 
   .location-line {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
     align-items: flex-start;
     max-width: 100%;
     line-height: 1.35 !important;
@@ -4285,6 +4305,9 @@ dd {
 
   .hero-actions {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    max-width: 100%;
   }
 
   .news-toolbar {
@@ -4321,6 +4344,10 @@ dd {
   .secondary-button {
     min-width: 0;
     width: 100%;
+    max-width: 100%;
+    white-space: normal;
+    line-height: 1.2;
+    text-align: center;
   }
 
   .pillars-inner {
