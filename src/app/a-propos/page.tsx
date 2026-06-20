@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import {
-  aboutCards,
-  approachItems,
-  ctaText,
-  lifeSchoolCards,
-} from "../site-data";
+import { getSiteContent } from "../i18n-server";
 import {
   ClosingCta,
   IconGrid,
@@ -15,54 +10,51 @@ import {
   SiteFooter,
 } from "../site-components";
 
-export const metadata: Metadata = {
-  title: "À propos | Lycée Privé International Berthe & Jean",
-  description:
-    "Mission, vision, valeurs et approche pédagogique du Lycée Privé International Berthe & Jean à Essassa.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { pages } = await getSiteContent();
 
-export default function AboutPage() {
+  return {
+    title: pages.metadata.aboutTitle,
+    description: pages.metadata.aboutDescription,
+  };
+}
+
+export default async function AboutPage() {
+  const { common, data, locale, pages } = await getSiteContent();
+  const copy = pages.about;
+
   return (
     <main className="site-shell">
       <PageHero
         active="a-propos"
-        title="À propos du lycée"
-        text="Situé à Essassa, le Lycée Privé International Berthe & Jean accompagne les élèves du collège au lycée dans un cadre structuré, exigeant et bienveillant, pour leur permettre de devenir des citoyens responsables."
+        title={copy.heroTitle}
+        text={copy.heroText}
         image="/assets/real/class-session.jpg"
-        imageAlt="Élèves du Lycée Berthe et Jean accompagnés dans leurs apprentissages"
+        imageAlt={copy.heroAlt}
+        common={common}
+        currentLocale={locale}
+        items={data.navItems}
         actions={[
-          { label: "Notre mission", href: "#mission" },
-          { label: "Nous contacter", href: "/contact#message", variant: "secondary" },
+          { label: copy.mission, href: "#mission" },
+          { label: copy.contact, href: "/contact#message", variant: "secondary" },
         ]}
       />
 
       <section id="mission" className="page-section">
-        <IconGrid items={aboutCards} className="three-columns" />
+        <IconGrid items={data.aboutCards} className="three-columns" />
       </section>
 
       <section className="page-section two-column-section">
         <div className="section-copy">
-          <h2>Qui sommes-nous ?</h2>
-          <p>
-            Le Lycée Privé International Berthe & Jean est un établissement
-            privé laïc d&apos;enseignement secondaire général, situé à Essassa, au
-            Gabon.
-          </p>
-          <p>
-            Nous accueillons les élèves du collège au lycée dans un cadre
-            sécurisé, moderne et stimulant, propice à l&apos;apprentissage et à
-            l&apos;épanouissement personnel.
-          </p>
-          <p>
-            Notre engagement repose sur des valeurs fortes et une pédagogie
-            centrée sur l&apos;élève, afin de lui donner les moyens de réussir
-            aujourd&apos;hui et de s&apos;accomplir demain.
-          </p>
+          <h2>{copy.whoTitle}</h2>
+          <p>{copy.whoP1}</p>
+          <p>{copy.whoP2}</p>
+          <p>{copy.whoP3}</p>
         </div>
         <div className="image-frame tall">
           <Image
             src="/assets/real/campus-gardens.jpeg"
-            alt="Cadre naturel du campus Berthe et Jean"
+            alt={copy.campusAlt}
             fill
             sizes="(max-width: 900px) 100vw, 46vw"
           />
@@ -73,50 +65,41 @@ export default function AboutPage() {
         <div className="image-frame">
           <Image
             src="/assets/real/campus-building.jpg"
-            alt="Bâtiment du Lycée Privé International Berthe et Jean"
+            alt={copy.directionAlt}
             fill
             sizes="(max-width: 900px) 100vw, 42vw"
           />
         </div>
         <div className="section-copy">
-          <h2>Le mot de la direction</h2>
-          <p>
-            Au Lycée Privé International Berthe & Jean, nous plaçons la réussite
-            et le bien-être de chaque élève au cœur de notre action.
-          </p>
-          <p>
-            Notre équipe pédagogique s&apos;engage chaque jour à offrir un
-            enseignement de qualité, dans un climat de confiance et de respect,
-            pour former des jeunes responsables et ambitieux.
-          </p>
-          <p>
-            Nous croyons au potentiel de chaque élève et nous sommes fiers de
-            les accompagner sur le chemin de l&apos;excellence.
-          </p>
-          <strong>La Direction</strong>
+          <h2>{copy.directionTitle}</h2>
+          <p>{copy.directionP1}</p>
+          <p>{copy.directionP2}</p>
+          <p>{copy.directionP3}</p>
+          <strong>{copy.directionSignature}</strong>
         </div>
       </section>
 
       <section className="page-section">
-        <SectionHeading title="Notre approche pédagogique" centered />
-        <IconGrid items={approachItems} className="four-columns compact-icons" />
+        <SectionHeading title={copy.approach} centered />
+        <IconGrid items={data.approachItems} className="four-columns compact-icons" />
       </section>
 
       <section className="page-section">
-        <SectionHeading title="La vie au lycée" />
+        <SectionHeading title={copy.life} />
         <div className="image-card-grid">
-          {lifeSchoolCards.map((item) => (
+          {data.lifeSchoolCards.map((item) => (
             <ImageCard key={item.title} {...item} />
           ))}
         </div>
       </section>
 
       <ClosingCta
-        title="Venez découvrir notre lycée"
-        text={ctaText.discover}
+        title={common.discoverCtaTitle}
+        text={data.ctaText.discover}
+        common={common}
       />
 
-      <SiteFooter />
+      <SiteFooter common={common} info={data.contactInfo} items={data.navItems} />
     </main>
   );
 }

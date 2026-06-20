@@ -1,18 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  CircleCheck,
-  admissionDocs,
-  admissionHighlights,
-  admissionLevels,
-  admissionProcess,
-  ctaText,
-  downloadItems,
-  faqItems,
-  financialItems,
-  whyChooseItems,
-} from "../site-data";
+import { CircleCheck } from "lucide-react";
+import { getSiteContent } from "../i18n-server";
 import {
   ClosingCta,
   DownloadLink,
@@ -22,35 +12,44 @@ import {
   SiteFooter,
 } from "../site-components";
 
-export const metadata: Metadata = {
-  title: "Admissions | Lycée Privé International Berthe & Jean",
-  description:
-    "Dossier d'admission, pièces à fournir, frais 2026-2027 et prospectus du Lycée Privé International Berthe & Jean.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { pages } = await getSiteContent();
 
-export default function AdmissionsPage() {
+  return {
+    title: pages.metadata.admissionsTitle,
+    description: pages.metadata.admissionsDescription,
+  };
+}
+
+export default async function AdmissionsPage() {
+  const { common, data, locale, pages } = await getSiteContent();
+  const copy = pages.admissions;
+
   return (
     <main className="site-shell">
       <PageHero
         active="admissions"
-        title="Admissions"
-        text="Rejoignez le Lycée Privé International Berthe & Jean et offrez à votre enfant un cadre d'excellence, de discipline et d'accompagnement personnalisé, du collège au lycée."
+        title={copy.heroTitle}
+        text={copy.heroText}
         image="/assets/real/student-group.jpg"
-        imageAlt="Élèves du lycée en démarche d'admission"
+        imageAlt={copy.heroAlt}
+        common={common}
+        currentLocale={locale}
+        items={data.navItems}
         actions={[
-          { label: "Demander une admission", href: "/contact#message" },
-          { label: "Prendre rendez-vous", href: "/contact#rendez-vous", variant: "secondary" },
+          { label: copy.request, href: "/contact#message" },
+          { label: copy.appointment, href: "/contact#rendez-vous", variant: "secondary" },
         ]}
       />
 
       <section className="page-section">
-        <IconGrid items={admissionHighlights} className="four-columns" />
+        <IconGrid items={data.admissionHighlights} className="four-columns" />
       </section>
 
       <section id="demarche" className="page-section">
-        <SectionHeading title="Comment s'inscrire ?" />
+        <SectionHeading title={copy.how} />
         <div className="process-grid">
-          {admissionProcess.map((step, index) => {
+          {data.admissionProcess.map((step, index) => {
             const Icon = step.icon;
 
             return (
@@ -69,9 +68,9 @@ export default function AdmissionsPage() {
 
       <section className="page-section admissions-overview">
         <div>
-          <SectionHeading title="Pièces à fournir" />
+          <SectionHeading title={copy.docs} />
           <div className="checklist-card">
-            {admissionDocs.map((doc) => (
+            {data.admissionDocs.map((doc) => (
               <p key={doc}>
                 <CircleCheck size={16} /> {doc}
               </p>
@@ -80,14 +79,14 @@ export default function AdmissionsPage() {
         </div>
 
         <div>
-          <SectionHeading title="Niveaux concernés" />
-          <IconGrid items={admissionLevels} className="three-columns mini-icons" />
+          <SectionHeading title={copy.levels} />
+          <IconGrid items={data.admissionLevels} className="three-columns mini-icons" />
         </div>
 
         <div className="image-frame">
           <Image
             src="/assets/real/campus-building.jpg"
-            alt="Accueil des familles au Lycée Berthe et Jean"
+            alt={copy.familyAlt}
             fill
             sizes="(max-width: 900px) 100vw, 36vw"
           />
@@ -95,20 +94,16 @@ export default function AdmissionsPage() {
       </section>
 
       <section className="page-section">
-        <SectionHeading title="Pourquoi nous choisir ?" />
-        <IconGrid items={whyChooseItems} className="four-columns" />
+        <SectionHeading title={copy.why} />
+        <IconGrid items={data.whyChooseItems} className="four-columns" />
       </section>
 
       <section className="page-section admission-download-panel">
         <div>
-          <SectionHeading title="Prospectus & conditions financières" />
-          <p>
-            Les informations ci-dessous reprennent le prospectus 2026-2027
-            transmis pour le lycée. Les montants restent à confirmer auprès de
-            l&apos;administration lors de l&apos;inscription finale.
-          </p>
+          <SectionHeading title={copy.prospectus} />
+          <p>{copy.prospectusText}</p>
           <div className="download-actions">
-            {downloadItems.map((item) => (
+            {data.downloadItems.map((item) => (
               <DownloadLink key={item.href} href={item.href} title={item.title} />
             ))}
             <Link
@@ -116,12 +111,12 @@ export default function AdmissionsPage() {
               href="/downloads/prospectus-berthe-jean-2026-2027.pdf"
               target="_blank"
             >
-              Ouvrir le PDF
+              {copy.openPdf}
             </Link>
           </div>
         </div>
         <dl className="fees-grid">
-          {financialItems.map(([label, value]) => (
+          {data.financialItems.map(([label, value]) => (
             <div key={label}>
               <dt>{label}</dt>
               <dd>{value}</dd>
@@ -131,9 +126,9 @@ export default function AdmissionsPage() {
       </section>
 
       <section className="page-section">
-        <SectionHeading title="Questions fréquentes" />
+        <SectionHeading title={copy.faq} />
         <div className="faq-grid">
-          {faqItems.map((item) => (
+          {data.faqItems.map((item) => (
             <details key={item.question} open>
               <summary>{item.question}</summary>
               <p>{item.answer}</p>
@@ -142,12 +137,9 @@ export default function AdmissionsPage() {
         </div>
       </section>
 
-      <ClosingCta
-        title="Prêt à rejoindre Berthe & Jean ?"
-        text={ctaText.admissions}
-      />
+      <ClosingCta title={copy.ctaTitle} text={data.ctaText.admissions} common={common} />
 
-      <SiteFooter />
+      <SiteFooter common={common} info={data.contactInfo} items={data.navItems} />
     </main>
   );
 }

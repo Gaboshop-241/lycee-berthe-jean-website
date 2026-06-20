@@ -14,8 +14,14 @@ import {
   Play,
 } from "lucide-react";
 import { contactInfo, navItems } from "./site-data";
+import { commonCopy } from "./i18n-content";
+import type { Locale } from "./i18n-config";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 type ActiveKey = (typeof navItems)[number]["key"];
+type NavItem = (typeof navItems)[number];
+type ContactInfo = typeof contactInfo;
+type CommonCopy = (typeof commonCopy)[Locale];
 
 type IconCardData = {
   icon: LucideIcon;
@@ -30,9 +36,9 @@ type PageAction = {
   variant?: "primary" | "secondary";
 };
 
-export function SchoolLogo() {
+export function SchoolLogo({ common = commonCopy.fr }: { common?: CommonCopy }) {
   return (
-    <Link className="brand" href="/" aria-label="Accueil Berthe et Jean">
+    <Link className="brand" href="/" aria-label={common.brandAria}>
       <Image
         className="school-logo"
         src="/assets/logo-berthe-jean.png"
@@ -43,24 +49,34 @@ export function SchoolLogo() {
       />
       <span>
         <strong className="brand-title">
-          Lycée Privé International
+          {common.brandTitleLine1}
           <br />
-          Berthe & Jean
+          {common.brandTitleLine2}
         </strong>
-        <em>Savoir-être - Savoir-faire</em>
+        <em>{common.brandMotto}</em>
       </span>
     </Link>
   );
 }
 
-export function SiteHeader({ active }: { active: ActiveKey }) {
+export function SiteHeader({
+  active,
+  common = commonCopy.fr,
+  currentLocale = "fr",
+  items = navItems,
+}: {
+  active: ActiveKey;
+  common?: CommonCopy;
+  currentLocale?: Locale;
+  items?: NavItem[];
+}) {
   return (
     <header className="site-header">
       <div className="header-inner">
-        <SchoolLogo />
+        <SchoolLogo common={common} />
 
-        <nav className="desktop-nav" aria-label="Navigation principale">
-          {navItems.map((item) => (
+        <nav className="desktop-nav" aria-label={common.mainNavigation}>
+          {items.map((item) => (
             <Link
               key={item.key}
               className={item.key === active ? "active" : ""}
@@ -71,22 +87,25 @@ export function SiteHeader({ active }: { active: ActiveKey }) {
           ))}
         </nav>
 
+        <LanguageSwitcher currentLocale={currentLocale} />
+
         <Link className="header-contact-button" href="/contact#message">
-          Nous contacter
+          {common.contactButton}
         </Link>
 
         <details className="mobile-nav">
-          <summary aria-label="Ouvrir le menu">
+          <summary aria-label={common.mobileMenuAria}>
             <Menu size={22} strokeWidth={2.2} />
           </summary>
           <div>
-            {navItems.map((item) => (
+            <LanguageSwitcher currentLocale={currentLocale} />
+            {items.map((item) => (
               <Link key={item.key} href={item.href}>
                 {item.label}
               </Link>
             ))}
             <Link className="mobile-cta" href="/contact#message">
-              Nous contacter
+              {common.contactButton}
             </Link>
           </div>
         </details>
@@ -95,35 +114,40 @@ export function SiteHeader({ active }: { active: ActiveKey }) {
   );
 }
 
-export function SiteFooter() {
-  const primaryPhone = contactInfo.phones[0];
+export function SiteFooter({
+  common = commonCopy.fr,
+  info = contactInfo,
+  items = navItems,
+}: {
+  common?: CommonCopy;
+  info?: ContactInfo;
+  items?: NavItem[];
+}) {
+  const primaryPhone = info.phones[0];
   const telHref = `tel:${primaryPhone.replace(/\s/g, "")}`;
 
   return (
-    <footer id="site-footer" className="footer" aria-label="Pied de page">
+    <footer id="site-footer" className="footer" aria-label={common.footerAria}>
       <div className="footer-inner">
         <div className="footer-brand">
-          <SchoolLogo />
-          <p>
-            Un cadre structuré à Essassa pour apprendre, grandir et préparer
-            l&apos;avenir avec discipline et ambition.
-          </p>
+          <SchoolLogo common={common} />
+          <p>{common.footerIntro}</p>
         </div>
 
         <div className="footer-column">
-          <h2>Nous contacter</h2>
+          <h2>{common.footerContact}</h2>
           <a
             className="footer-contact-link"
-            href={contactInfo.mapsUrl}
+            href={info.mapsUrl}
             target="_blank"
             rel="noreferrer"
           >
-            <MapPinned size={18} /> {contactInfo.location}
+            <MapPinned size={18} /> {info.location}
           </a>
           <p>
-            <MapPin size={18} /> {contactInfo.postal}
+            <MapPin size={18} /> {info.postal}
           </p>
-          {contactInfo.emails.map((email) => (
+          {info.emails.map((email) => (
             <a className="footer-contact-link" href={`mailto:${email}`} key={email}>
               <Mail size={18} /> {email}
             </a>
@@ -131,7 +155,7 @@ export function SiteFooter() {
           <a className="footer-contact-link" href={telHref}>
             <Phone size={18} /> {primaryPhone}
           </a>
-          {contactInfo.hours.map((item) => (
+          {info.hours.map((item) => (
             <p key={item}>
               <Clock3 size={18} /> {item}
             </p>
@@ -139,25 +163,25 @@ export function SiteFooter() {
         </div>
 
         <div className="footer-column">
-          <h2>Liens rapides</h2>
+          <h2>{common.quickLinks}</h2>
           <div className="footer-links">
-            {navItems.slice(1).map((item) => (
+            {items.slice(1).map((item) => (
               <Link key={item.key} href={item.href}>
                 {item.label}
               </Link>
             ))}
-            <Link href="/contact#message">Nous écrire</Link>
+            <Link href="/contact#message">{common.writeUs}</Link>
           </div>
         </div>
 
         <div className="footer-column">
-          <h2>Suivez-nous</h2>
-          <div className="social-links" aria-label="Réseaux sociaux">
+          <h2>{common.followUs}</h2>
+          <div className="social-links" aria-label={common.socialAria}>
             <a
-              href={contactInfo.facebookUrl}
+              href={info.facebookUrl}
               target="_blank"
               rel="noreferrer"
-              aria-label="Facebook du Lycée Berthe et Jean"
+              aria-label={common.facebookAria}
             >
               <FacebookIcon />
             </a>
@@ -169,13 +193,11 @@ export function SiteFooter() {
             </Link>
           </div>
           <Link className="footer-admission-link" href="/contact#message">
-            Demander une admission
+            {common.admissionCta}
           </Link>
         </div>
       </div>
-      <p className="copyright">
-        © 2026 Lycée Privé International Berthe & Jean. Tous droits réservés.
-      </p>
+      <p className="copyright">{common.copyright}</p>
     </footer>
   );
 }
@@ -193,10 +215,16 @@ function FacebookIcon() {
   );
 }
 
-export function Breadcrumb({ current }: { current: string }) {
+export function Breadcrumb({
+  current,
+  common = commonCopy.fr,
+}: {
+  current: string;
+  common?: CommonCopy;
+}) {
   return (
     <p className="breadcrumb">
-      <Link href="/">Accueil</Link>
+      <Link href="/">{common.breadcrumbHome}</Link>
       <ChevronRight size={14} />
       <span>{current}</span>
     </p>
@@ -210,6 +238,9 @@ export function PageHero({
   image,
   imageAlt,
   actions,
+  common = commonCopy.fr,
+  currentLocale = "fr",
+  items = navItems,
 }: {
   active: ActiveKey;
   title: string;
@@ -217,13 +248,21 @@ export function PageHero({
   image: string;
   imageAlt: string;
   actions: PageAction[];
+  common?: CommonCopy;
+  currentLocale?: Locale;
+  items?: NavItem[];
 }) {
   return (
     <>
-      <SiteHeader active={active} />
+      <SiteHeader
+        active={active}
+        common={common}
+        currentLocale={currentLocale}
+        items={items}
+      />
       <section className="page-hero">
         <div className="page-hero-copy">
-          <Breadcrumb current={title} />
+          <Breadcrumb current={title} common={common} />
           <h1>{title}</h1>
           <p>{text}</p>
           <div className="hero-actions">
@@ -347,12 +386,14 @@ export function ClosingCta({
   title,
   text,
   href = "/contact#message",
-  label = "Demander une admission",
+  label,
+  common = commonCopy.fr,
 }: {
   title: string;
   text: string;
   href?: string;
   label?: string;
+  common?: CommonCopy;
 }) {
   return (
     <section className="cta-band" aria-label={title}>
@@ -362,7 +403,7 @@ export function ClosingCta({
         <p>{text}</p>
       </div>
       <Link className="primary-button" href={href}>
-        {label}
+        {label ?? common.admissionCta}
       </Link>
     </section>
   );

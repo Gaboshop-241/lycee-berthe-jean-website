@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { defaultLocale, isLocale, type Locale } from "@/app/i18n-config";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -49,6 +50,34 @@ Réponses attendues :
 - Si l'utilisateur demande la préinscription, propose /preinscription.
 - Garde les réponses courtes, structurées et utiles.
 - Écris en texte simple, sans Markdown lourd, et laisse les liens internes sous forme directe comme /preinscription.`;
+
+const systemPromptEn = `You are the official assistant for Lycée Privé International Berthe & Jean, located in Essassa, Gabon.
+You answer in English with a professional, warm and clear tone. You help parents, students and visitors find information about the school, admissions, pre-registration, programs, school life, news, opening hours, contacts and administrative procedures.
+You must not invent sensitive or unconfirmed information. If exact information is not available, invite the user to contact the school administration.
+You must not talk about UIL or the university unless the user explicitly asks for clarification. Always stay focused on Berthe & Jean school.
+
+Reliable information to use:
+- Name: Lycée Privé International Berthe & Jean.
+- Location: Essassa, Gabon, National Road 1, PK 23 Essassa, Ntoum.
+- Motto: Savoir-être - Savoir-faire.
+- Levels: lower secondary and upper secondary.
+- Programs: lower secondary, upper secondary, BEPC and Baccalauréat preparation.
+- Baccalauréat streams shown on the site: A1, B, C and D.
+- Admissions: request or pre-registration, submission of required documents, file review, validation, final registration.
+- Possible required documents: birth certificate, school reports, passport photos, medical certificate or medical file if requested, school certificate or transfer/radiation certificate if applicable, parent or guardian ID.
+- School life: sports, clubs, culture, support, discipline, rigor, innovation and guidance.
+- Contact: Essassa, Gabon; National Road 1, PK 23 Essassa, Ntoum; contact@bertheetjean.ga; +241 66 76 32 89.
+- Opening hours: Monday to Friday from 7:30 AM to 5:00 PM; Saturday from 9:00 AM to 12:00 PM.
+- Useful pages: /admissions, /preinscription, /programmes, /vie-scolaire, /actualites, /contact.
+
+Expected behavior:
+- If the user asks how to apply, explain: 1. Fill in the pre-registration form. 2. Submit the requested documents. 3. File review. 4. Confirmation. 5. Final registration.
+- If the user asks for documents, list the documents and recommend confirming with the administration.
+- If the user asks about programs, summarize lower secondary, upper secondary and exam preparation.
+- If the user asks for contact information, provide the address, phone, email and /contact page.
+- If the user asks about pre-registration, suggest /preinscription.
+- Keep answers short, structured and useful.
+- Write in plain text, without heavy Markdown, and keep internal links direct, such as /preinscription.`;
 
 function getClientId(request: NextRequest) {
   const forwardedFor = request.headers.get("x-forwarded-for");
@@ -114,11 +143,13 @@ function getSiteUrl(request: NextRequest) {
 
 function callOpenRouter({
   apiKey,
+  locale,
   messages,
   model,
   siteUrl,
 }: {
   apiKey: string;
+  locale: Locale;
   messages: IncomingMessage[];
   model: string;
   siteUrl: string;
@@ -133,7 +164,10 @@ function callOpenRouter({
     },
     body: JSON.stringify({
       model,
-      messages: [{ role: "system", content: systemPrompt }, ...messages],
+      messages: [
+        { role: "system", content: locale === "en" ? systemPromptEn : systemPrompt },
+        ...messages,
+      ],
       temperature: 0.35,
       max_tokens: 650,
     }),
@@ -167,6 +201,11 @@ export async function POST(request: NextRequest) {
   }
 
   const messages = sanitizeMessages((payload as { messages?: unknown })?.messages);
+  const incomingLocale = (payload as { locale?: unknown })?.locale;
+  const locale =
+    typeof incomingLocale === "string" && isLocale(incomingLocale)
+      ? incomingLocale
+      : defaultLocale;
   const hasUserMessage = messages.some((message) => message.role === "user");
 
   if (!hasUserMessage) {
@@ -178,6 +217,7 @@ export async function POST(request: NextRequest) {
     const preferredModel = process.env.OPENROUTER_MODEL || DEFAULT_MODEL;
     let response = await callOpenRouter({
       apiKey,
+      locale,
       messages,
       model: preferredModel,
       siteUrl,
@@ -186,6 +226,7 @@ export async function POST(request: NextRequest) {
     if (!response.ok && preferredModel !== DEFAULT_MODEL) {
       response = await callOpenRouter({
         apiKey,
+        locale,
         messages,
         model: DEFAULT_MODEL,
         siteUrl,

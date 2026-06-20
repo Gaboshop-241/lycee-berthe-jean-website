@@ -1,15 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import {
-  collegeLevels,
-  complementaryActivities,
-  ctaText,
-  examPrepItems,
-  learningDomains,
-  lyceeLevels,
-  programHighlights,
-  programSeries,
-} from "../site-data";
+import { getSiteContent } from "../i18n-server";
 import {
   ClosingCta,
   IconGrid,
@@ -19,50 +10,54 @@ import {
   SiteFooter,
 } from "../site-components";
 
-export const metadata: Metadata = {
-  title: "Programmes | Lycée Privé International Berthe & Jean",
-  description:
-    "Programmes du collège à la Terminale, préparation au BEPC et au Baccalauréat, domaines d'apprentissage et activités complémentaires.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { pages } = await getSiteContent();
 
-export default function ProgrammesPage() {
+  return {
+    title: pages.metadata.programsTitle,
+    description: pages.metadata.programsDescription,
+  };
+}
+
+export default async function ProgrammesPage() {
+  const { common, data, locale, pages } = await getSiteContent();
+  const copy = pages.programs;
+
   return (
     <main className="site-shell">
       <PageHero
         active="programmes"
-        title="Nos programmes"
-        text="Le Lycée Privé International Berthe & Jean propose un parcours structuré de la 6e à la Terminale, fondé sur l'excellence académique, l'accompagnement personnalisé et une préparation rigoureuse aux examens et à l'avenir."
+        title={copy.heroTitle}
+        text={copy.heroText}
         image="/assets/real/class-session.jpg"
-        imageAlt="Élèves du lycée accompagnés par un enseignant"
+        imageAlt={copy.heroAlt}
+        common={common}
+        currentLocale={locale}
+        items={data.navItems}
         actions={[
-          { label: "Voir les parcours", href: "#parcours-college" },
-          { label: "Admissions", href: "/admissions", variant: "secondary" },
+          { label: copy.viewTracks, href: "#parcours-college" },
+          { label: copy.admissions, href: "/admissions", variant: "secondary" },
         ]}
       />
 
       <section className="page-section">
-        <IconGrid items={programHighlights} className="four-columns" />
+        <IconGrid items={data.programHighlights} className="four-columns" />
       </section>
 
       <section id="parcours-college" className="page-section media-split">
         <div className="image-frame">
           <Image
             src="/assets/real/class-session.jpg"
-            alt="Parcours collège au Lycée Berthe et Jean"
+            alt={copy.collegeAlt}
             fill
             sizes="(max-width: 900px) 100vw, 42vw"
           />
         </div>
         <div className="section-copy">
-          <h2>Parcours Collège</h2>
-          <p>
-            Le cycle collège, de la 6e à la 3e, pose les bases solides d&apos;une
-            réussite durable. Les élèves développent leurs connaissances
-            fondamentales, leur méthodologie de travail, la maîtrise des langues,
-            des sciences et des outils numériques.
-          </p>
+          <h2>{copy.collegeTitle}</h2>
+          <p>{copy.collegeText}</p>
           <div className="level-grid">
-            {collegeLevels.map(([level, text]) => (
+            {data.collegeLevels.map(([level, text]) => (
               <article key={level}>
                 <strong>{level}</strong>
                 <span>{text}</span>
@@ -74,14 +69,10 @@ export default function ProgrammesPage() {
 
       <section id="parcours-lycee" className="page-section media-split reverse">
         <div className="section-copy">
-          <h2>Parcours Lycée</h2>
-          <p>
-            Du second cycle à la Terminale, les élèves bénéficient d&apos;un
-            enseignement approfondi, d&apos;un accompagnement vers l&apos;orientation
-            et d&apos;une préparation exigeante aux examens.
-          </p>
+          <h2>{copy.lyceeTitle}</h2>
+          <p>{copy.lyceeText}</p>
           <div className="level-grid three">
-            {lyceeLevels.map(([level, text]) => (
+            {data.lyceeLevels.map(([level, text]) => (
               <article key={level}>
                 <strong>{level}</strong>
                 <span>{text}</span>
@@ -92,7 +83,7 @@ export default function ProgrammesPage() {
         <div className="image-frame">
           <Image
             src="/assets/real/science-workshop.jpg"
-            alt="Parcours lycée et activités scientifiques"
+            alt={copy.lyceeAlt}
             fill
             sizes="(max-width: 900px) 100vw, 42vw"
           />
@@ -100,40 +91,40 @@ export default function ProgrammesPage() {
       </section>
 
       <section className="page-section">
-        <SectionHeading title="Domaines d'apprentissage" centered />
-        <IconGrid items={learningDomains} className="six-columns compact-icons" />
+        <SectionHeading title={copy.domains} centered />
+        <IconGrid items={data.learningDomains} className="six-columns compact-icons" />
       </section>
 
       <section className="page-section">
-        <SectionHeading title="Séries et orientations au lycée" centered />
-        <IconGrid items={programSeries} className="four-columns compact-icons series-grid" />
+        <SectionHeading title={copy.series} centered />
+        <IconGrid
+          items={data.programSeries}
+          className="four-columns compact-icons series-grid"
+        />
       </section>
 
       <section className="page-section split-programs">
         <div id="preparation-examens">
-          <SectionHeading title="Préparation aux examens" centered />
+          <SectionHeading title={copy.exams} centered />
           <div className="image-card-grid compact">
-            {examPrepItems.map((item) => (
+            {data.examPrepItems.map((item) => (
               <ImageCard key={item.title} {...item} />
             ))}
           </div>
         </div>
         <div>
-          <SectionHeading title="Activités complémentaires" centered />
+          <SectionHeading title={copy.complementary} centered />
           <div className="image-card-grid compact">
-            {complementaryActivities.map((item) => (
+            {data.complementaryActivities.map((item) => (
               <ImageCard key={item.title} {...item} />
             ))}
           </div>
         </div>
       </section>
 
-      <ClosingCta
-        title="Construisez votre parcours avec Berthe & Jean"
-        text={ctaText.programs}
-      />
+      <ClosingCta title={copy.ctaTitle} text={data.ctaText.programs} common={common} />
 
-      <SiteFooter />
+      <SiteFooter common={common} info={data.contactInfo} items={data.navItems} />
     </main>
   );
 }

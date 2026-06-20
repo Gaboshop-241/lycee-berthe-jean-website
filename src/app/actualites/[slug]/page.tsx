@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { getSiteContent } from "../../i18n-server";
 import { PageHero, SiteFooter } from "../../site-components";
 import { newsArticles } from "../../site-data";
 
@@ -20,11 +21,12 @@ export async function generateMetadata({
   params,
 }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const article = newsArticles.find((item) => item.slug === slug);
+  const { data, pages } = await getSiteContent();
+  const article = data.newsArticles.find((item) => item.slug === slug);
 
   if (!article) {
     return {
-      title: "Actualité introuvable | Lycée Privé International Berthe & Jean",
+      title: pages.metadata.newsNotFound,
     };
   }
 
@@ -36,13 +38,15 @@ export async function generateMetadata({
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
-  const article = newsArticles.find((item) => item.slug === slug);
+  const { common, data, locale, pages } = await getSiteContent();
+  const copy = pages.news;
+  const article = data.newsArticles.find((item) => item.slug === slug);
 
   if (!article) {
     notFound();
   }
 
-  const relatedArticles = newsArticles
+  const relatedArticles = data.newsArticles
     .filter((item) => item.slug !== article.slug)
     .slice(0, 3);
 
@@ -54,16 +58,19 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         text={article.excerpt}
         image={article.image}
         imageAlt={article.alt}
+        common={common}
+        currentLocale={locale}
+        items={data.navItems}
         actions={[
-          { label: "Retour aux actualités", href: "/actualites", variant: "secondary" },
-          { label: "Nous contacter", href: "/contact" },
+          { label: copy.backToNews, href: "/actualites", variant: "secondary" },
+          { label: copy.contact, href: "/contact" },
         ]}
       />
 
       <article className="page-section article-layout">
         <div className="article-body">
           <Link className="text-action" href="/actualites">
-            <ArrowLeft size={16} /> Toutes les actualités
+            <ArrowLeft size={16} /> {copy.allArticles}
           </Link>
           <div className="news-meta-row article-meta">
             <span>{article.tag}</span>
@@ -83,7 +90,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               sizes="(max-width: 900px) 100vw, 32vw"
             />
           </div>
-          <h2>À lire aussi</h2>
+          <h2>{copy.alsoRead}</h2>
           <div className="related-list">
             {relatedArticles.map((item) => (
               <Link href={`/actualites/${item.slug}`} key={item.slug}>
@@ -96,7 +103,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         </aside>
       </article>
 
-      <SiteFooter />
+      <SiteFooter common={common} info={data.contactInfo} items={data.navItems} />
     </main>
   );
 }

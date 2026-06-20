@@ -12,6 +12,8 @@ import {
   Trophy,
   UsersRound,
 } from "lucide-react";
+import { getSiteContent } from "../i18n-server";
+import type { Locale } from "../i18n-config";
 import {
   ClosingCta,
   IconGrid,
@@ -21,167 +23,289 @@ import {
   SiteFooter,
 } from "../site-components";
 
-export const metadata: Metadata = {
-  title: "Vie scolaire | Lycée Privé International Berthe & Jean",
-  description:
-    "Vie scolaire, activités sportives, clubs, culture, encadrement et temps forts du Lycée Privé International Berthe & Jean.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { pages } = await getSiteContent();
 
-const lifeHighlights = [
-  {
-    icon: Trophy,
-    title: "Activités sportives",
-    text: "Des sports variés pour développer le corps, l'esprit d'équipe et le sens du dépassement.",
-  },
-  {
-    icon: Drama,
-    title: "Clubs & culture",
-    text: "Des clubs dynamiques pour stimuler la créativité, l'expression et la curiosité.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Discipline & valeurs",
-    text: "Une éducation fondée sur le respect, la rigueur et les valeurs citoyennes.",
-  },
-  {
-    icon: UsersRound,
-    title: "Accompagnement",
-    text: "Un suivi personnalisé pour aider chaque élève à s'épanouir et réussir.",
-  },
-];
+  return {
+    title: pages.metadata.lifeTitle,
+    description: pages.metadata.lifeDescription,
+  };
+}
 
-const activities = [
-  {
-    title: "Sport",
-    text: "Football, basketball, athlétisme et bien plus pour bouger, s'entraîner et se dépasser.",
-    image: "/assets/real/student-cohort.jpg",
-    alt: "Activités sportives au lycée",
-  },
-  {
-    title: "Clubs & débats",
-    text: "Clubs de lecture, débats, sciences, environnement : partager, apprendre et s'exprimer.",
-    image: "/assets/real/class-session.jpg",
-    alt: "Élèves en club et débat",
-  },
-  {
-    title: "Musique & arts",
-    text: "Ateliers artistiques pour révéler les talents et cultiver la créativité.",
-    image: "/assets/real/cdi-library.jpg",
-    alt: "Activités culturelles et artistiques",
-  },
-  {
-    title: "Sorties éducatives",
-    text: "Des visites et excursions pour apprendre autrement et découvrir le monde.",
-    image: "/assets/real/campus-gardens.jpeg",
-    alt: "Sortie éducative dans le campus",
-  },
-  {
-    title: "Soutien scolaire",
-    text: "Des séances d'accompagnement pour renforcer les connaissances et la confiance.",
-    image: "/assets/real/science-workshop.jpg",
-    alt: "Soutien scolaire et accompagnement",
-  },
-  {
-    title: "Leadership & citoyenneté",
-    text: "Initiatives citoyennes, projets solidaires et prise de responsabilités.",
-    image: "/assets/real/student-group.jpg",
-    alt: "Élèves en initiative citoyenne",
-  },
-];
+function getLifePageData(locale: Locale) {
+  if (locale === "en") {
+    return {
+      lifeHighlights: [
+        {
+          icon: Trophy,
+          title: "Sports activities",
+          text: "A variety of sports to develop fitness, teamwork and self-improvement.",
+        },
+        {
+          icon: Drama,
+          title: "Clubs & culture",
+          text: "Dynamic clubs to stimulate creativity, expression and curiosity.",
+        },
+        {
+          icon: ShieldCheck,
+          title: "Discipline & values",
+          text: "An education based on respect, rigor and civic values.",
+        },
+        {
+          icon: UsersRound,
+          title: "Support",
+          text: "Personalized guidance to help every student grow and succeed.",
+        },
+      ],
+      activities: [
+        {
+          title: "Sport",
+          text: "Football, basketball, athletics and more to move, train and grow.",
+          image: "/assets/real/student-cohort.jpg",
+          alt: "Sports activities at the school",
+        },
+        {
+          title: "Clubs & debates",
+          text: "Reading, debate, science and environment clubs: sharing, learning and speaking up.",
+          image: "/assets/real/class-session.jpg",
+          alt: "Students in a club and debate activity",
+        },
+        {
+          title: "Music & arts",
+          text: "Art workshops to reveal talents and cultivate creativity.",
+          image: "/assets/real/cdi-library.jpg",
+          alt: "Cultural and artistic activities",
+        },
+        {
+          title: "Educational trips",
+          text: "Visits and excursions to learn differently and discover the world.",
+          image: "/assets/real/campus-gardens.jpeg",
+          alt: "Educational trip on campus",
+        },
+        {
+          title: "Academic support",
+          text: "Support sessions to strengthen knowledge and confidence.",
+          image: "/assets/real/science-workshop.jpg",
+          alt: "Academic support and guidance",
+        },
+        {
+          title: "Leadership & citizenship",
+          text: "Civic initiatives, solidarity projects and responsibility-building.",
+          image: "/assets/real/student-group.jpg",
+          alt: "Students involved in a civic initiative",
+        },
+      ],
+      yearMoments: [
+        {
+          image: "/assets/real/cdi-library.jpg",
+          href: "/actualites/journee-culturelle-essassa",
+          date: "15",
+          month: "MAY",
+          year: "2025",
+          title: "Cultural day",
+          text: "A celebration of the diversity and talents of our school community.",
+        },
+        {
+          image: "/assets/real/student-cohort.jpg",
+          href: "/actualites/tournoi-interclasses-esprit-equipe",
+          date: "22",
+          month: "JUN",
+          year: "2025",
+          title: "Interclass tournament",
+          text: "Competition, fair play and team spirit at the heart of school life.",
+        },
+        {
+          image: "/assets/real/student-group.jpg",
+          href: "/actualites/semaine-excellence-merite",
+          date: "05",
+          month: "JUL",
+          year: "2025",
+          title: "Excellence week",
+          text: "Valuing good work and encouraging every student to aim higher.",
+        },
+      ],
+      differenceItems: [
+        {
+          icon: UsersRound,
+          title: "Team spirit",
+          text: "Students learn to collaborate and support one another.",
+        },
+        {
+          icon: Handshake,
+          title: "Attentive supervision",
+          text: "Adults are available and attentive to every student.",
+        },
+        {
+          icon: ClipboardList,
+          title: "Balanced schedule",
+          text: "A balanced rhythm to succeed and grow.",
+        },
+        {
+          icon: Globe,
+          title: "Openness to the world",
+          text: "Activities and partnerships broaden horizons and perspectives.",
+        },
+      ],
+      readMore: "Learn more",
+    };
+  }
 
-const yearMoments = [
-  {
-    image: "/assets/real/cdi-library.jpg",
-    href: "/actualites/journee-culturelle-essassa",
-    date: "15",
-    month: "MAI",
-    year: "2025",
-    title: "Journée culturelle",
-    text: "Célébration de la diversité et des talents de notre communauté scolaire.",
-  },
-  {
-    image: "/assets/real/student-cohort.jpg",
-    href: "/actualites/tournoi-interclasses-esprit-equipe",
-    date: "22",
-    month: "JUIN",
-    year: "2025",
-    title: "Tournoi interclasses",
-    text: "Compétition, fair-play et esprit d'équipe au cœur de la vie du lycée.",
-  },
-  {
-    image: "/assets/real/student-group.jpg",
-    href: "/actualites/semaine-excellence-merite",
-    date: "05",
-    month: "JUIL.",
-    year: "2025",
-    title: "Semaine de l'excellence",
-    text: "Valoriser le travail bien fait et encourager chaque élève à viser plus haut.",
-  },
-];
+  return {
+    lifeHighlights: [
+      {
+        icon: Trophy,
+        title: "Activités sportives",
+        text: "Des sports variés pour développer le corps, l'esprit d'équipe et le sens du dépassement.",
+      },
+      {
+        icon: Drama,
+        title: "Clubs & culture",
+        text: "Des clubs dynamiques pour stimuler la créativité, l'expression et la curiosité.",
+      },
+      {
+        icon: ShieldCheck,
+        title: "Discipline & valeurs",
+        text: "Une éducation fondée sur le respect, la rigueur et les valeurs citoyennes.",
+      },
+      {
+        icon: UsersRound,
+        title: "Accompagnement",
+        text: "Un suivi personnalisé pour aider chaque élève à s'épanouir et réussir.",
+      },
+    ],
+    activities: [
+      {
+        title: "Sport",
+        text: "Football, basketball, athlétisme et bien plus pour bouger, s'entraîner et se dépasser.",
+        image: "/assets/real/student-cohort.jpg",
+        alt: "Activités sportives au lycée",
+      },
+      {
+        title: "Clubs & débats",
+        text: "Clubs de lecture, débats, sciences, environnement : partager, apprendre et s'exprimer.",
+        image: "/assets/real/class-session.jpg",
+        alt: "Élèves en club et débat",
+      },
+      {
+        title: "Musique & arts",
+        text: "Ateliers artistiques pour révéler les talents et cultiver la créativité.",
+        image: "/assets/real/cdi-library.jpg",
+        alt: "Activités culturelles et artistiques",
+      },
+      {
+        title: "Sorties éducatives",
+        text: "Des visites et excursions pour apprendre autrement et découvrir le monde.",
+        image: "/assets/real/campus-gardens.jpeg",
+        alt: "Sortie éducative dans le campus",
+      },
+      {
+        title: "Soutien scolaire",
+        text: "Des séances d'accompagnement pour renforcer les connaissances et la confiance.",
+        image: "/assets/real/science-workshop.jpg",
+        alt: "Soutien scolaire et accompagnement",
+      },
+      {
+        title: "Leadership & citoyenneté",
+        text: "Initiatives citoyennes, projets solidaires et prise de responsabilités.",
+        image: "/assets/real/student-group.jpg",
+        alt: "Élèves en initiative citoyenne",
+      },
+    ],
+    yearMoments: [
+      {
+        image: "/assets/real/cdi-library.jpg",
+        href: "/actualites/journee-culturelle-essassa",
+        date: "15",
+        month: "MAI",
+        year: "2025",
+        title: "Journée culturelle",
+        text: "Célébration de la diversité et des talents de notre communauté scolaire.",
+      },
+      {
+        image: "/assets/real/student-cohort.jpg",
+        href: "/actualites/tournoi-interclasses-esprit-equipe",
+        date: "22",
+        month: "JUIN",
+        year: "2025",
+        title: "Tournoi interclasses",
+        text: "Compétition, fair-play et esprit d'équipe au cœur de la vie du lycée.",
+      },
+      {
+        image: "/assets/real/student-group.jpg",
+        href: "/actualites/semaine-excellence-merite",
+        date: "05",
+        month: "JUIL.",
+        year: "2025",
+        title: "Semaine de l'excellence",
+        text: "Valoriser le travail bien fait et encourager chaque élève à viser plus haut.",
+      },
+    ],
+    differenceItems: [
+      {
+        icon: UsersRound,
+        title: "Esprit d'équipe",
+        text: "Les élèves apprennent à collaborer et à se soutenir.",
+      },
+      {
+        icon: Handshake,
+        title: "Encadrement attentif",
+        text: "Des adultes disponibles et à l'écoute de chaque élève.",
+      },
+      {
+        icon: ClipboardList,
+        title: "Équilibre étude-vie scolaire",
+        text: "Un emploi du temps harmonieux pour réussir et s'épanouir.",
+      },
+      {
+        icon: Globe,
+        title: "Ouverture sur le monde",
+        text: "Des activités et partenariats pour élargir horizons et perspectives.",
+      },
+    ],
+    readMore: "En savoir plus",
+  };
+}
 
-const differenceItems = [
-  {
-    icon: UsersRound,
-    title: "Esprit d'équipe",
-    text: "Les élèves apprennent à collaborer et à se soutenir.",
-  },
-  {
-    icon: Handshake,
-    title: "Encadrement attentif",
-    text: "Des adultes disponibles et à l'écoute de chaque élève.",
-  },
-  {
-    icon: ClipboardList,
-    title: "Équilibre étude-vie scolaire",
-    text: "Un emploi du temps harmonieux pour réussir et s'épanouir.",
-  },
-  {
-    icon: Globe,
-    title: "Ouverture sur le monde",
-    text: "Des activités et partenariats pour élargir horizons et perspectives.",
-  },
-];
+export default async function VieScolairePage() {
+  const { common, data, locale, pages } = await getSiteContent();
+  const copy = pages.life;
+  const lifeData = getLifePageData(locale);
 
-export default function VieScolairePage() {
   return (
     <main className="site-shell">
       <PageHero
         active="vie-scolaire"
-        title="Vie scolaire"
-        text="Au Lycée Privé International Berthe & Jean, nous offrons à nos élèves une vie scolaire équilibrée qui allie discipline, activités sportives, culture, clubs, développement personnel et accompagnement académique."
+        title={copy.heroTitle}
+        text={copy.heroText}
         image="/assets/real/class-session.jpg"
-        imageAlt="Élèves du Lycée Berthe et Jean en séance d'information"
+        imageAlt={copy.heroAlt}
+        common={common}
+        currentLocale={locale}
+        items={data.navItems}
         actions={[
-          { label: "Découvrir nos activités", href: "#activites" },
-          { label: "Nous contacter", href: "/contact#message", variant: "secondary" },
+          { label: copy.discover, href: "#activites" },
+          { label: copy.contact, href: "/contact#message", variant: "secondary" },
         ]}
       />
 
       <section className="page-section">
-        <IconGrid items={lifeHighlights} className="four-columns" />
+        <IconGrid items={lifeData.lifeHighlights} className="four-columns" />
       </section>
 
       <section className="page-section two-column-section">
         <div className="section-copy">
-          <h2>Une vie scolaire épanouissante</h2>
-          <p>
-            Situé à Essassa, notre établissement offre un environnement sûr,
-            structuré et stimulant où chaque élève peut grandir, apprendre et
-            s&apos;épanouir pleinement.
-          </p>
-          <p>
-            Nous encourageons l&apos;engagement, la responsabilité et la confiance en
-            soi à travers une variété d&apos;activités et un encadrement de qualité.
-          </p>
+          <h2>{copy.sectionTitle}</h2>
+          <p>{copy.sectionP1}</p>
+          <p>{copy.sectionP2}</p>
           <p className="location-line">
             <MapPin size={21} />
-            Essassa, Gabon
+            {copy.location}
           </p>
         </div>
         <div className="image-frame tall">
           <Image
             src="/assets/real/campus-gardens.jpeg"
-            alt="Vie scolaire dans le campus du Lycée Berthe et Jean"
+            alt={copy.imageAlt}
             fill
             sizes="(max-width: 900px) 100vw, 46vw"
           />
@@ -189,18 +313,18 @@ export default function VieScolairePage() {
       </section>
 
       <section id="activites" className="page-section">
-        <SectionHeading title="Nos activités" centered />
+        <SectionHeading title={copy.activities} centered />
         <div className="image-card-grid two-rows">
-          {activities.map((item) => (
+          {lifeData.activities.map((item) => (
             <ImageCard key={item.title} {...item} />
           ))}
         </div>
       </section>
 
       <section className="page-section">
-        <SectionHeading title="Temps forts de l'année" />
+        <SectionHeading title={copy.moments} />
         <div className="event-card-grid">
-          {yearMoments.map((item) => (
+          {lifeData.yearMoments.map((item) => (
             <article className="event-card" key={item.title}>
               <div className="event-image">
                 <Image src={item.image} alt="" fill sizes="(max-width: 900px) 100vw, 28vw" />
@@ -214,7 +338,7 @@ export default function VieScolairePage() {
                 <h3>{item.title}</h3>
                 <p>{item.text}</p>
                 <Link href={item.href}>
-                  En savoir plus <ArrowRight size={16} />
+                  {lifeData.readMore} <ArrowRight size={16} />
                 </Link>
               </div>
             </article>
@@ -223,16 +347,13 @@ export default function VieScolairePage() {
       </section>
 
       <section className="page-section">
-        <SectionHeading title="Pourquoi notre vie scolaire fait la différence ?" />
-        <IconGrid items={differenceItems} className="four-columns compact-icons" />
+        <SectionHeading title={copy.difference} />
+        <IconGrid items={lifeData.differenceItems} className="four-columns compact-icons" />
       </section>
 
-      <ClosingCta
-        title="Découvrez un cadre de vie motivant pour réussir et s'épanouir"
-        text="Rejoignez le Lycée Privé International Berthe & Jean à Essassa."
-      />
+      <ClosingCta title={copy.ctaTitle} text={copy.ctaText} common={common} />
 
-      <SiteFooter />
+      <SiteFooter common={common} info={data.contactInfo} items={data.navItems} />
     </main>
   );
 }

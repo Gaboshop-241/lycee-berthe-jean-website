@@ -11,23 +11,18 @@ import {
   useRef,
   useState,
 } from "react";
-import type { LucideIcon } from "lucide-react";
 import {
-  BookOpen,
   CheckCheck,
-  Clock3,
   GraduationCap,
   MessageCircle,
   Minus,
   Paperclip,
-  Phone,
   Send,
   ShieldCheck,
   Trash2,
-  UserRound,
-  UsersRound,
   X,
 } from "lucide-react";
+import type { Locale } from "@/app/i18n-config";
 
 type ChatRole = "assistant" | "user";
 
@@ -36,12 +31,6 @@ type ChatMessage = {
   role: ChatRole;
   content: string;
   createdAt: number;
-};
-
-type QuickReply = {
-  label: string;
-  message: string;
-  icon: LucideIcon;
 };
 
 type MessageContentPart =
@@ -60,54 +49,74 @@ type MessageContentPart =
 
 const STORAGE_KEY = "berthe-jean-chatbot-history-v1";
 const MAX_INPUT_LENGTH = 700;
+const REQUEST_TIMEOUT_MS = 25_000;
 
-const quickReplies: QuickReply[] = [
-  {
-    label: "Admissions",
-    message: "Je veux des informations sur les admissions.",
-    icon: UserRound,
+const chatbotCopy = {
+  fr: {
+    title: "Assistant Berthe & Jean",
+    subtitle: "Bonjour ! Comment puis-je vous aider ?",
+    welcome:
+      "Bonjour 👋 Je suis l'assistant du Lycée Privé International Berthe & Jean. Comment puis-je vous aider ?",
+    reduce: "Réduire le chatbot",
+    reduceTitle: "Réduire",
+    close: "Fermer le chatbot",
+    closeTitle: "Fermer",
+    conversation: "Conversation",
+    typing: "Assistant en train d'écrire",
+    typingSr: "Assistant en train d'écrire...",
+    suggestionAria: "Suggestions",
+    documentsLabel: "Quels sont les documents à fournir ?",
+    documentsMessage: "Quels sont les documents à fournir pour une inscription ?",
+    feesLabel: "Y a-t-il des frais d'inscription ?",
+    feesMessage: "Y a-t-il des frais d'inscription au lycée ?",
+    attachUnavailable: "Pièce jointe indisponible",
+    attachTitle: "Pièce jointe",
+    inputLabel: "Écrivez votre message",
+    inputPlaceholder: "Écrivez votre message...",
+    send: "Envoyer le message",
+    footer: "Réponses fournies par le Lycée Privé International Berthe & Jean",
+    clear: "Effacer",
+    open: "Ouvrir l'assistant Berthe & Jean",
+    error: "Désolé, une erreur est survenue. Veuillez réessayer dans un instant.",
   },
-  {
-    label: "Horaires",
-    message: "Quels sont les horaires du Lycée Privé International Berthe & Jean ?",
-    icon: Clock3,
+  en: {
+    title: "Berthe & Jean Assistant",
+    subtitle: "Hello! How can I help you?",
+    welcome:
+      "Hello 👋 I am the assistant for Lycée Privé International Berthe & Jean. How can I help you?",
+    reduce: "Minimize the chatbot",
+    reduceTitle: "Minimize",
+    close: "Close the chatbot",
+    closeTitle: "Close",
+    conversation: "Conversation",
+    typing: "Assistant is typing",
+    typingSr: "Assistant is typing...",
+    suggestionAria: "Suggestions",
+    documentsLabel: "What documents are required?",
+    documentsMessage: "What documents are required for registration?",
+    feesLabel: "Are there registration fees?",
+    feesMessage: "Are there registration fees at the school?",
+    attachUnavailable: "Attachment unavailable",
+    attachTitle: "Attachment",
+    inputLabel: "Write your message",
+    inputPlaceholder: "Write your message...",
+    send: "Send message",
+    footer: "Answers provided by Lycée Privé International Berthe & Jean",
+    clear: "Clear",
+    open: "Open the Berthe & Jean assistant",
+    error: "Sorry, an error occurred. Please try again in a moment.",
   },
-  {
-    label: "Vie scolaire",
-    message: "Quelles informations avez-vous sur la vie scolaire ?",
-    icon: UsersRound,
-  },
-  {
-    label: "Contact",
-    message: "Comment contacter le Lycée Privé International Berthe & Jean ?",
-    icon: Phone,
-  },
-  {
-    label: "Programmes",
-    message: "Pouvez-vous me présenter les programmes du lycée ?",
-    icon: BookOpen,
-  },
-];
+} as const;
 
-const suggestedReplies: QuickReply[] = [
-  {
-    label: "Quels sont les documents à fournir ?",
-    message: "Quels sont les documents à fournir pour une inscription ?",
-    icon: BookOpen,
-  },
-  {
-    label: "Y a-t-il des frais d'inscription ?",
-    message: "Y a-t-il des frais d'inscription au lycée ?",
-    icon: GraduationCap,
-  },
-];
+function getStorageKey(locale: Locale) {
+  return `${STORAGE_KEY}-${locale}`;
+}
 
-function createWelcomeMessage(): ChatMessage {
+function createWelcomeMessage(locale: Locale): ChatMessage {
   return {
     id: "welcome",
     role: "assistant",
-    content:
-      "Bonjour 👋 Je suis l'assistant du Lycée Privé International Berthe & Jean. Comment puis-je vous aider ?",
+    content: chatbotCopy[locale].welcome,
     createdAt: Date.now(),
   };
 }
@@ -143,13 +152,13 @@ function isStoredMessage(value: unknown): value is ChatMessage {
   );
 }
 
-function loadStoredMessages(): ChatMessage[] {
+function loadStoredMessages(locale: Locale): ChatMessage[] {
   if (typeof window === "undefined") {
     return [];
   }
 
   try {
-    const rawHistory = window.localStorage.getItem(STORAGE_KEY);
+    const rawHistory = window.localStorage.getItem(getStorageKey(locale));
     const parsed = rawHistory ? JSON.parse(rawHistory) : [];
 
     if (Array.isArray(parsed)) {
@@ -198,11 +207,12 @@ function AssistantAvatar({ compact = false }: { compact?: boolean }) {
   );
 }
 
-export function Chatbot() {
+export function Chatbot({ locale }: { locale: Locale }) {
   const pathname = usePathname();
   const router = useRouter();
+  const copy = chatbotCopy[locale];
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>(loadStoredMessages);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => loadStoredMessages(locale));
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -215,8 +225,8 @@ export function Chatbot() {
       return;
     }
 
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-30)));
-  }, [messages]);
+    window.localStorage.setItem(getStorageKey(locale), JSON.stringify(messages.slice(-30)));
+  }, [locale, messages]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -271,8 +281,8 @@ export function Chatbot() {
   }, [isLoading, isOpen]);
 
   const ensureWelcomeMessage = useCallback(() => {
-    setMessages((current) => (current.length > 0 ? current : [createWelcomeMessage()]));
-  }, []);
+    setMessages((current) => (current.length > 0 ? current : [createWelcomeMessage(locale)]));
+  }, [locale]);
 
   function openChat() {
     setIsOpen(true);
@@ -287,9 +297,9 @@ export function Chatbot() {
   }
 
   function clearConversation() {
-    const welcome = createWelcomeMessage();
+    const welcome = createWelcomeMessage(locale);
     setMessages([welcome]);
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify([welcome]));
+    window.localStorage.setItem(getStorageKey(locale), JSON.stringify([welcome]));
     inputRef.current?.focus();
   }
 
@@ -300,7 +310,7 @@ export function Chatbot() {
       return;
     }
 
-    const baseMessages = messages.length > 0 ? messages : [createWelcomeMessage()];
+    const baseMessages = messages.length > 0 ? messages : [createWelcomeMessage(locale)];
     const userMessage = createMessage("user", trimmed);
     const outgoingMessages = [...baseMessages, userMessage];
 
@@ -311,6 +321,11 @@ export function Chatbot() {
 
     const requestController = new AbortController();
     activeRequestRef.current = requestController;
+    let didTimeout = false;
+    const timeoutId = window.setTimeout(() => {
+      didTimeout = true;
+      requestController.abort();
+    }, REQUEST_TIMEOUT_MS);
 
     try {
       const response = await fetch("/api/chat", {
@@ -319,12 +334,13 @@ export function Chatbot() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          locale,
           messages: outgoingMessages.map(({ role, content }) => ({ role, content })),
         }),
         signal: requestController.signal,
       });
 
-      const data = (await response.json()) as { message?: string };
+      const data = (await response.json().catch(() => ({}))) as { message?: string };
 
       if (!response.ok || typeof data.message !== "string") {
         throw new Error("Chat request failed");
@@ -332,18 +348,16 @@ export function Chatbot() {
 
       setMessages((current) => [...current, createMessage("assistant", data.message ?? "")]);
     } catch (error) {
-      if (error instanceof DOMException && error.name === "AbortError") {
+      if (error instanceof DOMException && error.name === "AbortError" && !didTimeout) {
         return;
       }
 
       setMessages((current) => [
         ...current,
-        createMessage(
-          "assistant",
-          "Désolé, une erreur est survenue. Veuillez réessayer dans un instant.",
-        ),
+        createMessage("assistant", copy.error),
       ]);
     } finally {
+      window.clearTimeout(timeoutId);
       if (activeRequestRef.current === requestController) {
         activeRequestRef.current = null;
         setIsLoading(false);
@@ -380,16 +394,16 @@ export function Chatbot() {
           <header className="chatbot-header">
             <AssistantAvatar />
             <div className="chatbot-heading">
-              <h2>Assistant Berthe & Jean</h2>
-              <p>Bonjour ! Comment puis-je vous aider ?</p>
+              <h2>{copy.title}</h2>
+              <p>{copy.subtitle}</p>
             </div>
             <div className="chatbot-header-actions">
               <button
                 type="button"
                 className="chatbot-icon-button"
                 onClick={closeChat}
-                aria-label="Réduire le chatbot"
-                title="Réduire"
+                aria-label={copy.reduce}
+                title={copy.reduceTitle}
               >
                 <Minus size={20} />
               </button>
@@ -397,38 +411,19 @@ export function Chatbot() {
                 type="button"
                 className="chatbot-icon-button"
                 onClick={closeChat}
-                aria-label="Fermer le chatbot"
-                title="Fermer"
+                aria-label={copy.close}
+                title={copy.closeTitle}
               >
                 <X size={18} />
               </button>
             </div>
           </header>
 
-          <div className="chatbot-quick-zone">
-            <div className="chatbot-quick-replies" aria-label="Réponses rapides">
-              {quickReplies.map((reply) => {
-                const Icon = reply.icon;
-
-                return (
-                  <button
-                    type="button"
-                    key={reply.label}
-                    onClick={() => void sendMessage(reply.message)}
-                    disabled={isLoading}
-                  >
-                    <Icon size={16} aria-hidden="true" />
-                    {reply.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
           <div
             className="chatbot-messages"
             role="log"
-            aria-label="Conversation"
+            aria-label={copy.conversation}
+            aria-busy={isLoading}
             ref={messagesViewportRef}
           >
             {messages.map((message) => (
@@ -473,13 +468,21 @@ export function Chatbot() {
             {isLoading ? (
               <article className="chatbot-message from-assistant">
                 <AssistantAvatar compact />
-                <div className="chatbot-bubble is-typing">Assistant en train d&apos;écrire...</div>
+                <div className="chatbot-bubble is-typing" aria-label={copy.typing}>
+                  <span className="chatbot-typing-dot" aria-hidden="true" />
+                  <span className="chatbot-typing-dot" aria-hidden="true" />
+                  <span className="chatbot-typing-dot" aria-hidden="true" />
+                  <span className="sr-only">{copy.typingSr}</span>
+                </div>
               </article>
             ) : null}
           </div>
 
-          <div className="chatbot-suggestion-row" aria-label="Suggestions">
-            {suggestedReplies.map((reply) => (
+          <div className="chatbot-suggestion-row" aria-label={copy.suggestionAria}>
+            {[
+              { label: copy.documentsLabel, message: copy.documentsMessage },
+              { label: copy.feesLabel, message: copy.feesMessage },
+            ].map((reply) => (
               <button
                 type="button"
                 key={reply.label}
@@ -496,14 +499,14 @@ export function Chatbot() {
               <button
                 type="button"
                 className="chatbot-attach-button"
-                aria-label="Pièce jointe indisponible"
-                title="Pièce jointe"
+                aria-label={copy.attachUnavailable}
+                title={copy.attachTitle}
                 disabled
               >
                 <Paperclip size={18} />
               </button>
               <label htmlFor="chatbot-input" className="sr-only">
-                Écrivez votre message
+                {copy.inputLabel}
               </label>
               <textarea
                 id="chatbot-input"
@@ -512,15 +515,14 @@ export function Chatbot() {
                 maxLength={MAX_INPUT_LENGTH}
                 onChange={(event) => setInput(event.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Écrivez votre message..."
+                placeholder={copy.inputPlaceholder}
                 rows={1}
-                disabled={isLoading}
               />
             </div>
             <button
               className="chatbot-send-button"
               type="submit"
-              aria-label="Envoyer le message"
+              aria-label={copy.send}
               disabled={isLoading || input.trim().length === 0}
             >
               <Send size={19} />
@@ -529,12 +531,12 @@ export function Chatbot() {
 
           <footer className="chatbot-footer">
             <span>
-              Réponses fournies par le Lycée Privé International Berthe & Jean
+              {copy.footer}
               <ShieldCheck size={15} aria-hidden="true" />
             </span>
             <button type="button" onClick={clearConversation}>
               <Trash2 size={14} aria-hidden="true" />
-              Effacer
+              {copy.clear}
             </button>
           </footer>
         </section>
@@ -544,7 +546,7 @@ export function Chatbot() {
         type="button"
         className="chatbot-toggle"
         onClick={openChat}
-        aria-label="Ouvrir l'assistant Berthe & Jean"
+        aria-label={copy.open}
         aria-expanded={isOpen}
       >
         <MessageCircle className="chatbot-toggle-chat" size={32} aria-hidden="true" />

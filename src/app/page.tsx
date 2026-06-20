@@ -2,50 +2,55 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Landmark, MapPin } from "lucide-react";
 import { SiteFooter, SiteHeader } from "./site-components";
-import {
-  galleryImages,
-  hymnItems,
-  infrastructures,
-  leadershipMessages,
-  lifeItems,
-  newsItems,
-  pillars,
-  programs,
-  stats,
-} from "./site-data";
+import { getSiteContent } from "./i18n-server";
 
-export default function Home() {
+export default async function Home() {
+  const { common, data, locale, pages } = await getSiteContent();
+  const copy = pages.home;
+  const {
+    galleryImages,
+    hymnItems,
+    infrastructures,
+    leadershipMessages,
+    lifeItems,
+    newsItems,
+    pillars,
+    programs,
+    stats,
+  } = data;
+
   return (
     <main id="accueil" className="site-shell">
-      <SiteHeader active="accueil" />
+      <SiteHeader
+        active="accueil"
+        common={common}
+        currentLocale={locale}
+        items={data.navItems}
+      />
 
       <section className="hero-section">
         <div className="hero-copy">
-          <span className="eyebrow">Route Nationale 1 - PK 23 Essassa</span>
-          <h1>Une éducation d&apos;excellence à Essassa</h1>
-          <p>
-            Le Lycée Privé International Berthe & Jean accompagne les élèves du
-            collège au lycée dans un cadre structuré, ambitieux et ouvert sur le
-            monde, à environ 23 kilomètres de Libreville.
-          </p>
+          <span className="eyebrow">{copy.eyebrow}</span>
+          <h1>{copy.title}</h1>
+          <p>{copy.intro}</p>
           <div className="hero-actions">
             <Link className="primary-button" href="/a-propos">
-              Découvrir le lycée
+              {copy.discover}
             </Link>
             <Link className="secondary-button" href="/contact#message">
-              Demander une admission
+              {copy.admission}
             </Link>
           </div>
           <p className="location-line">
             <MapPin size={21} />
-            Essassa, commune de Ntoum, Estuaire, Gabon
+            {copy.location}
           </p>
         </div>
 
         <div className="hero-image">
           <Image
             src="/assets/real/hero-berthe-jean-gabon4you.jpg"
-            alt="Bâtiment du Lycée Privé International Berthe et Jean"
+            alt={galleryImages[0].alt}
             fill
             preload
             unoptimized
@@ -54,7 +59,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="pillars" aria-label="Points forts du lycée">
+      <section className="pillars" aria-label={copy.pillarsAria}>
         <div className="pillars-inner">
           {pillars.map(({ icon: Icon, title, text }) => (
             <article className="pillar" key={title}>
@@ -70,45 +75,28 @@ export default function Home() {
 
       <section id="apropos" className="about-section section-grid">
         <div className="section-copy">
-          <h2>À propos du lycée</h2>
-          <p>
-            Le Lycée Privé International Berthe & Jean est un établissement
-            privé laïc d&apos;enseignement secondaire général, situé à Essassa sur
-            la Route Nationale 1. Il a reçu sa reconnaissance d&apos;utilité
-            publique le 5 février 2009.
-          </p>
-          <p>
-            Sa devise, « Savoir être et savoir faire », porte un projet éducatif
-            centré sur la rigueur académique, l&apos;éthique, le respect mutuel et
-            le développement d&apos;un leadership responsable.
-          </p>
-          <strong>
-            Nos valeurs : Discipline - Rigueur - Innovation - Accompagnement
-          </strong>
+          <h2>{copy.aboutTitle}</h2>
+          <p>{copy.aboutP1}</p>
+          <p>{copy.aboutP2}</p>
+          <strong>{copy.values}</strong>
         </div>
 
         <div className="about-image">
           <Image
             src="/assets/real/campus-gardens.jpeg"
-            alt="Espaces verts du campus du Lycée Berthe et Jean"
+            alt={copy.aboutImageAlt}
             fill
             sizes="(max-width: 900px) 100vw, 43vw"
           />
         </div>
       </section>
 
-      <section className="clarity-section" aria-label="Clarification institutionnelle">
+      <section className="clarity-section" aria-label={copy.clarityAria}>
         <div>
           <Landmark size={30} />
-          <h2>Depuis octobre 2025</h2>
+          <h2>{copy.sinceTitle}</h2>
         </div>
-        <p>
-          Le Lycée Privé International Berthe & Jean poursuit ses activités
-          comme entité privée autonome, mitoyenne et distincte du Lycée public
-          d&apos;Excellence d&apos;Essassa. Pour la rentrée 2026-2027, le prospectus
-          annonce de nouvelles installations modernes, spacieuses et adaptées
-          aux exigences d&apos;une éducation de qualité.
-        </p>
+        <p>{copy.sinceText}</p>
       </section>
 
       <section
@@ -118,35 +106,25 @@ export default function Home() {
       >
         <div className="split-heading leadership-heading">
           <div>
-            <span className="eyebrow">Mot de la direction</span>
-            <h2 id="leadership-title">Une vision portée par des responsables engagés</h2>
+            <span className="eyebrow">{copy.leadershipEyebrow}</span>
+            <h2 id="leadership-title">{copy.leadershipTitle}</h2>
           </div>
-          <p>
-            La parole de la direction éclaire le projet éducatif du lycée, son
-            exigence quotidienne et le lien de confiance construit avec les
-            familles. Elle réunit ici le censeur, le proviseur et la fondatrice
-            autour d&apos;une même ambition : former avec rigueur et humanité.
-          </p>
+          <p>{copy.leadershipText}</p>
         </div>
 
         <div className="leadership-spotlight">
           <div className="leadership-spotlight-image">
             <Image
               src="/assets/real/leadership/direction-mavoungou-obolo.jpg"
-              alt="MAVOUNGOU Denis Marin et OBOLO Clément, équipe de direction du Lycée Berthe et Jean"
+              alt={copy.directionAlt}
               fill
               sizes="(max-width: 900px) 100vw, 46vw"
             />
           </div>
           <div className="leadership-spotlight-copy">
-            <span>Direction administrative</span>
-            <h3>M. OBOLO Clément & M. MAVOUNGOU Denis Marin</h3>
-            <p>
-              Depuis 2015, l&apos;encadrement du Lycée Privé International
-              Berthe & Jean s&apos;appuie sur une continuité administrative forte :
-              exigence pédagogique, discipline quotidienne et dialogue avec les
-              familles.
-            </p>
+            <span>{copy.directionLabel}</span>
+            <h3>{copy.directionTitle}</h3>
+            <p>{copy.directionText}</p>
           </div>
         </div>
 
@@ -175,7 +153,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="stats-section" aria-label="Chiffres clés">
+      <section className="stats-section" aria-label={copy.statsAria}>
         {stats.map(([value, label]) => (
           <article key={value}>
             <strong>{value}</strong>
@@ -186,7 +164,7 @@ export default function Home() {
 
       <section id="programmes" className="programs-section">
         <div className="center-heading">
-          <h2>Nos programmes</h2>
+          <h2>{copy.programsTitle}</h2>
         </div>
         <div className="program-grid">
           {programs.map((program) => (
@@ -203,7 +181,7 @@ export default function Home() {
                 <h3>{program.title}</h3>
                 <p>{program.text}</p>
                 <Link href={program.href}>
-                  En savoir plus <ArrowRight size={16} />
+                  {common.learnMore} <ArrowRight size={16} />
                 </Link>
               </div>
             </article>
@@ -211,17 +189,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="infrastructure-section" aria-label="Campus et infrastructures">
+      <section className="infrastructure-section" aria-label={copy.infrastructureAria}>
         <div className="split-heading">
           <div>
-            <span className="eyebrow">Campus, équipements & internat</span>
-            <h2>Une cité scolaire conçue pour apprendre et grandir</h2>
+            <span className="eyebrow">{copy.infrastructureEyebrow}</span>
+            <h2>{copy.infrastructureTitle}</h2>
           </div>
-          <p>
-            Le campus historique d&apos;Essassa réunit espaces pédagogiques,
-            équipements sportifs, CDI, laboratoires et internat dans un
-            environnement naturel.
-          </p>
+          <p>{copy.infrastructureText}</p>
         </div>
         <div className="infrastructure-grid">
           {infrastructures.map(({ icon: Icon, title, text }) => (
@@ -236,7 +210,7 @@ export default function Home() {
 
       <section id="vie-scolaire" className="life-news-section">
         <div>
-          <h2>Vie scolaire & actualités</h2>
+          <h2>{copy.lifeNewsTitle}</h2>
           <div className="life-grid">
             {lifeItems.map((item) => (
               <article className="life-card" key={item.title}>
@@ -251,14 +225,14 @@ export default function Home() {
                 <h3>{item.title}</h3>
                 <p>{item.text}</p>
                 <Link href={item.href}>
-                  Lire la suite <ArrowRight size={16} />
+                  {common.readMore} <ArrowRight size={16} />
                 </Link>
               </article>
             ))}
           </div>
         </div>
 
-        <aside id="actualites" className="news-panel" aria-label="Actualités">
+        <aside id="actualites" className="news-panel" aria-label={copy.newsAria}>
           {newsItems.map((item) => (
             <article className="news-item" key={item.title}>
               <time dateTime={item.dateTime}>
@@ -270,7 +244,7 @@ export default function Home() {
                 <h3>{item.title}</h3>
                 <p>{item.text}</p>
                 <Link href={item.href}>
-                  Lire la suite <ArrowRight size={16} />
+                  {common.readMore} <ArrowRight size={16} />
                 </Link>
               </div>
             </article>
@@ -278,14 +252,17 @@ export default function Home() {
         </aside>
       </section>
 
-      <section className="gallery-section" aria-label="Photos du lycée">
+      <section className="gallery-section" aria-label={copy.galleryAria}>
         <div className="center-heading">
-          <h2>Le lycée en images</h2>
+          <h2>{copy.galleryTitle}</h2>
         </div>
         <div className="gallery-grid">
           {galleryImages.map((image, index) => (
             <figure className={index === 0 ? "featured" : ""} key={image.src}>
-              <Link href={`#photo-${index + 1}`} aria-label={`Agrandir : ${image.label}`}>
+              <Link
+                href={`#photo-${index + 1}`}
+                aria-label={`${copy.enlargePhoto}: ${image.label}`}
+              >
                 <Image
                   src={image.src}
                   alt={image.alt}
@@ -301,19 +278,14 @@ export default function Home() {
             </figure>
           ))}
         </div>
-        <div className="gallery-modals" aria-label="Aperçu des photos">
+        <div className="gallery-modals" aria-label={copy.galleryPreviewAria}>
           {galleryImages.map((image, index) => (
             <div className="gallery-modal" id={`photo-${index + 1}`} key={`modal-${image.src}`}>
-              <Link className="gallery-close" href="#accueil" aria-label="Fermer l'image">
-                Fermer
+              <Link className="gallery-close" href="#accueil" aria-label={copy.closeImage}>
+                {common.close}
               </Link>
               <figure>
-                <Image
-                  src={image.src}
-                  alt={image.alt}
-                  fill
-                  sizes="100vw"
-                />
+                <Image src={image.src} alt={image.alt} fill sizes="100vw" />
                 <figcaption>{image.label}</figcaption>
               </figure>
             </div>
@@ -321,17 +293,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="hymn-section" aria-label="Hymne Berthe et Jean">
+      <section className="hymn-section" aria-label={copy.hymnAria}>
         <div className="split-heading">
           <div>
-            <span className="eyebrow">Hymne du lycée</span>
-            <h2>L&apos;hymne Berthe & Jean</h2>
+            <span className="eyebrow">{copy.hymnEyebrow}</span>
+            <h2>{copy.hymnTitle}</h2>
           </div>
-          <p>
-            L&apos;hymne du lycée est proposé en écoute audio avec des contrôles
-            simples pour valoriser l&apos;identité, la devise et l&apos;esprit de la
-            communauté éducative.
-          </p>
+          <p>{copy.hymnText}</p>
         </div>
         <div className="hymn-layout">
           <div className="audio-player-card">
@@ -343,13 +311,13 @@ export default function Home() {
                 sizes="(max-width: 900px) 100vw, 46vw"
               />
               <div>
-                <span>Hymne officiel</span>
+                <span>{copy.officialHymn}</span>
                 <strong>Berthe & Jean</strong>
               </div>
             </div>
             <audio className="hymn-audio" controls preload="metadata">
               <source src="/assets/hymne-berthe-jean.mp4" type="audio/mp4" />
-              Votre navigateur ne prend pas en charge la lecture audio.
+              {copy.audioFallback}
             </audio>
           </div>
           <div className="hymn-cards">
@@ -364,8 +332,7 @@ export default function Home() {
         </div>
       </section>
 
-
-      <SiteFooter />
+      <SiteFooter common={common} info={data.contactInfo} items={data.navItems} />
     </main>
   );
 }
