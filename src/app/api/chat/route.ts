@@ -79,6 +79,182 @@ Expected behavior:
 - Keep answers short, structured and useful.
 - Write in plain text, without heavy Markdown, and keep internal links direct, such as /preinscription.`;
 
+const languagePatterns = {
+  fr: {
+    words: new Set([
+      "bonjour",
+      "salut",
+      "merci",
+      "comment",
+      "inscrire",
+      "inscription",
+      "preinscription",
+      "documents",
+      "fournir",
+      "lycee",
+      "eleve",
+      "enfant",
+      "classe",
+      "niveau",
+      "horaires",
+      "adresse",
+      "telephone",
+      "contact",
+      "frais",
+      "programme",
+      "programmes",
+      "scolaire",
+      "actualites",
+      "quels",
+      "quelle",
+      "quoi",
+      "ou",
+      "rendez",
+      "vous",
+    ]),
+    phrases: [
+      "comment m'inscrire",
+      "comment inscrire",
+      "quels documents",
+      "quelle classe",
+      "y a-t-il",
+      "est-ce",
+      "je veux",
+      "mon enfant",
+    ],
+  },
+  en: {
+    words: new Set([
+      "hello",
+      "hi",
+      "thanks",
+      "thank",
+      "how",
+      "apply",
+      "admission",
+      "admissions",
+      "registration",
+      "documents",
+      "required",
+      "school",
+      "student",
+      "child",
+      "grade",
+      "class",
+      "hours",
+      "address",
+      "phone",
+      "contact",
+      "fees",
+      "program",
+      "programs",
+      "news",
+      "where",
+      "what",
+      "when",
+      "appointment",
+      "please",
+    ]),
+    phrases: [
+      "how do i",
+      "how can i",
+      "what documents",
+      "are there",
+      "i want",
+      "my child",
+      "school fees",
+    ],
+  },
+} as const;
+
+function normalizeForLanguageDetection(value: string) {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[’]/g, "'");
+}
+
+function detectResponseLocale(message: string, fallbackLocale: Locale): Locale {
+  const normalized = normalizeForLanguageDetection(message);
+  const words = normalized.match(/[a-z']+/g) ?? [];
+
+  if (normalized.trim().length < 4) {
+    return fallbackLocale;
+  }
+
+  let frenchScore = /[àâçéèêëîïôûùüÿœ]/i.test(message) ? 2 : 0;
+  let englishScore = 0;
+
+  for (const word of words) {
+    if (languagePatterns.fr.words.has(word)) {
+      frenchScore += 1;
+    }
+
+    if (languagePatterns.en.words.has(word)) {
+      englishScore += 1;
+    }
+  }
+
+  for (const phrase of languagePatterns.fr.phrases) {
+    if (normalized.includes(phrase)) {
+      frenchScore += 2;
+    }
+  }
+
+  for (const phrase of languagePatterns.en.phrases) {
+    if (normalized.includes(phrase)) {
+      englishScore += 2;
+    }
+  }
+
+  if (Math.abs(frenchScore - englishScore) <= 1) {
+    return fallbackLocale;
+  }
+
+  return frenchScore > englishScore ? "fr" : "en";
+}
+
+function getLatestUserMessage(messages: IncomingMessage[]) {
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    if (messages[index].role === "user") {
+      return messages[index].content;
+    }
+  }
+
+  return "";
+}
+
+function getStyleInstruction(locale: Locale) {
+  if (locale === "en") {
+    return `Detected response language: English.
+Write like a real front-desk assistant at the school: warm, natural, concise and reassuring.
+Do not use visible Markdown, asterisks, bold markers, ### headings, tables or code blocks.
+Avoid robotic openings such as "Sure, here is..." in every answer.
+Use short paragraphs. If a list helps, use simple dash bullets only, not numbered lists.
+If information is not confirmed, say so naturally and give a useful next step, such as contacting the administration or visiting /contact.`;
+  }
+
+  return `Langue de reponse detectee : francais.
+Reponds comme un vrai assistant d'accueil du lycee : chaleureux, naturel, concis et rassurant.
+N'utilise pas de Markdown visible, pas d'asterisques, pas de titres ###, pas de tableau et pas de bloc de code.
+Evite les debuts robotiques comme "Bien sur, voici..." a chaque reponse.
+Utilise de courts paragraphes. Si une liste aide vraiment, utilise uniquement des tirets simples, pas de liste numerotee.
+Si une information n'est pas confirmee, dis-le naturellement et propose une suite utile, comme contacter l'administration ou consulter /contact.`;
+}
+
+function sanitizeAssistantReply(content: string) {
+  return content
+    .replace(/^\s{0,3}#{1,6}\s+/gm, "")
+    .replace(/^\s*\*\s+/gm, "- ")
+    .replace(/^\s*\d+[.)]\s+/gm, "- ")
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/\*(.*?)\*/g, "$1")
+    .replace(/`{1,3}/g, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 function getClientId(request: NextRequest) {
   const forwardedFor = request.headers.get("x-forwarded-for");
 
@@ -165,11 +341,14 @@ function callOpenRouter({
     body: JSON.stringify({
       model,
       messages: [
-        { role: "system", content: locale === "en" ? systemPromptEn : systemPrompt },
+        {
+          role: "system",
+          content: `${locale === "en" ? systemPromptEn : systemPrompt}\n\n${getStyleInstruction(locale)}`,
+        },
         ...messages,
       ],
-      temperature: 0.35,
-      max_tokens: 650,
+      temperature: 0.42,
+      max_tokens: 420,
     }),
     signal: AbortSignal.timeout(30_000),
   });
@@ -207,6 +386,7 @@ export async function POST(request: NextRequest) {
       ? incomingLocale
       : defaultLocale;
   const hasUserMessage = messages.some((message) => message.role === "user");
+  const responseLocale = detectResponseLocale(getLatestUserMessage(messages), locale);
 
   if (!hasUserMessage) {
     return NextResponse.json({ error: "Message vide." }, { status: 400 });
@@ -217,7 +397,7 @@ export async function POST(request: NextRequest) {
     const preferredModel = process.env.OPENROUTER_MODEL || DEFAULT_MODEL;
     let response = await callOpenRouter({
       apiKey,
-      locale,
+      locale: responseLocale,
       messages,
       model: preferredModel,
       siteUrl,
@@ -226,7 +406,7 @@ export async function POST(request: NextRequest) {
     if (!response.ok && preferredModel !== DEFAULT_MODEL) {
       response = await callOpenRouter({
         apiKey,
-        locale,
+        locale: responseLocale,
         messages,
         model: DEFAULT_MODEL,
         siteUrl,
@@ -256,7 +436,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({ message: message.trim() });
+    return NextResponse.json({ message: sanitizeAssistantReply(message) });
   } catch {
     return NextResponse.json(
       { error: "Erreur réseau." },

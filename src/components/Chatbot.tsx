@@ -16,7 +16,6 @@ import {
   GraduationCap,
   MessageCircle,
   Minus,
-  Paperclip,
   Send,
   ShieldCheck,
   Trash2,
@@ -478,33 +477,8 @@ export function Chatbot({ locale }: { locale: Locale }) {
             ) : null}
           </div>
 
-          <div className="chatbot-suggestion-row" aria-label={copy.suggestionAria}>
-            {[
-              { label: copy.documentsLabel, message: copy.documentsMessage },
-              { label: copy.feesLabel, message: copy.feesMessage },
-            ].map((reply) => (
-              <button
-                type="button"
-                key={reply.label}
-                onClick={() => void sendMessage(reply.message)}
-                disabled={isLoading}
-              >
-                {reply.label}
-              </button>
-            ))}
-          </div>
-
           <form className="chatbot-form" onSubmit={handleSubmit}>
             <div className="chatbot-input-shell">
-              <button
-                type="button"
-                className="chatbot-attach-button"
-                aria-label={copy.attachUnavailable}
-                title={copy.attachTitle}
-                disabled
-              >
-                <Paperclip size={18} />
-              </button>
               <label htmlFor="chatbot-input" className="sr-only">
                 {copy.inputLabel}
               </label>

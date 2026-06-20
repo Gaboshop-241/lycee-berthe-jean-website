@@ -3127,7 +3127,6 @@ dd {
 
 .chatbot-toggle:focus-visible,
 .chatbot-icon-button:focus-visible,
-.chatbot-suggestion-row button:focus-visible,
 .chatbot-footer button:focus-visible,
 .chatbot-form button:focus-visible,
 .chatbot-form textarea:focus-visible {
@@ -3137,7 +3136,7 @@ dd {
 
 .chatbot-window {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
   width: min(430px, calc(100vw - 32px));
   height: min(690px, calc(100vh - 112px));
   max-height: calc(100dvh - 112px);
@@ -3381,7 +3380,7 @@ dd {
 
 .chatbot-input-shell {
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
   min-height: 46px;
   border: 1px solid rgba(6, 61, 32, 0.16);
@@ -3399,7 +3398,7 @@ dd {
   font: inherit;
   font-size: 0.94rem;
   line-height: 1.35;
-  padding: 13px 12px 11px 0;
+  padding: 13px 14px 11px;
   resize: none;
 }
 
@@ -3407,7 +3406,6 @@ dd {
   color: #8a928c;
 }
 
-.chatbot-attach-button,
 .chatbot-send-button {
   display: inline-flex;
   align-items: center;
@@ -3415,13 +3413,6 @@ dd {
   border: 0;
   color: #ffffff;
   font: inherit;
-}
-
-.chatbot-attach-button {
-  width: 34px;
-  height: 42px;
-  background: transparent;
-  color: #7b847d;
 }
 
 .chatbot-send-button {
