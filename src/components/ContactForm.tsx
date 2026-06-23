@@ -204,6 +204,7 @@ export function ContactForm({ email, phone, locale }: ContactFormProps) {
       type: "success",
       message: copy.success,
     });
+    setValues(initialValues);
 
     window.location.href = `mailto:${email}?subject=${encodeURIComponent(
       subject,

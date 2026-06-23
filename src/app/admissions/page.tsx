@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { CircleCheck } from "lucide-react";
 import { getSiteContent } from "../i18n-server";
+import { JsonLd } from "../JsonLd";
 import {
   ClosingCta,
   DownloadLink,
@@ -13,11 +14,24 @@ import {
 } from "../site-components";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { pages } = await getSiteContent();
+  const { locale, pages } = await getSiteContent();
+  const { admissionsTitle, admissionsDescription } = pages.metadata;
 
   return {
-    title: pages.metadata.admissionsTitle,
-    description: pages.metadata.admissionsDescription,
+    title: admissionsTitle,
+    description: admissionsDescription,
+    openGraph: {
+      title: admissionsTitle,
+      description: admissionsDescription,
+      url: "/admissions",
+      type: "website",
+      locale: locale === "en" ? "en_US" : "fr_GA",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: admissionsTitle,
+      description: admissionsDescription,
+    },
   };
 }
 
@@ -25,8 +39,22 @@ export default async function AdmissionsPage() {
   const { common, data, locale, pages } = await getSiteContent();
   const copy = pages.admissions;
 
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: data.faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+
   return (
     <main className="site-shell">
+      <JsonLd data={faqJsonLd} />
       <PageHero
         active="admissions"
         title={copy.heroTitle}

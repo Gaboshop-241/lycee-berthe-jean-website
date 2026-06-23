@@ -24,11 +24,24 @@ import {
 } from "../site-components";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { pages } = await getSiteContent();
+  const { locale, pages } = await getSiteContent();
+  const { lifeTitle, lifeDescription } = pages.metadata;
 
   return {
-    title: pages.metadata.lifeTitle,
-    description: pages.metadata.lifeDescription,
+    title: lifeTitle,
+    description: lifeDescription,
+    openGraph: {
+      title: lifeTitle,
+      description: lifeDescription,
+      url: "/vie-scolaire",
+      type: "website",
+      locale: locale === "en" ? "en_US" : "fr_GA",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: lifeTitle,
+      description: lifeDescription,
+    },
   };
 }
 
@@ -327,7 +340,7 @@ export default async function VieScolairePage() {
           {lifeData.yearMoments.map((item) => (
             <article className="event-card" key={item.title}>
               <div className="event-image">
-                <Image src={item.image} alt="" fill sizes="(max-width: 900px) 100vw, 28vw" />
+                <Image src={item.image} alt={item.title} fill sizes="(max-width: 900px) 100vw, 28vw" />
               </div>
               <time>
                 <strong>{item.date}</strong>

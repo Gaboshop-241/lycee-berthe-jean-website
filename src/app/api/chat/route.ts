@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { defaultLocale, isLocale, type Locale } from "@/app/i18n-config";
+import {
+  buildActionInstruction,
+  buildChatbotKnowledge,
+  getChatbotActions,
+  type ChatAction,
+} from "@/app/chatbot-knowledge";
+import { defaultLocale, isLocale, localeCookieName, type Locale } from "@/app/i18n-config";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -309,6 +315,11 @@ function sanitizeMessages(value: unknown): IncomingMessage[] {
     .slice(-MAX_HISTORY_MESSAGES);
 }
 
+function getLocaleFromRequest(request: NextRequest): Locale {
+  const cookieLocale = request.cookies.get(localeCookieName)?.value;
+  return isLocale(cookieLocale) ? cookieLocale : defaultLocale;
+}
+
 function getSiteUrl(request: NextRequest) {
   return (
     process.env.NEXT_PUBLIC_SITE_URL ||
@@ -318,13 +329,17 @@ function getSiteUrl(request: NextRequest) {
 }
 
 function callOpenRouter({
+  actions,
   apiKey,
+  knowledge,
   locale,
   messages,
   model,
   siteUrl,
 }: {
+  actions: ChatAction[];
   apiKey: string;
+  knowledge: string;
   locale: Locale;
   messages: IncomingMessage[];
   model: string;
@@ -343,7 +358,14 @@ function callOpenRouter({
       messages: [
         {
           role: "system",
-          content: `${locale === "en" ? systemPromptEn : systemPrompt}\n\n${getStyleInstruction(locale)}`,
+          content: [
+            locale === "en" ? systemPromptEn : systemPrompt,
+            getStyleInstruction(locale),
+            knowledge,
+            buildActionInstruction(locale, actions),
+          ]
+            .filter(Boolean)
+            .join("\n\n"),
         },
         ...messages,
       ],
@@ -364,9 +386,16 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const requestLocale = getLocaleFromRequest(request);
+
   if (isRateLimited(getClientId(request))) {
     return NextResponse.json(
-      { error: "Trop de messages envoyés. Veuillez patienter un instant." },
+      {
+        error:
+          requestLocale === "en"
+            ? "Too many messages sent. Please wait a moment."
+            : "Trop de messages envoyés. Veuillez patienter un instant.",
+      },
       { status: 429 },
     );
   }
@@ -386,7 +415,8 @@ export async function POST(request: NextRequest) {
       ? incomingLocale
       : defaultLocale;
   const hasUserMessage = messages.some((message) => message.role === "user");
-  const responseLocale = detectResponseLocale(getLatestUserMessage(messages), locale);
+  const latestUserMessage = getLatestUserMessage(messages);
+  const responseLocale = detectResponseLocale(latestUserMessage, locale);
 
   if (!hasUserMessage) {
     return NextResponse.json({ error: "Message vide." }, { status: 400 });
@@ -395,8 +425,12 @@ export async function POST(request: NextRequest) {
   try {
     const siteUrl = getSiteUrl(request);
     const preferredModel = process.env.OPENROUTER_MODEL || DEFAULT_MODEL;
+    const actions = getChatbotActions(responseLocale, latestUserMessage);
+    const knowledge = buildChatbotKnowledge(responseLocale, latestUserMessage);
     let response = await callOpenRouter({
+      actions,
       apiKey,
+      knowledge,
       locale: responseLocale,
       messages,
       model: preferredModel,
@@ -405,7 +439,9 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok && preferredModel !== DEFAULT_MODEL) {
       response = await callOpenRouter({
+        actions,
         apiKey,
+        knowledge,
         locale: responseLocale,
         messages,
         model: DEFAULT_MODEL,
@@ -436,7 +472,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({ message: sanitizeAssistantReply(message) });
+    return NextResponse.json({ actions, message: sanitizeAssistantReply(message) });
   } catch {
     return NextResponse.json(
       { error: "Erreur réseau." },

@@ -21,11 +21,13 @@ import {
   Trash2,
   X,
 } from "lucide-react";
+import type { ChatAction } from "@/app/chatbot-knowledge";
 import type { Locale } from "@/app/i18n-config";
 
 type ChatRole = "assistant" | "user";
 
 type ChatMessage = {
+  actions?: ChatAction[];
   id: string;
   role: ChatRole;
   content: string;
@@ -47,6 +49,7 @@ type MessageContentPart =
     };
 
 const STORAGE_KEY = "berthe-jean-chatbot-history-v1";
+const NOTIFICATION_STORAGE_KEY = "berthe-jean-chatbot-notifications-v1";
 const MAX_INPUT_LENGTH = 700;
 const REQUEST_TIMEOUT_MS = 25_000;
 
@@ -77,6 +80,12 @@ const chatbotCopy = {
     clear: "Effacer",
     open: "Ouvrir l'assistant Berthe & Jean",
     error: "Désolé, une erreur est survenue. Veuillez réessayer dans un instant.",
+    notificationGranted:
+      "C'est noté. Les notifications sont activées sur ce navigateur. Le raccordement aux annonces automatiques du lycée pourra être ajouté ensuite.",
+    notificationDenied:
+      "Les notifications ne sont pas activées. Vous pouvez toujours consulter les informations importantes sur la page /actualites.",
+    notificationUnsupported:
+      "Ce navigateur ne permet pas les notifications web ici. Vous pouvez suivre les annonces sur la page /actualites.",
   },
   en: {
     title: "Berthe & Jean Assistant",
@@ -104,6 +113,12 @@ const chatbotCopy = {
     clear: "Clear",
     open: "Open the Berthe & Jean assistant",
     error: "Sorry, an error occurred. Please try again in a moment.",
+    notificationGranted:
+      "Done. Notifications are enabled on this browser. Automatic school announcements can be connected later.",
+    notificationDenied:
+      "Notifications are not enabled. You can still follow important updates on /actualites.",
+    notificationUnsupported:
+      "This browser does not support web notifications here. You can follow school updates on /actualites.",
   },
 } as const;
 
@@ -120,8 +135,9 @@ function createWelcomeMessage(locale: Locale): ChatMessage {
   };
 }
 
-function createMessage(role: ChatRole, content: string): ChatMessage {
+function createMessage(role: ChatRole, content: string, actions: ChatAction[] = []): ChatMessage {
   return {
+    actions: actions.length > 0 ? actions : undefined,
     id: `${role}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     role,
     content,
@@ -129,11 +145,39 @@ function createMessage(role: ChatRole, content: string): ChatMessage {
   };
 }
 
-function formatMessageTime(timestamp: number) {
-  return new Intl.DateTimeFormat("fr-FR", {
+function formatMessageTime(timestamp: number, locale: Locale) {
+  return new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "fr-FR", {
     hour: "2-digit",
     minute: "2-digit",
   }).format(new Date(timestamp));
+}
+
+function isChatAction(value: unknown): value is ChatAction {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const candidate = value as Partial<ChatAction>;
+
+  return (
+    typeof candidate.id === "string" &&
+    typeof candidate.label === "string" &&
+    ["internal", "external", "phone", "email", "notification"].includes(candidate.kind ?? "") &&
+    (candidate.kind === "notification" || typeof candidate.href === "string") &&
+    (candidate.href === undefined || typeof candidate.href === "string") &&
+    (candidate.topic === undefined ||
+      candidate.topic === "news" ||
+      candidate.topic === "admissions" ||
+      candidate.topic === "general")
+  );
+}
+
+function sanitizeActions(value: unknown): ChatAction[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.filter(isChatAction).slice(0, 4);
 }
 
 function isStoredMessage(value: unknown): value is ChatMessage {
@@ -147,7 +191,8 @@ function isStoredMessage(value: unknown): value is ChatMessage {
     typeof candidate.id === "string" &&
     (candidate.role === "assistant" || candidate.role === "user") &&
     typeof candidate.content === "string" &&
-    typeof candidate.createdAt === "number"
+    typeof candidate.createdAt === "number" &&
+    (candidate.actions === undefined || sanitizeActions(candidate.actions).length === candidate.actions.length)
   );
 }
 
@@ -295,6 +340,10 @@ export function Chatbot({ locale }: { locale: Locale }) {
     setIsOpen(false);
   }
 
+  function minimizeChat() {
+    setIsOpen(false);
+  }
+
   function clearConversation() {
     const welcome = createWelcomeMessage(locale);
     setMessages([welcome]);
@@ -339,13 +388,19 @@ export function Chatbot({ locale }: { locale: Locale }) {
         signal: requestController.signal,
       });
 
-      const data = (await response.json().catch(() => ({}))) as { message?: string };
+      const data = (await response.json().catch(() => ({}))) as {
+        actions?: unknown;
+        message?: string;
+      };
 
       if (!response.ok || typeof data.message !== "string") {
         throw new Error("Chat request failed");
       }
 
-      setMessages((current) => [...current, createMessage("assistant", data.message ?? "")]);
+      setMessages((current) => [
+        ...current,
+        createMessage("assistant", data.message ?? "", sanitizeActions(data.actions)),
+      ]);
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError" && !didTimeout) {
         return;
@@ -386,6 +441,70 @@ export function Chatbot({ locale }: { locale: Locale }) {
     router.push(href);
   }
 
+  function appendAssistantMessage(content: string) {
+    setMessages((current) => [...current, createMessage("assistant", content)]);
+  }
+
+  async function requestChatNotifications(action: ChatAction) {
+    if (typeof window === "undefined" || !("Notification" in window)) {
+      appendAssistantMessage(copy.notificationUnsupported);
+      return;
+    }
+
+    try {
+      const permission =
+        window.Notification.permission === "default"
+          ? await window.Notification.requestPermission()
+          : window.Notification.permission;
+
+      if (permission !== "granted") {
+        appendAssistantMessage(copy.notificationDenied);
+        return;
+      }
+
+      window.localStorage.setItem(
+        NOTIFICATION_STORAGE_KEY,
+        JSON.stringify({
+          enabledAt: new Date().toISOString(),
+          locale,
+          topic: action.topic ?? "general",
+        }),
+      );
+
+      if (document.visibilityState === "visible") {
+        new window.Notification(copy.title, {
+          body: copy.notificationGranted,
+          icon: "/assets/logo-berthe-jean.png",
+        });
+      }
+
+      appendAssistantMessage(copy.notificationGranted);
+    } catch {
+      appendAssistantMessage(copy.notificationUnsupported);
+    }
+  }
+
+  function handleActionClick(
+    event: MouseEvent<HTMLAnchorElement | HTMLButtonElement>,
+    action: ChatAction,
+  ) {
+    if (action.kind === "notification") {
+      event.preventDefault();
+      void requestChatNotifications(action);
+      return;
+    }
+
+    if (action.kind === "internal" && action.href) {
+      event.preventDefault();
+      activeRequestRef.current?.abort();
+      activeRequestRef.current = null;
+      setIsLoading(false);
+      setInput("");
+      setIsOpen(false);
+      router.push(action.href);
+    }
+  }
+
   return (
     <div className="chatbot-root" aria-live="polite">
       {isOpen ? (
@@ -400,7 +519,7 @@ export function Chatbot({ locale }: { locale: Locale }) {
               <button
                 type="button"
                 className="chatbot-icon-button"
-                onClick={closeChat}
+                onClick={minimizeChat}
                 aria-label={copy.reduce}
                 title={copy.reduceTitle}
               >
@@ -431,36 +550,66 @@ export function Chatbot({ locale }: { locale: Locale }) {
                 key={message.id}
               >
                 {message.role === "assistant" ? <AssistantAvatar compact /> : null}
-                <div className="chatbot-bubble">
-                  <div className="chatbot-bubble-content">
-                    {getMessageContentParts(message.content).map((part) => {
-                      if (part.kind === "link" && part.isExternal) {
-                        return (
-                          <a key={part.id} href={part.href} target="_blank" rel="noreferrer">
-                            {part.text}
-                          </a>
-                        );
-                      }
+                <div className="chatbot-message-stack">
+                  <div className="chatbot-bubble">
+                    <div className="chatbot-bubble-content">
+                      {getMessageContentParts(message.content).map((part) => {
+                        if (part.kind === "link" && part.isExternal) {
+                          return (
+                            <a key={part.id} href={part.href} target="_blank" rel="noreferrer">
+                              {part.text}
+                            </a>
+                          );
+                        }
 
-                      if (part.kind === "link") {
-                        return (
-                          <a
-                            key={part.id}
-                            href={part.href}
-                            onClick={(event) => handleInternalLinkClick(event, part.href)}
-                          >
-                            {part.text}
-                          </a>
-                        );
-                      }
+                        if (part.kind === "link") {
+                          return (
+                            <a
+                              key={part.id}
+                              href={part.href}
+                              onClick={(event) => handleInternalLinkClick(event, part.href)}
+                            >
+                              {part.text}
+                            </a>
+                          );
+                        }
 
-                      return <span key={part.id}>{part.text}</span>;
-                    })}
+                        return <span key={part.id}>{part.text}</span>;
+                      })}
+                    </div>
+                    <span className="chatbot-message-meta">
+                      {formatMessageTime(message.createdAt, locale)}
+                      {message.role === "user" ? <CheckCheck size={14} aria-hidden="true" /> : null}
+                    </span>
                   </div>
-                  <span className="chatbot-message-meta">
-                    {formatMessageTime(message.createdAt)}
-                    {message.role === "user" ? <CheckCheck size={14} aria-hidden="true" /> : null}
-                  </span>
+                  {message.role === "assistant" && message.actions?.length ? (
+                    <div
+                      className="chatbot-action-row"
+                      aria-label={locale === "en" ? "Useful actions" : "Actions utiles"}
+                    >
+                      {message.actions.map((action) =>
+                        action.kind === "notification" ? (
+                          <button
+                            type="button"
+                            key={action.id}
+                            onClick={(event) => handleActionClick(event, action)}
+                          >
+                            {action.label}
+                          </button>
+                        ) : (
+                          <a
+                            key={action.id}
+                            href={action.href}
+                            target={action.kind === "external" ? "_blank" : undefined}
+                            rel={action.kind === "external" ? "noreferrer" : undefined}
+                            onClick={(event) => handleActionClick(event, action)}
+                          >
+                            {action.label}
+                          </a>
+                        ),
+                      )}
+                    </div>
+                  ) : null}
                 </div>
               </article>
             ))}
@@ -519,7 +668,7 @@ export function Chatbot({ locale }: { locale: Locale }) {
       <button
         type="button"
         className="chatbot-toggle"
-        onClick={openChat}
+        onClick={isOpen ? closeChat : openChat}
         aria-label={copy.open}
         aria-expanded={isOpen}
       >

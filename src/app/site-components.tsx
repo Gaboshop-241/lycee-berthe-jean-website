@@ -2,17 +2,15 @@ import Image from "next/image";
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import {
-  Camera,
   ChevronRight,
   Clock3,
   Download,
   Mail,
   MapPin,
   MapPinned,
-  Menu,
   Phone,
-  Play,
 } from "lucide-react";
+import { MobileNavDetails } from "@/components/MobileNavDetails";
 import { contactInfo, navItems } from "./site-data";
 import { commonCopy } from "./i18n-content";
 import type { Locale } from "./i18n-config";
@@ -93,10 +91,7 @@ export function SiteHeader({
           {common.contactButton}
         </Link>
 
-        <details className="mobile-nav">
-          <summary aria-label={common.mobileMenuAria}>
-            <Menu size={22} strokeWidth={2.2} />
-          </summary>
+        <MobileNavDetails menuAria={common.mobileMenuAria}>
           <div>
             <LanguageSwitcher currentLocale={currentLocale} />
             {items.map((item) => (
@@ -108,7 +103,7 @@ export function SiteHeader({
               {common.contactButton}
             </Link>
           </div>
-        </details>
+        </MobileNavDetails>
       </div>
     </header>
   );
@@ -185,12 +180,6 @@ export function SiteFooter({
             >
               <FacebookIcon />
             </a>
-            <Link href="/contact" aria-label="Instagram">
-              <Camera size={20} />
-            </Link>
-            <Link href="/contact" aria-label="YouTube">
-              <Play size={21} />
-            </Link>
           </div>
           <Link className="footer-admission-link" href="/contact#message">
             {common.admissionCta}
@@ -223,11 +212,13 @@ export function Breadcrumb({
   common?: CommonCopy;
 }) {
   return (
-    <p className="breadcrumb">
-      <Link href="/">{common.breadcrumbHome}</Link>
-      <ChevronRight size={14} />
-      <span>{current}</span>
-    </p>
+    <nav aria-label={common.breadcrumbAria ?? "Fil d'Ariane"}>
+      <p className="breadcrumb">
+        <Link href="/">{common.breadcrumbHome}</Link>
+        <ChevronRight size={14} aria-hidden="true" />
+        <span aria-current="page">{current}</span>
+      </p>
+    </nav>
   );
 }
 
@@ -282,8 +273,6 @@ export function PageHero({
             src={image}
             alt={imageAlt}
             fill
-            preload
-            unoptimized
             sizes="(max-width: 900px) 100vw, 55vw"
           />
         </div>
@@ -370,7 +359,6 @@ export function ImageCard({
           src={image}
           alt={alt}
           fill
-          unoptimized
           sizes="(max-width: 900px) 100vw, 32vw"
         />
       </div>

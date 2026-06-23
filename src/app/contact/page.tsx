@@ -27,11 +27,24 @@ import {
 } from "../site-components";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { pages } = await getSiteContent();
+  const { locale, pages } = await getSiteContent();
+  const { contactTitle, contactDescription } = pages.metadata;
 
   return {
-    title: pages.metadata.contactTitle,
-    description: pages.metadata.contactDescription,
+    title: contactTitle,
+    description: contactDescription,
+    openGraph: {
+      title: contactTitle,
+      description: contactDescription,
+      url: "/contact",
+      type: "website",
+      locale: locale === "en" ? "en_US" : "fr_GA",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: contactTitle,
+      description: contactDescription,
+    },
   };
 }
 
@@ -374,6 +387,7 @@ export default async function ContactPage() {
               loading="lazy"
               allowFullScreen
               referrerPolicy="no-referrer-when-downgrade"
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
             />
             <div className="map-details">
               <strong>Lycée Privé International Berthe & Jean</strong>

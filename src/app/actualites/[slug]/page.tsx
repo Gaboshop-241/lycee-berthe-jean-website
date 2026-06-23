@@ -21,7 +21,7 @@ export async function generateMetadata({
   params,
 }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const { data, pages } = await getSiteContent();
+  const { data, locale, pages } = await getSiteContent();
   const article = data.newsArticles.find((item) => item.slug === slug);
 
   if (!article) {
@@ -30,9 +30,25 @@ export async function generateMetadata({
     };
   }
 
+  const title = `${article.title} | Lycée Privé International Berthe & Jean`;
+
   return {
-    title: `${article.title} | Lycée Privé International Berthe & Jean`,
+    title,
     description: article.excerpt,
+    openGraph: {
+      title,
+      description: article.excerpt,
+      url: `/actualites/${slug}`,
+      type: "article",
+      locale: locale === "en" ? "en_US" : "fr_GA",
+      images: [{ url: article.image, alt: article.alt }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: article.excerpt,
+      images: [article.image],
+    },
   };
 }
 

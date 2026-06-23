@@ -13,7 +13,7 @@ import {
   Share2,
   X,
 } from "lucide-react";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import type { Locale } from "@/app/i18n-config";
 
 export type NewsArticle = {
@@ -141,7 +141,8 @@ const newsInteractiveCopy = {
 
 const initialVisibleCount = 6;
 const visibleStep = 3;
-const publicSiteUrl = "https://lycee-berthe-jean-website.vercel.app";
+const publicSiteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://lycee-berthe-jean-website.vercel.app";
 
 function getYear(dateTime: string) {
   return dateTime.slice(0, 4);
@@ -424,26 +425,48 @@ export function NewsGallery({ images, locale }: NewsGalleryProps) {
   const copy = newsInteractiveCopy[locale];
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const activeImage = activeIndex === null ? null : images[activeIndex];
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   function showPrevious() {
     setActiveIndex((current) => {
-      if (current === null) {
-        return current;
-      }
-
+      if (current === null) return current;
       return current === 0 ? images.length - 1 : current - 1;
     });
   }
 
   function showNext() {
     setActiveIndex((current) => {
-      if (current === null) {
-        return current;
-      }
-
+      if (current === null) return current;
       return current === images.length - 1 ? 0 : current + 1;
     });
   }
+
+  useEffect(() => {
+    if (activeIndex === null) {
+      return;
+    }
+
+    closeButtonRef.current?.focus();
+
+    function handleKey(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setActiveIndex(null);
+      } else if (event.key === "ArrowLeft") {
+        setActiveIndex((current) => {
+          if (current === null) return current;
+          return current === 0 ? images.length - 1 : current - 1;
+        });
+      } else if (event.key === "ArrowRight") {
+        setActiveIndex((current) => {
+          if (current === null) return current;
+          return current === images.length - 1 ? 0 : current + 1;
+        });
+      }
+    }
+
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [activeIndex, images.length]);
 
   return (
     <>
@@ -459,6 +482,7 @@ export function NewsGallery({ images, locale }: NewsGalleryProps) {
       {activeImage ? (
         <div className="gallery-lightbox" role="dialog" aria-modal="true" aria-label={activeImage.label}>
           <button
+            ref={closeButtonRef}
             className="gallery-lightbox-close"
             type="button"
             onClick={() => setActiveIndex(null)}

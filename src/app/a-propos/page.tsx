@@ -11,11 +11,24 @@ import {
 } from "../site-components";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { pages } = await getSiteContent();
+  const { locale, pages } = await getSiteContent();
+  const { aboutTitle, aboutDescription } = pages.metadata;
 
   return {
-    title: pages.metadata.aboutTitle,
-    description: pages.metadata.aboutDescription,
+    title: aboutTitle,
+    description: aboutDescription,
+    openGraph: {
+      title: aboutTitle,
+      description: aboutDescription,
+      url: "/a-propos",
+      type: "website",
+      locale: locale === "en" ? "en_US" : "fr_GA",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: aboutTitle,
+      description: aboutDescription,
+    },
   };
 }
 

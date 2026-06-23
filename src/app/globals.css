@@ -2173,7 +2173,7 @@ dd {
 }
 
 .news-filter-row button {
-  min-height: 42px;
+  min-height: 48px;
   padding: 0 15px;
   border: 1px solid rgba(6, 61, 32, 0.18);
   border-radius: 999px;
@@ -3254,6 +3254,16 @@ dd {
   justify-content: flex-end;
 }
 
+.chatbot-message-stack {
+  display: grid;
+  gap: 8px;
+  max-width: min(320px, 82%);
+}
+
+.from-user .chatbot-message-stack {
+  justify-items: end;
+}
+
 .chatbot-message-avatar {
   flex: 0 0 auto;
   width: 30px;
@@ -3263,7 +3273,7 @@ dd {
 }
 
 .chatbot-bubble {
-  max-width: min(304px, 79%);
+  max-width: 100%;
   padding: 12px 14px 8px;
   border: 1px solid rgba(6, 61, 32, 0.12);
   border-radius: 12px;
@@ -3332,6 +3342,45 @@ dd {
 
 .from-user .chatbot-message-meta {
   color: rgba(6, 61, 32, 0.72);
+}
+
+.chatbot-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.chatbot-action-row a,
+.chatbot-action-row button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  border: 1px solid rgba(6, 61, 32, 0.16);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--green-950);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 850;
+  line-height: 1.15;
+  padding: 0 12px;
+  text-align: center;
+  box-shadow: 0 8px 16px rgba(6, 61, 32, 0.06);
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.chatbot-action-row a:hover,
+.chatbot-action-row button:hover,
+.chatbot-action-row a:focus-visible,
+.chatbot-action-row button:focus-visible {
+  border-color: rgba(6, 61, 32, 0.34);
+  background: rgba(6, 61, 32, 0.05);
+  transform: translateY(-1px);
 }
 
 .chatbot-suggestion-row {
@@ -3717,7 +3766,7 @@ dd {
   .brand,
   .desktop-nav a,
   .header-contact-button,
-  .mobile-nav summary {
+  .mobile-nav > button {
     animation: editorialSoftScale 560ms var(--motion-ease) both;
   }
 
@@ -4008,7 +4057,7 @@ dd {
     margin-left: auto;
   }
 
-  .mobile-nav summary {
+  .mobile-nav > button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -4016,13 +4065,15 @@ dd {
     height: 44px;
     border: 1px solid rgba(6, 61, 32, 0.22);
     border-radius: 7px;
+    background: transparent;
     color: var(--green-900);
     cursor: pointer;
-    list-style: none;
+    font: inherit;
   }
 
-  .mobile-nav summary::-webkit-details-marker {
-    display: none;
+  .mobile-nav > button:focus-visible {
+    outline: 3px solid rgba(180, 123, 31, 0.4);
+    outline-offset: 2px;
   }
 
   .mobile-nav div {
@@ -4584,8 +4635,12 @@ dd {
     padding-inline: 12px;
   }
 
+  .chatbot-message-stack {
+    max-width: min(330px, 86%);
+  }
+
   .chatbot-bubble {
-    max-width: 82%;
+    max-width: 100%;
   }
 
   .chatbot-suggestion-row {

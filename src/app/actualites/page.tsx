@@ -25,11 +25,24 @@ import {
 } from "@/components/ActualitesInteractive";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { pages } = await getSiteContent();
+  const { locale, pages } = await getSiteContent();
+  const { newsTitle, newsDescription } = pages.metadata;
 
   return {
-    title: pages.metadata.newsTitle,
-    description: pages.metadata.newsDescription,
+    title: newsTitle,
+    description: newsDescription,
+    openGraph: {
+      title: newsTitle,
+      description: newsDescription,
+      url: "/actualites",
+      type: "website",
+      locale: locale === "en" ? "en_US" : "fr_GA",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: newsTitle,
+      description: newsDescription,
+    },
   };
 }
 

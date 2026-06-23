@@ -13,6 +13,7 @@ export const commonCopy = {
     contactButton: "Nous contacter",
     mobileMenuAria: "Ouvrir le menu",
     breadcrumbHome: "Accueil",
+    breadcrumbAria: "Fil d'Ariane",
     footerAria: "Pied de page",
     footerIntro:
       "Un cadre structuré à Essassa pour apprendre, grandir et préparer l'avenir avec discipline et ambition.",
@@ -40,6 +41,7 @@ export const commonCopy = {
     contactButton: "Contact us",
     mobileMenuAria: "Open menu",
     breadcrumbHome: "Home",
+    breadcrumbAria: "Breadcrumb",
     footerAria: "Footer",
     footerIntro:
       "A structured environment in Essassa to learn, grow and prepare for the future with discipline and ambition.",

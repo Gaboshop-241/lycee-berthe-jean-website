@@ -53,7 +53,6 @@ export default async function Home() {
             alt={galleryImages[0].alt}
             fill
             preload
-            unoptimized
             sizes="(max-width: 900px) 100vw, 58vw"
           />
         </div>
