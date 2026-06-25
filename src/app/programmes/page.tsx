@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getSiteContent } from "../i18n-server";
+import { JsonLd } from "../JsonLd";
+import { buildBreadcrumbJsonLd, buildPageMetadata } from "../seo";
 import {
   ClosingCta,
   IconGrid,
@@ -14,22 +16,15 @@ export async function generateMetadata(): Promise<Metadata> {
   const { locale, pages } = await getSiteContent();
   const { programsTitle, programsDescription } = pages.metadata;
 
-  return {
+  return buildPageMetadata({
     title: programsTitle,
     description: programsDescription,
-    openGraph: {
-      title: programsTitle,
-      description: programsDescription,
-      url: "/programmes",
-      type: "website",
-      locale: locale === "en" ? "en_US" : "fr_GA",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: programsTitle,
-      description: programsDescription,
-    },
-  };
+    path: "/programmes",
+    locale,
+    image: "/assets/real/class-session.jpg",
+    imageAlt: "Cours au Lycée Privé International Berthe & Jean à Essassa",
+    keywords: ["programmes collège lycée Gabon", "Bac A1 B C D Gabon"],
+  });
 }
 
 export default async function ProgrammesPage() {
@@ -38,6 +33,12 @@ export default async function ProgrammesPage() {
 
   return (
     <main className="site-shell">
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: locale === "en" ? "Home" : "Accueil", path: "/" },
+          { name: locale === "en" ? "Programs" : "Programmes", path: "/programmes" },
+        ])}
+      />
       <PageHero
         active="programmes"
         title={copy.heroTitle}

@@ -4,6 +4,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getSiteContent } from "../../i18n-server";
+import { JsonLd } from "../../JsonLd";
+import {
+  buildBreadcrumbJsonLd,
+  buildNewsArticleJsonLd,
+  buildPageMetadata,
+} from "../../seo";
 import { PageHero, SiteFooter } from "../../site-components";
 import { newsArticles } from "../../site-data";
 
@@ -30,26 +36,18 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${article.title} | Lycée Privé International Berthe & Jean`;
-
-  return {
-    title,
+  return buildPageMetadata({
+    title: article.title,
     description: article.excerpt,
-    openGraph: {
-      title,
-      description: article.excerpt,
-      url: `/actualites/${slug}`,
-      type: "article",
-      locale: locale === "en" ? "en_US" : "fr_GA",
-      images: [{ url: article.image, alt: article.alt }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description: article.excerpt,
-      images: [article.image],
-    },
-  };
+    path: `/actualites/${slug}`,
+    locale,
+    image: article.image,
+    imageAlt: article.alt,
+    type: "article",
+    publishedTime: article.dateTime,
+    modifiedTime: article.dateTime,
+    keywords: [article.tag, "actualités lycée Berthe et Jean"],
+  });
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
@@ -66,8 +64,18 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     .filter((item) => item.slug !== article.slug)
     .slice(0, 3);
 
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: locale === "en" ? "Home" : "Accueil", path: "/" },
+    { name: locale === "en" ? "News" : "Actualités", path: "/actualites" },
+    { name: article.title, path: `/actualites/${slug}` },
+  ]);
+
+  const newsArticleJsonLd = buildNewsArticleJsonLd(article, `/actualites/${slug}`);
+
   return (
     <main className="site-shell">
+      <JsonLd data={breadcrumbJsonLd} />
+      <JsonLd data={newsArticleJsonLd} />
       <PageHero
         active="actualites"
         title={article.title}

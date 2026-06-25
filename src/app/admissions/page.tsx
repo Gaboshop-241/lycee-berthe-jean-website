@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CircleCheck } from "lucide-react";
 import { getSiteContent } from "../i18n-server";
 import { JsonLd } from "../JsonLd";
+import { buildBreadcrumbJsonLd, buildFaqJsonLd, buildPageMetadata } from "../seo";
 import {
   ClosingCta,
   DownloadLink,
@@ -17,44 +18,32 @@ export async function generateMetadata(): Promise<Metadata> {
   const { locale, pages } = await getSiteContent();
   const { admissionsTitle, admissionsDescription } = pages.metadata;
 
-  return {
+  return buildPageMetadata({
     title: admissionsTitle,
     description: admissionsDescription,
-    openGraph: {
-      title: admissionsTitle,
-      description: admissionsDescription,
-      url: "/admissions",
-      type: "website",
-      locale: locale === "en" ? "en_US" : "fr_GA",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: admissionsTitle,
-      description: admissionsDescription,
-    },
-  };
+    path: "/admissions",
+    locale,
+    image: "/assets/real/student-group.jpg",
+    imageAlt: "Élèves du Lycée Privé International Berthe & Jean",
+    keywords: ["admissions lycée privé Gabon", "inscription école privée Essassa"],
+  });
 }
 
 export default async function AdmissionsPage() {
   const { common, data, locale, pages } = await getSiteContent();
   const copy = pages.admissions;
 
-  const faqJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: data.faqItems.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
-      },
-    })),
-  };
+  const faqJsonLd = buildFaqJsonLd(data.faqItems);
 
   return (
     <main className="site-shell">
       <JsonLd data={faqJsonLd} />
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: locale === "en" ? "Home" : "Accueil", path: "/" },
+          { name: "Admissions", path: "/admissions" },
+        ])}
+      />
       <PageHero
         active="admissions"
         title={copy.heroTitle}

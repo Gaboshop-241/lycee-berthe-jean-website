@@ -43,7 +43,6 @@ export function SchoolLogo({ common = commonCopy.fr }: { common?: CommonCopy }) 
         alt=""
         width={88}
         height={92}
-        preload
       />
       <span>
         <strong className="brand-title">
@@ -165,6 +164,7 @@ export function SiteFooter({
                 {item.label}
               </Link>
             ))}
+            <Link href="/faq">FAQ</Link>
             <Link href="/contact#message">{common.writeUs}</Link>
           </div>
         </div>
@@ -181,7 +181,7 @@ export function SiteFooter({
               <FacebookIcon />
             </a>
           </div>
-          <Link className="footer-admission-link" href="/contact#message">
+          <Link className="footer-admission-link" href="/admissions">
             {common.admissionCta}
           </Link>
         </div>
@@ -273,6 +273,7 @@ export function PageHero({
             src={image}
             alt={imageAlt}
             fill
+            preload
             sizes="(max-width: 900px) 100vw, 55vw"
           />
         </div>

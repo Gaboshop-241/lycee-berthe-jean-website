@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { getSiteContent } from "../i18n-server";
 import type { Locale } from "../i18n-config";
+import { JsonLd } from "../JsonLd";
+import { buildBreadcrumbJsonLd, buildPageMetadata, getSiteUrl, SITE_URL } from "../seo";
 import {
   ClosingCta,
   IconGrid,
@@ -27,22 +29,15 @@ export async function generateMetadata(): Promise<Metadata> {
   const { locale, pages } = await getSiteContent();
   const { lifeTitle, lifeDescription } = pages.metadata;
 
-  return {
+  return buildPageMetadata({
     title: lifeTitle,
     description: lifeDescription,
-    openGraph: {
-      title: lifeTitle,
-      description: lifeDescription,
-      url: "/vie-scolaire",
-      type: "website",
-      locale: locale === "en" ? "en_US" : "fr_GA",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: lifeTitle,
-      description: lifeDescription,
-    },
-  };
+    path: "/vie-scolaire",
+    locale,
+    image: "/assets/real/student-cohort.jpg",
+    imageAlt: "Vie scolaire et élèves du Lycée Privé International Berthe & Jean",
+    keywords: ["vie scolaire Gabon", "internat lycée privé Gabon"],
+  });
 }
 
 function getLifePageData(locale: Locale) {
@@ -286,6 +281,49 @@ export default async function VieScolairePage() {
 
   return (
     <main className="site-shell">
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: locale === "en" ? "Home" : "Accueil", path: "/" },
+          {
+            name: locale === "en" ? "School life" : "Vie scolaire",
+            path: "/vie-scolaire",
+          },
+        ])}
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: locale === "en" ? "School events" : "Événements scolaires",
+          itemListElement: lifeData.yearMoments.map((event, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            item: {
+              "@type": "Event",
+              name: event.title,
+              description: event.text,
+              startDate: `${event.year}-${event.month === "MAI" || event.month === "MAY" ? "05" : event.month === "JUIN" || event.month === "JUN" ? "06" : "07"}-${event.date}`,
+              location: {
+                "@type": "Place",
+                name: "Lycée Privé International Berthe & Jean",
+                address: {
+                  "@type": "PostalAddress",
+                  streetAddress: "Route Nationale 1, PK 23 Essassa",
+                  addressLocality: "Ntoum",
+                  addressRegion: "Estuaire",
+                  addressCountry: "GA",
+                },
+              },
+              organizer: {
+                "@type": "Organization",
+                name: "Lycée Privé International Berthe & Jean",
+                url: SITE_URL,
+              },
+              url: getSiteUrl(event.href),
+            },
+          })),
+        }}
+      />
       <PageHero
         active="vie-scolaire"
         title={copy.heroTitle}

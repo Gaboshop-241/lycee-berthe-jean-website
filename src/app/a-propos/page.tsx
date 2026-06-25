@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getSiteContent } from "../i18n-server";
+import { JsonLd } from "../JsonLd";
+import { buildBreadcrumbJsonLd, buildPageMetadata } from "../seo";
 import {
   ClosingCta,
   IconGrid,
@@ -14,22 +16,15 @@ export async function generateMetadata(): Promise<Metadata> {
   const { locale, pages } = await getSiteContent();
   const { aboutTitle, aboutDescription } = pages.metadata;
 
-  return {
+  return buildPageMetadata({
     title: aboutTitle,
     description: aboutDescription,
-    openGraph: {
-      title: aboutTitle,
-      description: aboutDescription,
-      url: "/a-propos",
-      type: "website",
-      locale: locale === "en" ? "en_US" : "fr_GA",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: aboutTitle,
-      description: aboutDescription,
-    },
-  };
+    path: "/a-propos",
+    locale,
+    image: "/assets/real/class-session.jpg",
+    imageAlt: "Élèves du Lycée Privé International Berthe & Jean à Essassa",
+    keywords: ["mission lycée privé Gabon", "valeurs école privée Essassa"],
+  });
 }
 
 export default async function AboutPage() {
@@ -38,6 +33,60 @@ export default async function AboutPage() {
 
   return (
     <main className="site-shell">
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: locale === "en" ? "Home" : "Accueil", path: "/" },
+          { name: locale === "en" ? "About" : "À propos", path: "/a-propos" },
+        ])}
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: locale === "en" ? "Leadership team" : "Équipe de direction",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              item: {
+                "@type": "Person",
+                name: "OBOLO Clément",
+                jobTitle: locale === "en" ? "Principal" : "Proviseur",
+                worksFor: {
+                  "@type": "EducationalOrganization",
+                  name: "Lycée Privé International Berthe & Jean",
+                },
+              },
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              item: {
+                "@type": "Person",
+                name: "MAVOUNGOU Denis Marin",
+                jobTitle: locale === "en" ? "Censor" : "Censeur",
+                worksFor: {
+                  "@type": "EducationalOrganization",
+                  name: "Lycée Privé International Berthe & Jean",
+                },
+              },
+            },
+            {
+              "@type": "ListItem",
+              position: 3,
+              item: {
+                "@type": "Person",
+                name: "Dr. Marie Madeleine Mborantsuo",
+                jobTitle: locale === "en" ? "Founder" : "Fondatrice",
+                worksFor: {
+                  "@type": "EducationalOrganization",
+                  name: "Lycée Privé International Berthe & Jean",
+                },
+              },
+            },
+          ],
+        }}
+      />
       <PageHero
         active="a-propos"
         title={copy.heroTitle}

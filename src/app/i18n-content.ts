@@ -65,27 +65,30 @@ export const commonCopy = {
 export const pageCopy = {
   fr: {
     metadata: {
-      homeTitle: "Lycée Privé International Berthe & Jean",
+      homeTitle: "Lycée Privé International Berthe & Jean à Essassa",
       homeDescription:
-        "Une éducation d'excellence à Essassa, du collège au lycée, dans un cadre structuré et ambitieux.",
-      aboutTitle: "À propos | Lycée Privé International Berthe & Jean",
+        "Collège et lycée privé à Essassa, près de Libreville : admissions, programmes A1/B/C/D, vie scolaire et accompagnement des élèves.",
+      aboutTitle: "À propos du Lycée Berthe & Jean à Essassa",
       aboutDescription:
-        "Mission, vision, valeurs et approche pédagogique du Lycée Privé International Berthe & Jean à Essassa.",
-      programsTitle: "Programmes | Lycée Privé International Berthe & Jean",
+        "Découvrez l'histoire, les valeurs, l'équipe de direction et le projet éducatif du Lycée Privé International Berthe & Jean à Essassa.",
+      programsTitle: "Programmes collège et lycée - Berthe & Jean",
       programsDescription:
-        "Programmes du collège à la Terminale, préparation au BEPC et au Baccalauréat, domaines d'apprentissage et activités complémentaires.",
-      admissionsTitle: "Admissions | Lycée Privé International Berthe & Jean",
+        "Parcours du collège au lycée à Essassa : 6e à Terminale, séries A1, B, C et D, préparation au BEPC et au Baccalauréat.",
+      admissionsTitle: "Admissions 2026-2027 - Lycée Berthe & Jean",
       admissionsDescription:
-        "Dossier d'admission, pièces à fournir, frais 2026-2027 et prospectus du Lycée Privé International Berthe & Jean.",
-      lifeTitle: "Vie scolaire | Lycée Privé International Berthe & Jean",
+        "Dossier d'admission, pièces à fournir, frais, étapes d'inscription et documents utiles pour rejoindre le Lycée Berthe & Jean à Essassa.",
+      lifeTitle: "Vie scolaire - Lycée Berthe & Jean à Essassa",
       lifeDescription:
-        "Vie scolaire, activités sportives, clubs, culture, encadrement et temps forts du Lycée Privé International Berthe & Jean.",
-      newsTitle: "Actualités | Lycée Privé International Berthe & Jean",
+        "Sport, clubs, culture, sorties éducatives, internat et accompagnement des élèves au Lycée Privé International Berthe & Jean.",
+      newsTitle: "Actualités du Lycée Berthe & Jean",
       newsDescription:
-        "Actualités, résultats, événements, agenda et annonces du Lycée Privé International Berthe & Jean.",
-      contactTitle: "Contact | Lycée Privé International Berthe & Jean",
+        "Résultats, événements scolaires, communiqués, admissions et vie du Lycée Privé International Berthe & Jean à Essassa.",
+      contactTitle: "Contact Lycée Berthe & Jean - Essassa PK 23",
       contactDescription:
-        "Adresse, téléphone, e-mail, horaires, formulaire de contact et informations pratiques du Lycée Privé International Berthe & Jean.",
+        "Adresse RN1 PK 23 Essassa, téléphone, e-mail, horaires, itinéraire depuis Libreville et formulaire du Lycée Berthe & Jean.",
+      faqTitle: "FAQ Lycée Berthe & Jean - Admissions et frais",
+      faqDescription:
+        "Questions fréquentes sur admissions, frais, programmes, vie scolaire, internat, horaires et accès au Lycée Berthe & Jean à Essassa.",
       newsNotFound: "Actualité introuvable | Lycée Privé International Berthe & Jean",
     },
     home: {
@@ -99,7 +102,7 @@ export const pageCopy = {
       pillarsAria: "Points forts du lycée",
       aboutTitle: "À propos du lycée",
       aboutP1:
-        "Le Lycée Privé International Berthe & Jean est un établissement privé laïc d'enseignement secondaire général, situé à Essassa sur la Route Nationale 1. Il a reçu sa reconnaissance d'utilité publique le 5 février 2009.",
+        "Le Lycée Privé International Berthe & Jean, également connu comme Institution Internationale Berthe et Jean, est un établissement privé laïc d'enseignement secondaire général, situé à Essassa sur la Route Nationale 1. Il a reçu sa reconnaissance d'utilité publique le 5 février 2009.",
       aboutP2:
         "Sa devise, « Savoir être et savoir faire », porte un projet éducatif centré sur la rigueur académique, l'éthique, le respect mutuel et le développement d'un leadership responsable.",
       values: "Nos valeurs : Discipline - Rigueur - Innovation - Accompagnement",
@@ -306,27 +309,30 @@ export const pageCopy = {
   },
   en: {
     metadata: {
-      homeTitle: "Lycée Privé International Berthe & Jean",
+      homeTitle: "Berthe & Jean Private International School in Essassa",
       homeDescription:
-        "An excellent education in Essassa, from lower secondary to upper secondary school, in a structured and ambitious environment.",
-      aboutTitle: "About | Lycée Privé International Berthe & Jean",
+        "Private lower and upper secondary school in Essassa near Libreville: admissions, A1/B/C/D programs, school life and student support.",
+      aboutTitle: "About Berthe & Jean School in Essassa",
       aboutDescription:
-        "Mission, vision, values and educational approach of Lycée Privé International Berthe & Jean in Essassa.",
-      programsTitle: "Programs | Lycée Privé International Berthe & Jean",
+        "Learn about the history, values, leadership team and educational project of Lycée Privé International Berthe & Jean in Essassa.",
+      programsTitle: "Lower and Upper Secondary Programs - Berthe & Jean",
       programsDescription:
-        "Programs from lower secondary to final year, BEPC and Baccalauréat preparation, learning areas and complementary activities.",
-      admissionsTitle: "Admissions | Lycée Privé International Berthe & Jean",
+        "School pathway from 6e to Terminale in Essassa, with Bac streams A1, B, C and D plus BEPC and Baccalauréat preparation.",
+      admissionsTitle: "2026-2027 Admissions - Berthe & Jean School",
       admissionsDescription:
-        "Admission file, required documents, 2026-2027 fees and prospectus for Lycée Privé International Berthe & Jean.",
-      lifeTitle: "School life | Lycée Privé International Berthe & Jean",
+        "Admission file, required documents, fees, registration steps and useful downloads for joining Berthe & Jean School in Essassa.",
+      lifeTitle: "School Life - Berthe & Jean School in Essassa",
       lifeDescription:
-        "School life, sports, clubs, culture, supervision and key moments at Lycée Privé International Berthe & Jean.",
-      newsTitle: "News | Lycée Privé International Berthe & Jean",
+        "Sports, clubs, culture, educational trips, boarding and student support at Lycée Privé International Berthe & Jean.",
+      newsTitle: "News from Berthe & Jean School",
       newsDescription:
-        "News, results, events, agenda and announcements from Lycée Privé International Berthe & Jean.",
-      contactTitle: "Contact | Lycée Privé International Berthe & Jean",
+        "Exam results, school events, official announcements, admissions updates and daily life at Berthe & Jean School in Essassa.",
+      contactTitle: "Contact Berthe & Jean School - Essassa PK 23",
       contactDescription:
-        "Address, phone, email, opening hours, contact form and practical information for Lycée Privé International Berthe & Jean.",
+        "Address on RN1 PK 23 Essassa, phone, email, opening hours, route from Libreville and contact form for Berthe & Jean School.",
+      faqTitle: "FAQ Berthe & Jean School - Admissions and Fees",
+      faqDescription:
+        "Frequently asked questions about admissions, fees, programs, school life, boarding, opening hours and access to Berthe & Jean School.",
       newsNotFound: "News item not found | Lycée Privé International Berthe & Jean",
     },
     home: {
@@ -340,7 +346,7 @@ export const pageCopy = {
       pillarsAria: "School strengths",
       aboutTitle: "About the school",
       aboutP1:
-        "Lycée Privé International Berthe & Jean is a private secular general secondary school located in Essassa on National Road 1. It received public utility recognition on February 5, 2009.",
+        "Lycée Privé International Berthe & Jean, also known as Institution Internationale Berthe et Jean, is a private secular general secondary school located in Essassa on National Road 1. It received public utility recognition on February 5, 2009.",
       aboutP2:
         "Its motto, “Savoir-être and Savoir-faire”, carries an educational project centered on academic rigor, ethics, mutual respect and responsible leadership.",
       values: "Our values: Discipline - Rigor - Innovation - Support",

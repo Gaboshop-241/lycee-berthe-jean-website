@@ -11,6 +11,12 @@ import {
 } from "lucide-react";
 import type { Locale } from "../i18n-config";
 import { getSiteContent } from "../i18n-server";
+import { JsonLd } from "../JsonLd";
+import {
+  buildBreadcrumbJsonLd,
+  buildNewsItemListJsonLd,
+  buildPageMetadata,
+} from "../seo";
 import {
   ClosingCta,
   IconGrid,
@@ -28,22 +34,15 @@ export async function generateMetadata(): Promise<Metadata> {
   const { locale, pages } = await getSiteContent();
   const { newsTitle, newsDescription } = pages.metadata;
 
-  return {
+  return buildPageMetadata({
     title: newsTitle,
     description: newsDescription,
-    openGraph: {
-      title: newsTitle,
-      description: newsDescription,
-      url: "/actualites",
-      type: "website",
-      locale: locale === "en" ? "en_US" : "fr_GA",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: newsTitle,
-      description: newsDescription,
-    },
-  };
+    path: "/actualites",
+    locale,
+    image: "/assets/real/student-group.jpg",
+    imageAlt: "Actualités et vie du Lycée Privé International Berthe & Jean",
+    keywords: ["actualités lycée Gabon", "communiqués école privée Essassa"],
+  });
 }
 
 function getNewsPageData(locale: Locale) {
@@ -206,6 +205,13 @@ export default async function ActualitesPage() {
 
   return (
     <main className="site-shell">
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: locale === "en" ? "Home" : "Accueil", path: "/" },
+          { name: locale === "en" ? "News" : "Actualités", path: "/actualites" },
+        ])}
+      />
+      <JsonLd data={buildNewsItemListJsonLd(data.newsArticles)} />
       <PageHero
         active="actualites"
         title={copy.heroTitle}

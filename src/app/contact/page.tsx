@@ -19,6 +19,12 @@ import {
 import { ContactForm } from "@/components/ContactForm";
 import type { Locale } from "../i18n-config";
 import { getSiteContent } from "../i18n-server";
+import { JsonLd } from "../JsonLd";
+import {
+  buildBreadcrumbJsonLd,
+  buildContactPageJsonLd,
+  buildPageMetadata,
+} from "../seo";
 import {
   ClosingCta,
   PageHero,
@@ -30,22 +36,15 @@ export async function generateMetadata(): Promise<Metadata> {
   const { locale, pages } = await getSiteContent();
   const { contactTitle, contactDescription } = pages.metadata;
 
-  return {
+  return buildPageMetadata({
     title: contactTitle,
     description: contactDescription,
-    openGraph: {
-      title: contactTitle,
-      description: contactDescription,
-      url: "/contact",
-      type: "website",
-      locale: locale === "en" ? "en_US" : "fr_GA",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: contactTitle,
-      description: contactDescription,
-    },
-  };
+    path: "/contact",
+    locale,
+    image: "/assets/real/building-courtyard.jpg",
+    imageAlt: "Entrée du Lycée Privé International Berthe & Jean à Essassa",
+    keywords: ["contact lycée privé Gabon", "lycée Essassa PK 23"],
+  });
 }
 
 function contactMailHref(email: string, subject: string) {
@@ -245,6 +244,13 @@ export default async function ContactPage() {
 
   return (
     <main className="site-shell">
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: locale === "en" ? "Home" : "Accueil", path: "/" },
+          { name: "Contact", path: "/contact" },
+        ])}
+      />
+      <JsonLd data={buildContactPageJsonLd(locale)} />
       <PageHero
         active="contact"
         title={copy.heroTitle}

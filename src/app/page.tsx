@@ -37,7 +37,7 @@ export default async function Home() {
             <Link className="primary-button" href="/a-propos">
               {copy.discover}
             </Link>
-            <Link className="secondary-button" href="/contact#message">
+            <Link className="secondary-button" href="/admissions">
               {copy.admission}
             </Link>
           </div>
