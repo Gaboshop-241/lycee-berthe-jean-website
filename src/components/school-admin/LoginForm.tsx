@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { FormEvent, useState } from "react";
 import { Eye, EyeOff, Loader2, LockKeyhole, Mail, ShieldCheck } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -118,6 +119,22 @@ export function LoginForm() {
 
   return (
     <form className="school-login-card" onSubmit={handleSubmit} noValidate>
+      {isSubmitting ? (
+        <div className="school-login-progress-overlay" role="status" aria-live="polite">
+          <div className="school-login-logo-loader">
+            <Image
+              src="/assets/logo-berthe-jean.png"
+              alt=""
+              width={86}
+              height={86}
+              priority
+            />
+          </div>
+          <strong>Connexion en cours...</strong>
+          <span>Vérification sécurisée de votre compte</span>
+        </div>
+      ) : null}
+
       <div className="school-login-heading">
         <span>Gestion scolaire</span>
         <h1>Connexion sécurisée</h1>

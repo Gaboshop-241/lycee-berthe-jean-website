@@ -189,6 +189,8 @@
 }
 
 .school-login-card {
+  position: relative;
+  overflow: hidden;
   width: min(100%, 470px);
   padding: clamp(1.5rem, 4vw, 2.4rem);
   border: 1px solid rgba(6, 61, 32, 0.12);
@@ -197,6 +199,120 @@
   box-shadow:
     0 30px 80px rgba(9, 44, 24, 0.18),
     0 1px 0 rgba(255, 255, 255, 0.8) inset;
+}
+
+.school-login-progress-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 0.7rem;
+  padding: 2rem;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 50% 28%, rgba(180, 123, 31, 0.16), transparent 34%),
+    rgba(255, 255, 255, 0.9);
+  color: var(--green-950);
+  text-align: center;
+  backdrop-filter: blur(12px);
+  animation: school-login-overlay-in 180ms var(--motion-ease) both;
+}
+
+.school-login-progress-overlay strong {
+  font-family: var(--font-playfair), Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+}
+
+.school-login-progress-overlay span {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.school-login-logo-loader {
+  position: relative;
+  width: 116px;
+  height: 116px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: white;
+  box-shadow:
+    0 22px 50px rgba(6, 61, 32, 0.18),
+    0 0 0 1px rgba(6, 61, 32, 0.1);
+}
+
+.school-login-logo-loader::before,
+.school-login-logo-loader::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: inherit;
+  border: 2px solid transparent;
+}
+
+.school-login-logo-loader::before {
+  border-top-color: var(--gold);
+  border-right-color: rgba(180, 123, 31, 0.35);
+  animation: school-logo-ring 940ms linear infinite;
+}
+
+.school-login-logo-loader::after {
+  inset: -17px;
+  border-color: rgba(11, 74, 40, 0.1);
+  animation: school-logo-pulse 1350ms var(--motion-ease-soft) infinite;
+}
+
+.school-login-logo-loader img {
+  position: relative;
+  z-index: 1;
+  width: 86px;
+  height: 86px;
+  border-radius: inherit;
+  animation: school-logo-breathe 1100ms var(--motion-ease-soft) infinite;
+}
+
+@keyframes school-login-overlay-in {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes school-logo-ring {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes school-logo-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.92);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes school-logo-breathe {
+  0%,
+  100% {
+    transform: scale(0.96);
+  }
+
+  50% {
+    transform: scale(1.03);
+  }
 }
 
 .school-login-heading > span,
