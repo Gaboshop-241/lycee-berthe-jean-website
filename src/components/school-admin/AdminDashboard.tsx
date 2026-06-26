@@ -19,6 +19,7 @@ import {
 } from "@/lib/school/data";
 import { roleLabels } from "@/lib/school/permissions";
 import type { SchoolRole, UserProfile } from "@/lib/school/types";
+import { getManagementWelcome } from "@/lib/school/welcome";
 
 type AdminDashboardProps = {
   profile: UserProfile;
@@ -112,17 +113,19 @@ export function AdminDashboard({ profile, data }: AdminDashboardProps) {
   const visibleQuickActions = quickActions.filter((action) =>
     action.roles.includes(profile.role),
   );
+  const welcomeMessage = getManagementWelcome(profile);
 
   return (
     <div className="school-dashboard">
       <section className="school-admin-hero">
         <div>
           <span className="school-admin-eyebrow">Tableau de bord</span>
-          <h1>Bonjour, {profile.full_name}</h1>
+          <h1>{welcomeMessage}</h1>
           <p>
-            Vue réelle de la gestion scolaire du Lycée Privé International
-            Berthe & Jean. Les cartes et listes ci-dessous utilisent les données
-            actuellement enregistrées dans Supabase.
+            Bonjour {profile.full_name}. Vue réelle de la gestion scolaire du
+            Lycée Privé International Berthe & Jean. Les cartes et listes
+            ci-dessous utilisent les données actuellement enregistrées dans
+            Supabase.
           </p>
           <div className="school-admin-meta" aria-label="Contexte du compte">
             <span>{roleLabels[profile.role]}</span>

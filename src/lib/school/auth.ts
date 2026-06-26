@@ -24,6 +24,8 @@ type SupabaseUserResponse = {
   email?: string;
 };
 
+type SupabaseRefreshResponse = SupabaseAuthResponse;
+
 export function isSupabaseConfigured() {
   return Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
@@ -127,6 +129,47 @@ export async function signInWithPassword(email: string, password: string) {
   };
 }
 
+export async function refreshSessionWithToken(refreshToken: string) {
+  if (!isSupabaseConfigured()) {
+    throw new Error("Supabase n'est pas encore configuré.");
+  }
+
+  const auth = await supabaseRequest<SupabaseRefreshResponse>(
+    "/auth/v1/token?grant_type=refresh_token",
+    {
+      method: "POST",
+      body: JSON.stringify({ refresh_token: refreshToken }),
+    },
+  );
+
+  if (!auth.access_token || !auth.refresh_token) {
+    throw new Error("Rafraîchissement de session impossible.");
+  }
+
+  const profile = await getProfileFromAccessToken(auth.access_token);
+
+  if (!profile || profile.status !== "active") {
+    throw new Error("Session non autorisée.");
+  }
+
+  return {
+    accessToken: auth.access_token,
+    refreshToken: auth.refresh_token,
+    profile,
+  };
+}
+
+export async function signOutFromAccessToken(accessToken: string) {
+  if (!isSupabaseConfigured()) {
+    return;
+  }
+
+  await supabaseRequest("/auth/v1/logout", {
+    method: "POST",
+    accessToken,
+  });
+}
+
 export async function requestPasswordReset(email: string, redirectTo?: string) {
   if (!isSupabaseConfigured()) {
     throw new Error("Supabase n'est pas encore configuré.");
@@ -192,6 +235,16 @@ export async function requireSchoolSession() {
 
   if (!session) {
     redirect("/gestion/connexion");
+  }
+
+  return session;
+}
+
+export async function requireSchoolRole(allowedRoles: SchoolRole[]) {
+  const session = await requireSchoolSession();
+
+  if (!allowedRoles.includes(session.profile.role)) {
+    redirect("/gestion");
   }
 
   return session;

@@ -12,10 +12,26 @@ type LoginState = {
 
 const rolePills = ["Admin", "Direction", "Enseignant", "Parent", "Élève"];
 
+function safeManagementPath(value: string | null, fallback = "/gestion") {
+  if (!value) return fallback;
+
+  try {
+    const parsed = new URL(value, window.location.origin);
+
+    if (parsed.origin !== window.location.origin) return fallback;
+    if (!parsed.pathname.startsWith("/gestion")) return fallback;
+    if (parsed.pathname === "/gestion/connexion") return fallback;
+
+    return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+  } catch {
+    return fallback;
+  }
+}
+
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const nextPath = searchParams.get("next") || "/gestion";
+  const nextPath = searchParams.get("next");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -49,6 +65,7 @@ export function LoginForm() {
       const data = (await response.json()) as {
         message?: string;
         redirectTo?: string;
+        welcomeMessage?: string;
       };
 
       if (!response.ok) {
@@ -57,9 +74,12 @@ export function LoginForm() {
 
       setState({
         type: "success",
-        message: "Connexion réussie. Ouverture du tableau de bord...",
+        message:
+          data.welcomeMessage ??
+          "Connexion réussie. Ouverture du tableau de bord...",
       });
-      router.push(nextPath.startsWith("/gestion") ? nextPath : data.redirectTo || "/gestion");
+      await new Promise((resolve) => setTimeout(resolve, 900));
+      router.push(safeManagementPath(nextPath, data.redirectTo || "/gestion"));
       router.refresh();
     } catch (error) {
       setState({
@@ -160,6 +180,7 @@ export function LoginForm() {
             onChange={(event) => setEmail(event.target.value)}
             type="email"
             autoComplete="email"
+            maxLength={254}
             placeholder="nom@bertheetjean.ga"
             required
           />
@@ -175,6 +196,7 @@ export function LoginForm() {
             onChange={(event) => setPassword(event.target.value)}
             type={showPassword ? "text" : "password"}
             autoComplete="current-password"
+            maxLength={256}
             placeholder="Votre mot de passe"
             required
           />
@@ -197,7 +219,7 @@ export function LoginForm() {
         className="school-link-button"
         type="button"
         onClick={() => void handlePasswordReset()}
-        disabled={isResetting}
+        disabled={isResetting || isSubmitting}
       >
         {isResetting ? "Envoi en cours..." : "Mot de passe oublié ?"}
       </button>
