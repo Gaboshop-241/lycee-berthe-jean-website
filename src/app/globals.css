@@ -32,37 +32,93 @@
 
 .school-login-page {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(390px, 520px);
+  grid-template-columns: minmax(0, 1.18fr) minmax(390px, 0.82fr);
 }
 
 .school-login-visual {
+  position: relative;
+  isolation: isolate;
   min-height: 100vh;
   padding: clamp(2rem, 5vw, 5rem);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: clamp(3rem, 8vw, 7rem);
+  overflow: hidden;
   color: white;
   background:
-    linear-gradient(120deg, rgba(6, 61, 32, 0.96), rgba(11, 74, 40, 0.86)),
+    linear-gradient(120deg, rgba(4, 43, 22, 0.94), rgba(6, 61, 32, 0.78)),
     url("/assets/real/hero-berthe-jean-gabon4you.jpg") center / cover;
+}
+
+.school-login-visual::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 16% 18%, rgba(242, 198, 109, 0.18), transparent 24%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: auto, 88px 88px, 88px 88px;
+}
+
+.school-login-visual-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.school-login-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  color: white;
+}
+
+.school-login-brand img {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+}
+
+.school-login-brand strong {
+  display: block;
+  max-width: 260px;
+  font-family: var(--font-playfair), Georgia, "Times New Roman", serif;
+  font-size: clamp(1.15rem, 1.8vw, 1.7rem);
+  line-height: 1.03;
+}
+
+.school-login-brand small {
+  display: block;
+  margin-top: 0.3rem;
+  color: #f2c66d;
+  font-weight: 800;
+}
+
+.school-login-copy {
+  max-width: 760px;
 }
 
 .school-login-visual h2 {
   max-width: 720px;
-  margin: 0.8rem 0 1rem;
+  margin: 0.8rem 0 1.1rem;
   font-family: var(--font-playfair), Georgia, "Times New Roman", serif;
-  font-size: clamp(2.2rem, 5vw, 5rem);
-  line-height: 0.96;
+  font-size: clamp(3rem, 6vw, 6.2rem);
+  line-height: 0.92;
+  text-wrap: balance;
 }
 
 .school-login-visual p {
-  max-width: 560px;
-  color: rgba(255, 255, 255, 0.82);
-  font-size: 1.02rem;
+  max-width: 620px;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: clamp(1rem, 1.3vw, 1.18rem);
   line-height: 1.8;
 }
 
-.school-login-visual span,
+.school-login-kicker,
 .school-login-back {
   color: #f2c66d;
   font-weight: 800;
@@ -72,31 +128,78 @@
 }
 
 .school-login-back {
+  flex: 0 0 auto;
   width: fit-content;
-  padding: 0.75rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.72rem 1rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 999px;
   color: white;
   text-transform: none;
   letter-spacing: 0;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.school-login-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: clamp(1.5rem, 3vw, 2.4rem);
+}
+
+.school-login-feature-grid article {
+  min-height: 142px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+}
+
+.school-login-feature-grid svg {
+  color: #f2c66d;
+}
+
+.school-login-feature-grid strong {
+  color: white;
+  font-weight: 900;
+}
+
+.school-login-feature-grid small {
+  color: rgba(255, 255, 255, 0.76);
+  line-height: 1.5;
 }
 
 .school-login-panel {
+  position: relative;
   display: grid;
   place-items: center;
-  padding: clamp(1.25rem, 4vw, 3rem);
+  padding: clamp(1.25rem, 4vw, 4.4rem);
+  background:
+    radial-gradient(circle at 80% 16%, rgba(180, 123, 31, 0.12), transparent 30%),
+    rgba(255, 255, 255, 0.72);
 }
 
 .school-login-card {
-  width: min(100%, 440px);
-  padding: clamp(1.35rem, 4vw, 2.1rem);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 24px 64px rgba(9, 44, 24, 0.16);
+  width: min(100%, 470px);
+  padding: clamp(1.5rem, 4vw, 2.4rem);
+  border: 1px solid rgba(6, 61, 32, 0.12);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow:
+    0 30px 80px rgba(9, 44, 24, 0.18),
+    0 1px 0 rgba(255, 255, 255, 0.8) inset;
 }
 
-.school-login-heading span,
+.school-login-heading > span,
 .school-page-header span,
 .school-module-placeholder span {
   color: var(--gold);
@@ -109,10 +212,10 @@
 .school-login-heading h1,
 .school-page-header h1,
 .school-module-placeholder h1 {
-  margin: 0.55rem 0 0.75rem;
+  margin: 0.55rem 0 0.7rem;
   color: var(--green-950);
   font-family: var(--font-playfair), Georgia, "Times New Roman", serif;
-  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-size: clamp(2.15rem, 5vw, 3.35rem);
   line-height: 1;
 }
 
@@ -124,8 +227,8 @@
 }
 
 .school-form-status {
-  min-height: 1.4rem;
-  margin: 1rem 0;
+  min-height: 1.25rem;
+  margin: 1rem 0 0.85rem;
   color: var(--muted);
   font-size: 0.9rem;
 }
@@ -141,7 +244,7 @@
 .school-field {
   display: grid;
   gap: 0.45rem;
-  margin-top: 1rem;
+  margin-top: 1.05rem;
   color: var(--green-950);
   font-weight: 800;
 }
@@ -150,12 +253,20 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  min-height: 52px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: white;
+  min-height: 56px;
+  border: 1px solid rgba(6, 61, 32, 0.16);
+  border-radius: 16px;
+  background: #fffefb;
   color: var(--muted);
   overflow: hidden;
+  transition:
+    border-color var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-fast) var(--motion-ease);
+}
+
+.school-input-shell:focus-within {
+  border-color: rgba(11, 74, 40, 0.48);
+  box-shadow: 0 0 0 4px rgba(11, 74, 40, 0.09);
 }
 
 .school-input-shell svg {
@@ -175,8 +286,8 @@
 }
 
 .school-input-shell button {
-  width: 46px;
-  height: 46px;
+  width: 50px;
+  height: 50px;
   border: 0;
   background: transparent;
   color: var(--green-800);
@@ -185,7 +296,7 @@
 
 .school-submit-button,
 .school-header-action {
-  min-height: 48px;
+  min-height: 52px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -201,7 +312,16 @@
 
 .school-submit-button {
   width: 100%;
-  margin-top: 1.25rem;
+  margin-top: 1.35rem;
+  border-radius: 16px;
+  transition:
+    transform var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-fast) var(--motion-ease);
+}
+
+.school-submit-button:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 22px 38px rgba(6, 61, 32, 0.22);
 }
 
 .school-submit-button:disabled,
@@ -218,6 +338,47 @@
   color: var(--green-900);
   font-weight: 800;
   cursor: pointer;
+}
+
+.school-login-security-note {
+  margin-top: 1.25rem;
+  padding: 0.9rem 1rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.7rem;
+  align-items: flex-start;
+  border: 1px solid rgba(180, 123, 31, 0.2);
+  border-radius: 16px;
+  background: #fffaf0;
+  color: var(--muted);
+}
+
+.school-login-security-note svg {
+  margin-top: 0.2rem;
+  color: var(--gold);
+}
+
+.school-login-security-note p {
+  margin: 0;
+  line-height: 1.55;
+  font-size: 0.88rem;
+}
+
+.school-login-role-pills {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.school-login-role-pills span {
+  padding: 0.45rem 0.72rem;
+  border: 1px solid rgba(6, 61, 32, 0.14);
+  border-radius: 999px;
+  background: #f7faf4;
+  color: var(--green-900);
+  font-size: 0.82rem;
+  font-weight: 800;
 }
 
 .school-spin {
@@ -672,6 +833,23 @@
   .school-login-visual {
     min-height: auto;
     gap: 2rem;
+    padding: 1.25rem;
+  }
+
+  .school-login-visual-top {
+    align-items: center;
+  }
+
+  .school-login-copy {
+    padding: clamp(1.5rem, 5vw, 3rem) 0;
+  }
+
+  .school-login-feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .school-login-feature-grid article {
+    min-height: auto;
   }
 
   .school-admin-shell {
@@ -751,6 +929,34 @@
   .school-login-panel,
   .school-admin-content {
     padding: 1rem;
+  }
+
+  .school-login-visual-top {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .school-login-brand img {
+    width: 58px;
+    height: 58px;
+  }
+
+  .school-login-brand strong {
+    max-width: 230px;
+    font-size: 1.08rem;
+  }
+
+  .school-login-visual h2 {
+    font-size: clamp(2.45rem, 15vw, 3.65rem);
+  }
+
+  .school-login-card {
+    border-radius: 18px;
+  }
+
+  .school-login-role-pills span {
+    flex: 1 1 auto;
+    text-align: center;
   }
 
   .school-stat-grid {

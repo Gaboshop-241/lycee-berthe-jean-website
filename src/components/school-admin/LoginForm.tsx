@@ -1,13 +1,15 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { Eye, EyeOff, Loader2, LockKeyhole, Mail } from "lucide-react";
+import { Eye, EyeOff, Loader2, LockKeyhole, Mail, ShieldCheck } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 type LoginState = {
   type: "idle" | "error" | "success";
   message: string;
 };
+
+const rolePills = ["Admin", "Direction", "Enseignant", "Parent", "Élève"];
 
 export function LoginForm() {
   const router = useRouter();
@@ -120,7 +122,7 @@ export function LoginForm() {
         <span>Gestion scolaire</span>
         <h1>Connexion sécurisée</h1>
         <p>
-          Accédez à l&apos;espace de gestion du Lycée Privé International Berthe & Jean.
+          Connectez-vous avec le compte fourni par l&apos;administration du lycée.
         </p>
       </div>
 
@@ -182,6 +184,20 @@ export function LoginForm() {
       >
         {isResetting ? "Envoi en cours..." : "Mot de passe oublié ?"}
       </button>
+
+      <div className="school-login-security-note">
+        <ShieldCheck size={16} />
+        <p>
+          Les accès sont attribués selon le rôle : direction, enseignant,
+          parent, élève ou comptabilité.
+        </p>
+      </div>
+
+      <div className="school-login-role-pills" aria-label="Rôles disponibles">
+        {rolePills.map((role) => (
+          <span key={role}>{role}</span>
+        ))}
+      </div>
     </form>
   );
 }
