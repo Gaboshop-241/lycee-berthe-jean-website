@@ -68,7 +68,7 @@ export const schoolNavItems: SchoolNavItem[] = [
     label: "Élèves",
     href: "/gestion/eleves",
     icon: GraduationCap,
-    roles: ["admin", "direction", "teacher", "parent"],
+    roles: ["admin", "direction", "teacher"],
     phase: "Phase 2",
   },
   {

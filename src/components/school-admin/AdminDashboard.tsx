@@ -4,7 +4,6 @@ import {
   CalendarCheck,
   ClipboardCheck,
   CreditCard,
-  FileText,
   GraduationCap,
   Megaphone,
   ReceiptText,
@@ -14,12 +13,16 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import type { ComponentType } from "react";
-import { demoDashboardData } from "@/lib/school/demo-data";
+import {
+  formatSchoolDate,
+  type SchoolDashboardData,
+} from "@/lib/school/data";
 import { roleLabels } from "@/lib/school/permissions";
-import type { DashboardMetric, SchoolRole, UserProfile } from "@/lib/school/types";
+import type { SchoolRole, UserProfile } from "@/lib/school/types";
 
 type AdminDashboardProps = {
   profile: UserProfile;
+  data: SchoolDashboardData;
 };
 
 type QuickAction = {
@@ -30,14 +33,19 @@ type QuickAction = {
   roles: SchoolRole[];
 };
 
-const chartLabels = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
-
 const quickActions: QuickAction[] = [
   {
     label: "Ajouter un élève",
-    detail: "Créer ou compléter un dossier scolaire.",
+    detail: "Créer un vrai dossier élève dans Supabase.",
     href: "/gestion/eleves",
     icon: UserPlus,
+    roles: ["admin", "direction"],
+  },
+  {
+    label: "Ajouter un parent",
+    detail: "Créer ou compléter un contact responsable.",
+    href: "/gestion/parents",
+    icon: UsersRound,
     roles: ["admin", "direction"],
   },
   {
@@ -46,13 +54,6 @@ const quickActions: QuickAction[] = [
     href: "/gestion/paiements",
     icon: ReceiptText,
     roles: ["admin", "direction", "accountant"],
-  },
-  {
-    label: "Publier une annonce",
-    detail: "Informer parents, élèves ou enseignants.",
-    href: "/gestion/annonces",
-    icon: Megaphone,
-    roles: ["admin", "direction", "teacher"],
   },
   {
     label: "Paramètres",
@@ -65,14 +66,13 @@ const quickActions: QuickAction[] = [
 
 function MetricIcon({ label }: { label: string }) {
   if (label.includes("Élèves")) return <GraduationCap size={22} />;
-  if (label.includes("Enseignants")) return <UsersRound size={22} />;
-  if (label.includes("Classes")) return <FileText size={22} />;
+  if (label.includes("Parents")) return <UsersRound size={22} />;
   if (label.includes("Absences")) return <ClipboardCheck size={22} />;
   if (label.includes("Paiements")) return <CreditCard size={22} />;
   return <Bell size={22} />;
 }
 
-function MetricCard({ metric }: { metric: DashboardMetric }) {
+function MetricCard({ metric }: { metric: SchoolDashboardData["metrics"][number] }) {
   return (
     <article className={`school-stat-card ${metric.tone}`}>
       <div className="school-stat-icon">
@@ -85,30 +85,30 @@ function MetricCard({ metric }: { metric: DashboardMetric }) {
   );
 }
 
-function MiniChart({ values, label }: { values: number[]; label: string }) {
+function EmptyState({ label }: { label: string }) {
   return (
-    <article className="school-chart-card">
-      <div className="school-panel-heading">
-        <div>
-          <h2>{label}</h2>
-          <p>Suivi de démonstration sur 6 jours</p>
-        </div>
-        <span className="school-chart-badge">Semaine</span>
-      </div>
-      <div className="school-bars" aria-label={label}>
-        {values.map((value, index) => (
-          <span key={`${label}-${chartLabels[index]}`}>
-            <i style={{ height: `${value}%` }} />
-            <small>{chartLabels[index]}</small>
-          </span>
-        ))}
-      </div>
-    </article>
+    <div className="school-empty-state">
+      <strong>{label}</strong>
+      <p>Les informations apparaîtront ici dès qu’elles seront enregistrées.</p>
+    </div>
   );
 }
 
-export function AdminDashboard({ profile }: AdminDashboardProps) {
-  const data = demoDashboardData;
+function statusClass(status: string) {
+  if (status === "pending") return "en-attente";
+  if (status === "suspended") return "suspendu";
+  if (status === "inactive") return "inactif";
+  return "actif";
+}
+
+function statusLabel(status: string) {
+  if (status === "pending") return "En attente";
+  if (status === "suspended") return "Suspendu";
+  if (status === "inactive") return "Inactif";
+  return "Actif";
+}
+
+export function AdminDashboard({ profile, data }: AdminDashboardProps) {
   const visibleQuickActions = quickActions.filter((action) =>
     action.roles.includes(profile.role),
   );
@@ -120,14 +120,14 @@ export function AdminDashboard({ profile }: AdminDashboardProps) {
           <span className="school-admin-eyebrow">Tableau de bord</span>
           <h1>Bonjour, {profile.full_name}</h1>
           <p>
-            Vue complète de la gestion scolaire du Lycée Privé International
-            Berthe & Jean. Les chiffres affichés servent de démonstration en
-            attendant la connexion des modules métier aux données Supabase.
+            Vue réelle de la gestion scolaire du Lycée Privé International
+            Berthe & Jean. Les cartes et listes ci-dessous utilisent les données
+            actuellement enregistrées dans Supabase.
           </p>
           <div className="school-admin-meta" aria-label="Contexte du compte">
             <span>{roleLabels[profile.role]}</span>
             <span>Session sécurisée</span>
-            <span>Essassa, Gabon</span>
+            <span>Données réelles</span>
           </div>
         </div>
         <Link className="school-header-action" href="/gestion/annonces">
@@ -142,52 +142,49 @@ export function AdminDashboard({ profile }: AdminDashboardProps) {
         ))}
       </section>
 
-      <section className="school-dashboard-grid school-dashboard-charts">
-        <MiniChart values={data.attendanceTrend} label="Présences" />
-        <MiniChart values={data.paymentTrend} label="Paiements" />
-      </section>
-
       <section className="school-dashboard-grid school-dashboard-main">
         <article className="school-panel school-panel-large">
           <div className="school-panel-heading">
             <div>
-              <h2>Dernières inscriptions</h2>
-              <p>Dossiers récents à suivre depuis l’administration.</p>
+              <h2>Derniers élèves</h2>
+              <p>Dossiers élèves récemment enregistrés.</p>
             </div>
-            <Link href="/gestion/eleves">Gérer</Link>
+            <Link href="/gestion/eleves">Gérer les élèves</Link>
           </div>
-          <div className="school-table-wrap">
-            <table className="school-table">
-              <thead>
-                <tr>
-                  <th>Matricule</th>
-                  <th>Élève</th>
-                  <th>Classe</th>
-                  <th>Parent</th>
-                  <th>Statut</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.students.map((student) => {
-                  const statusClass = student.status.replace(/\s+/g, "-");
-
-                  return (
+          {data.latestStudents.length > 0 ? (
+            <div className="school-table-wrap">
+              <table className="school-table">
+                <thead>
+                  <tr>
+                    <th>Matricule</th>
+                    <th>Élève</th>
+                    <th>Classe</th>
+                    <th>Parent</th>
+                    <th>Statut</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.latestStudents.map((student) => (
                     <tr key={student.id}>
                       <td>{student.matricule}</td>
-                      <td>{student.fullName}</td>
-                      <td>{student.className}</td>
-                      <td>{student.parent}</td>
                       <td>
-                        <span className={`school-status ${statusClass}`}>
-                          {student.status}
+                        {student.first_name} {student.last_name}
+                      </td>
+                      <td>{student.classes?.name ?? "Non affecté"}</td>
+                      <td>{student.parents?.full_name ?? "Non renseigné"}</td>
+                      <td>
+                        <span className={`school-status ${statusClass(student.status)}`}>
+                          {statusLabel(student.status)}
                         </span>
                       </td>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <EmptyState label="Aucun élève enregistré" />
+          )}
         </article>
 
         <aside className="school-dashboard-side">
@@ -195,47 +192,55 @@ export function AdminDashboard({ profile }: AdminDashboardProps) {
             <div className="school-panel-heading">
               <div>
                 <h2>Actions rapides</h2>
-                <p>Accès direct aux opérations courantes.</p>
+                <p>Accès direct aux opérations autorisées.</p>
               </div>
             </div>
-            <div className="school-quick-actions">
-              {visibleQuickActions.map((action) => {
-                const Icon = action.icon;
+            {visibleQuickActions.length > 0 ? (
+              <div className="school-quick-actions">
+                {visibleQuickActions.map((action) => {
+                  const Icon = action.icon;
 
-                return (
-                  <Link key={action.href} href={action.href}>
-                    <Icon size={20} />
-                    <span>
-                      <strong>{action.label}</strong>
-                      <small>{action.detail}</small>
-                    </span>
-                    <ArrowRight size={16} />
-                  </Link>
-                );
-              })}
-            </div>
+                  return (
+                    <Link key={action.href} href={action.href}>
+                      <Icon size={20} />
+                      <span>
+                        <strong>{action.label}</strong>
+                        <small>{action.detail}</small>
+                      </span>
+                      <ArrowRight size={16} />
+                    </Link>
+                  );
+                })}
+              </div>
+            ) : (
+              <EmptyState label="Aucune action rapide disponible" />
+            )}
           </article>
 
           <article className="school-panel">
             <div className="school-panel-heading">
               <div>
                 <h2>Dernières annonces</h2>
-                <p>Messages visibles selon les rôles.</p>
+                <p>Messages publiés dans le système.</p>
               </div>
               <Link href="/gestion/annonces">Voir tout</Link>
             </div>
-            <div className="school-announcement-list">
-              {data.announcements.map((announcement) => (
-                <div key={announcement.id}>
-                  <span className={`school-priority ${announcement.priority}`}>
-                    {announcement.priority}
-                  </span>
-                  <strong>{announcement.title}</strong>
-                  <p>{announcement.audience}</p>
-                  <small>{announcement.date}</small>
-                </div>
-              ))}
-            </div>
+            {data.announcements.length > 0 ? (
+              <div className="school-announcement-list">
+                {data.announcements.map((announcement) => (
+                  <div key={announcement.id}>
+                    <span className={`school-priority ${announcement.priority}`}>
+                      {announcement.priority}
+                    </span>
+                    <strong>{announcement.title}</strong>
+                    <p>Cible : {announcement.target_role}</p>
+                    <small>{formatSchoolDate(announcement.created_at)}</small>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <EmptyState label="Aucune annonce publiée" />
+            )}
           </article>
         </aside>
       </section>
@@ -244,44 +249,73 @@ export function AdminDashboard({ profile }: AdminDashboardProps) {
         <article className="school-panel">
           <div className="school-panel-heading">
             <div>
-              <h2>Activité récente</h2>
-              <p>Événements administratifs de la journée.</p>
+              <h2>Parents récents</h2>
+              <p>Contacts responsables enregistrés récemment.</p>
             </div>
+            <Link href="/gestion/parents">Gérer les parents</Link>
           </div>
-          <div className="school-activity-list">
-            {data.activities.map((activity) => (
-              <div key={activity.id}>
-                <span>{activity.date}</span>
-                <div>
-                  <strong>{activity.label}</strong>
-                  <p>{activity.detail}</p>
+          {data.latestParents.length > 0 ? (
+            <div className="school-class-list">
+              {data.latestParents.map((parent) => (
+                <div key={parent.id}>
+                  <UsersRound size={18} />
+                  <div>
+                    <strong>{parent.full_name}</strong>
+                    <span>{parent.phone ?? parent.email ?? "Contact non renseigné"}</span>
+                    <p>
+                      {parent.studentCount} enfant
+                      {parent.studentCount > 1 ? "s" : ""} associé
+                      {parent.studentCount > 1 ? "s" : ""}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <EmptyState label="Aucun parent enregistré" />
+          )}
         </article>
 
         <article className="school-panel">
           <div className="school-panel-heading">
             <div>
               <h2>Classes suivies</h2>
-              <p>Vue rapide des effectifs par niveau.</p>
+              <p>Effectifs réels par classe enregistrée.</p>
             </div>
             <Link href="/gestion/classes">Configurer</Link>
           </div>
-          <div className="school-class-list">
-            {data.classes.map((item) => (
-              <div key={item.id}>
-                <CalendarCheck size={18} />
-                <div>
-                  <strong>{item.name}</strong>
-                  <span>{item.level}</span>
-                  <p>{item.students} élèves</p>
-                  <small>{item.mainTeacher}</small>
-                </div>
-              </div>
-            ))}
-          </div>
+          {data.classes.length > 0 ? (
+            <div className="school-class-list">
+              {data.classes.map((item) => {
+                const teacher = Array.isArray(item.teachers)
+                  ? item.teachers[0]
+                  : item.teachers;
+
+                return (
+                  <div key={item.id}>
+                    <CalendarCheck size={18} />
+                    <div>
+                      <strong>{item.name}</strong>
+                      <span>
+                        {item.level} · {item.academic_year}
+                      </span>
+                      <p>
+                        {item.studentCount} élève
+                        {item.studentCount > 1 ? "s" : ""}
+                      </p>
+                      <small>
+                        {teacher?.full_name
+                          ? `Professeur principal : ${teacher.full_name}`
+                          : "Professeur principal non renseigné"}
+                      </small>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <EmptyState label="Aucune classe enregistrée" />
+          )}
         </article>
       </section>
     </div>

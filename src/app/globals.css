@@ -401,6 +401,42 @@
   font: inherit;
 }
 
+.school-control {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid rgba(6, 61, 32, 0.16);
+  border-radius: 14px;
+  background: #fffefb;
+  color: var(--foreground);
+  font: inherit;
+  outline: 0;
+  padding: 0 0.9rem;
+  transition:
+    border-color var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-fast) var(--motion-ease);
+}
+
+.school-control:focus {
+  border-color: rgba(11, 74, 40, 0.48);
+  box-shadow: 0 0 0 4px rgba(11, 74, 40, 0.09);
+}
+
+.school-control-icon {
+  position: relative;
+}
+
+.school-control-icon svg {
+  position: absolute;
+  top: 50%;
+  left: 0.9rem;
+  color: var(--green-800);
+  transform: translateY(-50%);
+}
+
+.school-control-icon .school-control {
+  padding-left: 2.45rem;
+}
+
 .school-input-shell button {
   width: 50px;
   height: 50px;
@@ -438,6 +474,26 @@
 .school-submit-button:not(:disabled):hover {
   transform: translateY(-1px);
   box-shadow: 0 22px 38px rgba(6, 61, 32, 0.22);
+}
+
+.school-submit-small,
+.school-filter-button {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid var(--green-900);
+  border-radius: 12px;
+  background: var(--green-900);
+  color: white;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.school-submit-small {
+  width: fit-content;
+  padding: 0 1rem;
 }
 
 .school-submit-button:disabled,
@@ -945,6 +1001,67 @@
   font-weight: 900;
 }
 
+.school-admin-filters {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.4fr) minmax(180px, 0.8fr) minmax(160px, 0.7fr) auto;
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.school-admin-filters label,
+.school-inline-form label {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--green-950);
+  font-weight: 800;
+}
+
+.school-admin-filters label > span {
+  font-size: 0.86rem;
+}
+
+.school-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.school-form-grid .school-field {
+  margin-top: 0;
+}
+
+.school-field-wide {
+  grid-column: 1 / -1;
+}
+
+.school-empty-state {
+  min-height: 160px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 0.45rem;
+  padding: 1.25rem;
+  border: 1px dashed rgba(6, 61, 32, 0.2);
+  border-radius: 14px;
+  background: #fbfcf8;
+  color: var(--muted);
+  text-align: center;
+}
+
+.school-empty-state svg {
+  color: var(--gold);
+}
+
+.school-empty-state strong {
+  color: var(--green-950);
+}
+
+.school-empty-state p {
+  max-width: 520px;
+  margin: 0;
+  line-height: 1.6;
+}
+
 .school-quick-actions {
   display: grid;
   gap: 0.7rem;
@@ -1077,11 +1194,16 @@
   border-collapse: collapse;
 }
 
+.school-table-large {
+  min-width: 980px;
+}
+
 .school-table th,
 .school-table td {
   padding: 0.8rem;
   border-bottom: 1px solid var(--line);
   text-align: left;
+  vertical-align: top;
 }
 
 .school-table th {
@@ -1089,6 +1211,65 @@
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+.school-table td strong,
+.school-table td small {
+  display: block;
+}
+
+.school-table td small {
+  margin-top: 0.18rem;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.school-record-details {
+  position: relative;
+}
+
+.school-record-details summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 34px;
+  padding: 0 0.75rem;
+  border: 1px solid rgba(6, 61, 32, 0.14);
+  border-radius: 999px;
+  background: #fbfcf8;
+  color: var(--green-900);
+  font-weight: 900;
+  list-style: none;
+  cursor: pointer;
+}
+
+.school-record-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.school-inline-form {
+  position: absolute;
+  right: 0;
+  z-index: 4;
+  width: min(620px, calc(100vw - 2rem));
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 0.65rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 24px 70px rgba(10, 45, 25, 0.16);
+}
+
+.school-status.actif {
+  background: rgba(31, 111, 64, 0.1);
+  color: var(--green-900);
+}
+
+.school-status.inactif {
+  background: rgba(82, 82, 82, 0.1);
+  color: #555;
 }
 
 .school-module-placeholder {
@@ -1118,6 +1299,14 @@
 @media (max-width: 1180px) {
   .school-stat-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .school-admin-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .school-admin-filters .school-filter-button {
+    grid-column: 1 / -1;
   }
 
   .school-dashboard-main {
@@ -1222,6 +1411,20 @@
   }
 
   .school-header-action {
+    width: 100%;
+  }
+
+  .school-admin-filters,
+  .school-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .school-admin-filters .school-filter-button {
+    grid-column: auto;
+  }
+
+  .school-inline-form {
+    position: static;
     width: 100%;
   }
 }
