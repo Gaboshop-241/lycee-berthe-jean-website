@@ -12,6 +12,7 @@ import {
   useState,
 } from "react";
 import {
+  Bot,
   CheckCheck,
   GraduationCap,
   MessageCircle,
@@ -19,6 +20,8 @@ import {
   Send,
   ShieldCheck,
   Trash2,
+  Volume2,
+  VolumeX,
   X,
 } from "lucide-react";
 import type { ChatAction } from "@/app/chatbot-knowledge";
@@ -50,6 +53,13 @@ type MessageContentPart =
 
 const STORAGE_KEY = "berthe-jean-chatbot-history-v1";
 const NOTIFICATION_STORAGE_KEY = "berthe-jean-chatbot-notifications-v1";
+const INVITATION_SHOWN_SESSION_KEY = "berthe-jean-chatbot-invitation-shown-v1";
+const INVITATION_READ_SESSION_KEY = "berthe-jean-chatbot-invitation-read-v1";
+const SOUND_PLAYED_SESSION_KEY = "berthe-jean-chatbot-sound-played-v1";
+const SOUND_PREFERENCE_STORAGE_KEY = "berthe-jean-chatbot-sound-preference-v1";
+const NOTIFICATION_SOUND_PATH = "/sounds/chatbot-notification.wav";
+const INVITATION_DELAY_MS = 4_000;
+const INVITATION_AUTO_DISMISS_MS = 9_000;
 const MAX_INPUT_LENGTH = 700;
 const REQUEST_TIMEOUT_MS = 25_000;
 
@@ -72,6 +82,14 @@ const chatbotCopy = {
     footer: "Réponses fournies par le Lycée Privé International Berthe & Jean",
     clear: "Effacer",
     open: "Ouvrir l'assistant Berthe & Jean",
+    invitationTitle: "Bonjour 👋",
+    invitationBody:
+      "Une question sur l'inscription, les horaires ou le lycée ? Je peux vous aider.",
+    invitationOpen: "Ouvrir l'assistant du lycée",
+    invitationDismiss: "Fermer cette notification",
+    soundDisable: "Désactiver le son du chatbot",
+    soundEnable: "Activer le son du chatbot",
+    unread: "1 message non lu",
     error: "Désolé, une erreur est survenue. Veuillez réessayer dans un instant.",
     notificationGranted:
       "C'est noté. Les notifications sont activées sur ce navigateur. Le raccordement aux annonces automatiques du lycée pourra être ajouté ensuite.",
@@ -98,6 +116,13 @@ const chatbotCopy = {
     footer: "Answers provided by Lycée Privé International Berthe & Jean",
     clear: "Clear",
     open: "Open the Berthe & Jean assistant",
+    invitationTitle: "Hello 👋",
+    invitationBody: "Questions about admissions, schedules or the school? I can help.",
+    invitationOpen: "Open the school assistant",
+    invitationDismiss: "Close this notification",
+    soundDisable: "Mute chatbot sounds",
+    soundEnable: "Enable chatbot sounds",
+    unread: "1 unread message",
     error: "Sorry, an error occurred. Please try again in a moment.",
     notificationGranted:
       "Done. Notifications are enabled on this browser. Automatic school announcements can be connected later.",
@@ -110,6 +135,42 @@ const chatbotCopy = {
 
 function getStorageKey(locale: Locale) {
   return `${STORAGE_KEY}-${locale}`;
+}
+
+function hasSessionFlag(key: string) {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  try {
+    return window.sessionStorage.getItem(key) === "true";
+  } catch {
+    return false;
+  }
+}
+
+function setSessionFlag(key: string) {
+  try {
+    window.sessionStorage.setItem(key, "true");
+  } catch {
+    // Storage can be unavailable in private or restricted browser contexts.
+  }
+}
+
+function loadSoundPreference() {
+  if (typeof window === "undefined") {
+    return true;
+  }
+
+  try {
+    return window.localStorage.getItem(SOUND_PREFERENCE_STORAGE_KEY) !== "muted";
+  } catch {
+    return true;
+  }
+}
+
+function loadUnreadInvitation() {
+  return hasSessionFlag(INVITATION_SHOWN_SESSION_KEY) && !hasSessionFlag(INVITATION_READ_SESSION_KEY);
 }
 
 function createWelcomeMessage(locale: Locale): ChatMessage {
@@ -242,13 +303,89 @@ export function Chatbot({ locale }: { locale: Locale }) {
   const router = useRouter();
   const copy = chatbotCopy[locale];
   const [isOpen, setIsOpen] = useState(false);
+  const [isInvitationVisible, setIsInvitationVisible] = useState(false);
+  const [hasUnreadInvitation, setHasUnreadInvitation] = useState(false);
+  const [isSoundEnabled, setIsSoundEnabled] = useState(true);
   const [messages, setMessages] = useState<ChatMessage[]>(() => loadStoredMessages(locale));
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const notificationAudioRef = useRef<HTMLAudioElement>(null);
+  const soundAttemptedRef = useRef(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesViewportRef = useRef<HTMLDivElement>(null);
   const activeRequestRef = useRef<AbortController | null>(null);
   const previousPathnameRef = useRef(pathname);
+
+  const playNotificationSound = useCallback((allowRetry = false) => {
+    const audio = notificationAudioRef.current;
+
+    if (!audio || hasSessionFlag(SOUND_PLAYED_SESSION_KEY)) {
+      return;
+    }
+
+    if (soundAttemptedRef.current && !allowRetry) {
+      return;
+    }
+
+    soundAttemptedRef.current = true;
+    audio.currentTime = 0;
+    audio.volume = 0.22;
+
+    void audio
+      .play()
+      .then(() => setSessionFlag(SOUND_PLAYED_SESSION_KEY))
+      .catch(() => {
+        // Autoplay is commonly blocked until a user gesture. The visual cue remains sufficient.
+      });
+  }, []);
+
+  useEffect(() => {
+    const animationFrame = window.requestAnimationFrame(() => {
+      setHasUnreadInvitation(loadUnreadInvitation());
+      setIsSoundEnabled(loadSoundPreference());
+    });
+
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, []);
+
+  useEffect(() => {
+    if (hasSessionFlag(INVITATION_SHOWN_SESSION_KEY)) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      if (
+        hasSessionFlag(INVITATION_SHOWN_SESSION_KEY) ||
+        hasSessionFlag(INVITATION_READ_SESSION_KEY)
+      ) {
+        return;
+      }
+
+      setSessionFlag(INVITATION_SHOWN_SESSION_KEY);
+      setHasUnreadInvitation(true);
+      setIsInvitationVisible(true);
+    }, INVITATION_DELAY_MS);
+
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!isInvitationVisible) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setIsInvitationVisible(false);
+    }, INVITATION_AUTO_DISMISS_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [isInvitationVisible]);
+
+  useEffect(() => {
+    if (isInvitationVisible && isSoundEnabled) {
+      playNotificationSound();
+    }
+  }, [isInvitationVisible, isSoundEnabled, playNotificationSound]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -314,9 +451,41 @@ export function Chatbot({ locale }: { locale: Locale }) {
     setMessages((current) => (current.length > 0 ? current : [createWelcomeMessage(locale)]));
   }, [locale]);
 
+  function markInvitationRead() {
+    setSessionFlag(INVITATION_SHOWN_SESSION_KEY);
+    setSessionFlag(INVITATION_READ_SESSION_KEY);
+    setIsInvitationVisible(false);
+    setHasUnreadInvitation(false);
+  }
+
   function openChat() {
+    markInvitationRead();
     setIsOpen(true);
     ensureWelcomeMessage();
+  }
+
+  function dismissInvitation() {
+    setSessionFlag(INVITATION_SHOWN_SESSION_KEY);
+    setIsInvitationVisible(false);
+  }
+
+  function toggleNotificationSound() {
+    const nextSoundEnabled = !isSoundEnabled;
+
+    setIsSoundEnabled(nextSoundEnabled);
+
+    try {
+      window.localStorage.setItem(
+        SOUND_PREFERENCE_STORAGE_KEY,
+        nextSoundEnabled ? "enabled" : "muted",
+      );
+    } catch {
+      // The in-memory preference still works when local storage is unavailable.
+    }
+
+    if (nextSoundEnabled && isInvitationVisible) {
+      playNotificationSound(true);
+    }
   }
 
   function closeChat() {
@@ -493,6 +662,52 @@ export function Chatbot({ locale }: { locale: Locale }) {
 
   return (
     <div className="chatbot-root" aria-live="polite">
+      <audio
+        className="chatbot-notification-audio"
+        ref={notificationAudioRef}
+        src={NOTIFICATION_SOUND_PATH}
+        preload="auto"
+        aria-hidden="true"
+      />
+
+      {!isOpen && isInvitationVisible ? (
+        <aside className="chatbot-invitation" aria-label={copy.invitationOpen}>
+          <button
+            type="button"
+            className="chatbot-invitation-main"
+            onClick={openChat}
+            aria-label={copy.invitationOpen}
+          >
+            <span className="chatbot-invitation-icon" aria-hidden="true">
+              <Bot size={22} />
+            </span>
+            <span className="chatbot-invitation-copy" aria-live="polite" aria-atomic="true">
+              <strong>{copy.invitationTitle}</strong>
+              <span>{copy.invitationBody}</span>
+            </span>
+          </button>
+          <div className="chatbot-invitation-actions">
+            <button
+              type="button"
+              onClick={toggleNotificationSound}
+              aria-label={isSoundEnabled ? copy.soundDisable : copy.soundEnable}
+              title={isSoundEnabled ? copy.soundDisable : copy.soundEnable}
+              aria-pressed={isSoundEnabled}
+            >
+              {isSoundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
+            </button>
+            <button
+              type="button"
+              onClick={dismissInvitation}
+              aria-label={copy.invitationDismiss}
+              title={copy.invitationDismiss}
+            >
+              <X size={16} />
+            </button>
+          </div>
+        </aside>
+      ) : null}
+
       {isOpen ? (
         <section className="chatbot-window" aria-label={copy.title}>
           <header className="chatbot-header">
@@ -502,6 +717,16 @@ export function Chatbot({ locale }: { locale: Locale }) {
               <p>{copy.subtitle}</p>
             </div>
             <div className="chatbot-header-actions">
+              <button
+                type="button"
+                className="chatbot-icon-button"
+                onClick={toggleNotificationSound}
+                aria-label={isSoundEnabled ? copy.soundDisable : copy.soundEnable}
+                title={isSoundEnabled ? copy.soundDisable : copy.soundEnable}
+                aria-pressed={isSoundEnabled}
+              >
+                {isSoundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
+              </button>
               <button
                 type="button"
                 className="chatbot-icon-button"
@@ -655,12 +880,18 @@ export function Chatbot({ locale }: { locale: Locale }) {
         type="button"
         className="chatbot-toggle"
         onClick={isOpen ? closeChat : openChat}
-        aria-label={copy.open}
+        aria-label={
+          isOpen ? copy.close : `${copy.open}${hasUnreadInvitation ? `. ${copy.unread}` : ""}`
+        }
         aria-expanded={isOpen}
       >
         <MessageCircle className="chatbot-toggle-chat" size={32} aria-hidden="true" />
         <GraduationCap className="chatbot-toggle-cap" size={20} aria-hidden="true" />
-        <span aria-hidden="true" />
+        {hasUnreadInvitation ? (
+          <span className="chatbot-unread-badge" aria-hidden="true">
+            1
+          </span>
+        ) : null}
       </button>
     </div>
   );
