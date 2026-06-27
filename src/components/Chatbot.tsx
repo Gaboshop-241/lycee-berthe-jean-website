@@ -66,13 +66,6 @@ const chatbotCopy = {
     conversation: "Conversation",
     typing: "Assistant en train d'écrire",
     typingSr: "Assistant en train d'écrire...",
-    suggestionAria: "Suggestions",
-    documentsLabel: "Quels sont les documents à fournir ?",
-    documentsMessage: "Quels sont les documents à fournir pour une inscription ?",
-    feesLabel: "Y a-t-il des frais d'inscription ?",
-    feesMessage: "Y a-t-il des frais d'inscription au lycée ?",
-    attachUnavailable: "Pièce jointe indisponible",
-    attachTitle: "Pièce jointe",
     inputLabel: "Écrivez votre message",
     inputPlaceholder: "Écrivez votre message...",
     send: "Envoyer le message",
@@ -99,13 +92,6 @@ const chatbotCopy = {
     conversation: "Conversation",
     typing: "Assistant is typing",
     typingSr: "Assistant is typing...",
-    suggestionAria: "Suggestions",
-    documentsLabel: "What documents are required?",
-    documentsMessage: "What documents are required for registration?",
-    feesLabel: "Are there registration fees?",
-    feesMessage: "Are there registration fees at the school?",
-    attachUnavailable: "Attachment unavailable",
-    attachTitle: "Attachment",
     inputLabel: "Write your message",
     inputPlaceholder: "Write your message...",
     send: "Send message",
@@ -508,7 +494,7 @@ export function Chatbot({ locale }: { locale: Locale }) {
   return (
     <div className="chatbot-root" aria-live="polite">
       {isOpen ? (
-        <section className="chatbot-window" aria-label="Assistant Berthe & Jean">
+        <section className="chatbot-window" aria-label={copy.title}>
           <header className="chatbot-header">
             <AssistantAvatar />
             <div className="chatbot-heading">

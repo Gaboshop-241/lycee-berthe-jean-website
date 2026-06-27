@@ -40,28 +40,28 @@ const quickActions: QuickAction[] = [
     detail: "Créer un vrai dossier élève dans Supabase.",
     href: "/gestion/eleves",
     icon: UserPlus,
-    roles: ["admin", "direction"],
+    roles: ["super_admin", "admin", "direction"],
   },
   {
     label: "Ajouter un parent",
     detail: "Créer ou compléter un contact responsable.",
     href: "/gestion/parents",
     icon: UsersRound,
-    roles: ["admin", "direction"],
+    roles: ["super_admin", "admin", "direction"],
   },
   {
     label: "Gérer les paiements",
     detail: "Suivre les frais et reçus.",
     href: "/gestion/paiements",
     icon: ReceiptText,
-    roles: ["admin", "direction", "accountant"],
+    roles: ["super_admin", "admin", "direction", "accountant"],
   },
   {
     label: "Paramètres",
     detail: "Rôles, comptes et configuration.",
     href: "/gestion/parametres",
     icon: Settings,
-    roles: ["admin"],
+    roles: ["super_admin", "admin"],
   },
 ];
 

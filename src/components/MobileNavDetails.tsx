@@ -1,17 +1,20 @@
 "use client";
 
-import { Menu } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Menu, X } from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
 export function MobileNavDetails({
   menuAria,
+  closeMenuAria,
   children,
 }: {
   menuAria: string;
+  closeMenuAria: string;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const menuId = useId();
   const [openedOnPathname, setOpenedOnPathname] = useState<string | null>(null);
   const isOpen = openedOnPathname === pathname;
   const ref = useRef<HTMLDivElement>(null);
@@ -46,14 +49,23 @@ export function MobileNavDetails({
     <div className="mobile-nav" ref={ref}>
       <button
         type="button"
-        aria-label={menuAria}
+        aria-label={isOpen ? closeMenuAria : menuAria}
+        aria-controls={menuId}
         aria-expanded={isOpen}
         onClick={() => setOpenedOnPathname(isOpen ? null : pathname)}
       >
-        <Menu size={22} strokeWidth={2.2} />
+        {isOpen ? (
+          <X size={22} strokeWidth={2.2} aria-hidden="true" />
+        ) : (
+          <Menu size={22} strokeWidth={2.2} aria-hidden="true" />
+        )}
       </button>
       {isOpen ? (
-        <div role="presentation" onClick={() => setOpenedOnPathname(null)}>
+        <div
+          className="mobile-menu-panel"
+          id={menuId}
+          onClick={() => setOpenedOnPathname(null)}
+        >
           {children}
         </div>
       ) : null}

@@ -78,6 +78,7 @@ export function SiteHeader({
               key={item.key}
               className={item.key === active ? "active" : ""}
               href={item.href}
+              aria-current={item.key === active ? "page" : undefined}
             >
               {item.label}
             </Link>
@@ -90,11 +91,19 @@ export function SiteHeader({
           {common.contactButton}
         </Link>
 
-        <MobileNavDetails menuAria={common.mobileMenuAria}>
+        <MobileNavDetails
+          menuAria={common.mobileMenuAria}
+          closeMenuAria={common.closeMobileMenuAria}
+        >
           <div>
             <LanguageSwitcher currentLocale={currentLocale} />
             {items.map((item) => (
-              <Link key={item.key} href={item.href}>
+              <Link
+                key={item.key}
+                className={item.key === active ? "active" : ""}
+                href={item.href}
+                aria-current={item.key === active ? "page" : undefined}
+              >
                 {item.label}
               </Link>
             ))}

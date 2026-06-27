@@ -252,11 +252,14 @@ export async function requireSchoolRole(allowedRoles: SchoolRole[]) {
 
 export function isSchoolRole(value: string | undefined | null): value is SchoolRole {
   return (
+    value === "super_admin" ||
     value === "admin" ||
     value === "direction" ||
+    value === "secretary" ||
     value === "teacher" ||
     value === "student" ||
     value === "parent" ||
-    value === "accountant"
+    value === "accountant" ||
+    value === "staff"
   );
 }

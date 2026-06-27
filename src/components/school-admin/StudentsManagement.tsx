@@ -26,7 +26,11 @@ const statusOptions: { value: StudentStatus; label: string }[] = [
 ];
 
 function canManage(profile: UserProfile) {
-  return profile.role === "admin" || profile.role === "direction";
+  return (
+    profile.role === "super_admin" ||
+    profile.role === "admin" ||
+    profile.role === "direction"
+  );
 }
 
 function statusClass(status: StudentStatus) {

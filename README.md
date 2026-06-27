@@ -28,6 +28,16 @@ npm run lint
 npm run build
 ```
 
+Contrôle conversationnel du chatbot sur les 15 scénarios de référence :
+
+```bash
+npm run start -- -p 3017
+# Dans un second terminal
+npm run test:chatbot
+```
+
+La commande vérifie la langue détectée, l'intention, la longueur, l'absence de Markdown visible et la pertinence des boutons d'action.
+
 Le build Next.js sert aussi de contrôle TypeScript.
 
 ## Variables d'environnement
@@ -41,6 +51,14 @@ NEXT_PUBLIC_SITE_URL=
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
+SUPABASE_STORAGE_BUCKET=
+RESEND_API_KEY=
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+WHATSAPP_ACCESS_TOKEN=
+WHATSAPP_PHONE_NUMBER_ID=
+GOOGLE_CALENDAR_CLIENT_EMAIL=
+GOOGLE_CALENDAR_PRIVATE_KEY=
 ```
 
 Variables utilisées :
@@ -51,6 +69,11 @@ Variables utilisées :
 - `NEXT_PUBLIC_SUPABASE_URL` : URL publique du projet Supabase.
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` : clé anonyme Supabase, utilisable côté client/serveur.
 - `SUPABASE_SERVICE_ROLE_KEY` : clé serveur uniquement. Ne jamais l'exposer côté client. Elle est prévue pour les futures opérations administratives serveur.
+- `SUPABASE_STORAGE_BUCKET` : nom du futur bucket privé des documents scolaires.
+- `RESEND_API_KEY` : envoi d'e-mails transactionnels, non utilisé tant que le module de notifications n'est pas activé.
+- `TWILIO_ACCOUNT_SID` et `TWILIO_AUTH_TOKEN` : SMS optionnels, non activés par défaut.
+- `WHATSAPP_ACCESS_TOKEN` et `WHATSAPP_PHONE_NUMBER_ID` : WhatsApp Cloud API optionnelle.
+- `GOOGLE_CALENDAR_CLIENT_EMAIL` et `GOOGLE_CALENDAR_PRIVATE_KEY` : future synchronisation d'emploi du temps.
 
 Important : les clés privées ne doivent jamais être commitées, ni placées dans le frontend.
 
@@ -64,30 +87,32 @@ Important : les clés privées ne doivent jamais être commitées, ni placées d
 - `src/app/gestion/page.tsx` : dashboard sécurisé.
 - `src/app/gestion/[module]/page.tsx` : modules de gestion par rôle.
 - `src/components/school-admin` : composants du dashboard scolaire.
-- `src/lib/school` : types, permissions, auth Supabase REST et données de démonstration UI.
+- `src/lib/school` : types, permissions, authentification Supabase REST, lectures et actions serveur.
 - `supabase/schema.sql` : schéma PostgreSQL, relations, triggers et politiques RLS.
 - `supabase/seed-demo.sql` : données de test optionnelles.
+- `AGENTS.md` : règles permanentes de développement, sécurité, design et maintenance.
 - `public/assets` : logos, photos, documents et images du lycée.
 
 ## Espace de gestion scolaire
 
-La Phase 1 ajoute :
+Fonctionnalités actuellement en place :
 
 - Authentification par email/mot de passe via Supabase Auth.
 - Déconnexion et demande de réinitialisation de mot de passe.
 - Protection de `/gestion/*` par `src/proxy.ts` et validation serveur dans les pages privées.
-- Rôles : `admin`, `direction`, `teacher`, `student`, `parent`, `accountant`.
-- Dashboard responsive avec sidebar, statistiques, annonces, activité récente et données de démonstration.
+- Rôles préparés : `super_admin`, `admin`, `direction`, `secretary`, `teacher`, `student`, `parent`, `accountant`, `staff`.
+- Dashboard responsive avec sidebar, statistiques, annonces et données lues depuis Supabase.
 - Menus filtrés selon le rôle.
-- Placeholders propres pour les modules des phases suivantes afin d'éviter les pages cassées.
+- Gestion réelle des élèves, parents, enseignants, classes et matières.
+- Pages de cadrage détaillées pour les modules des phases suivantes.
+- Tables de notifications, factures, exports et audit préparées dans le schéma.
 
-Les modules CRUD complets restent à développer dans les phases 2 à 6 :
+Modules restant à compléter :
 
-- Phase 2 : élèves, parents, enseignants, classes, matières.
 - Phase 3 : notes, présences, emplois du temps.
 - Phase 4 : devoirs, documents, annonces.
-- Phase 5 : frais scolaires, paiements, reçus, bulletins.
-- Phase 6 : optimisation, sécurité fine, responsive avancé et tests métier.
+- Phase 5 : frais scolaires, paiements, factures, reçus et bulletins.
+- Phase 6 : rapports, paramètres, sécurité parent/élève fine et tests métier.
 
 ## Configuration Supabase
 
@@ -117,7 +142,8 @@ Pour tester l'interface avec des données fictives, exécuter ensuite `supabase/
 - Le proxy redirige les visiteurs non connectés hors de `/gestion/*`.
 - Les pages privées valident aussi la session côté serveur.
 - Le schéma Supabase active Row Level Security sur les tables.
-- Les politiques RLS actuelles sont une base de Phase 1. Les règles parent/élève doivent être affinées quand les comptes auth seront reliés aux fiches élèves et parents.
+- Les opérations sensibles sont préparées pour être enregistrées dans `audit_logs`.
+- Les règles parent/élève doivent encore être affinées quand les comptes Auth seront reliés aux fiches élèves et parents.
 
 ## Design et animations
 

@@ -34,6 +34,7 @@ export type SchoolModuleKey =
   | "payments"
   | "documents"
   | "announcements"
+  | "reports"
   | "settings";
 
 export type SchoolNavItem = {
@@ -46,12 +47,15 @@ export type SchoolNavItem = {
 };
 
 export const roleLabels: Record<SchoolRole, string> = {
+  super_admin: "Super Admin",
   admin: "Admin",
   direction: "Direction",
+  secretary: "Secrétariat",
   teacher: "Enseignant",
   student: "Élève",
   parent: "Parent",
   accountant: "Comptabilité",
+  staff: "Personnel",
 };
 
 export const schoolNavItems: SchoolNavItem[] = [
@@ -60,7 +64,17 @@ export const schoolNavItems: SchoolNavItem[] = [
     label: "Dashboard",
     href: "/gestion",
     icon: Home,
-    roles: ["admin", "direction", "teacher", "student", "parent", "accountant"],
+    roles: [
+      "super_admin",
+      "admin",
+      "direction",
+      "secretary",
+      "teacher",
+      "student",
+      "parent",
+      "accountant",
+      "staff",
+    ],
     phase: "Phase 1",
   },
   {
@@ -68,7 +82,7 @@ export const schoolNavItems: SchoolNavItem[] = [
     label: "Élèves",
     href: "/gestion/eleves",
     icon: GraduationCap,
-    roles: ["admin", "direction", "teacher"],
+    roles: ["super_admin", "admin", "direction", "secretary", "teacher"],
     phase: "Phase 2",
   },
   {
@@ -76,7 +90,7 @@ export const schoolNavItems: SchoolNavItem[] = [
     label: "Parents",
     href: "/gestion/parents",
     icon: UsersRound,
-    roles: ["admin", "direction"],
+    roles: ["super_admin", "admin", "direction", "secretary"],
     phase: "Phase 2",
   },
   {
@@ -84,7 +98,7 @@ export const schoolNavItems: SchoolNavItem[] = [
     label: "Enseignants",
     href: "/gestion/enseignants",
     icon: UserRound,
-    roles: ["admin", "direction"],
+    roles: ["super_admin", "admin", "direction"],
     phase: "Phase 2",
   },
   {
@@ -92,7 +106,7 @@ export const schoolNavItems: SchoolNavItem[] = [
     label: "Classes",
     href: "/gestion/classes",
     icon: Landmark,
-    roles: ["admin", "direction", "teacher"],
+    roles: ["super_admin", "admin", "direction", "teacher"],
     phase: "Phase 2",
   },
   {
@@ -100,7 +114,7 @@ export const schoolNavItems: SchoolNavItem[] = [
     label: "Matières",
     href: "/gestion/matieres",
     icon: LibraryBig,
-    roles: ["admin", "direction", "teacher"],
+    roles: ["super_admin", "admin", "direction", "teacher"],
     phase: "Phase 2",
   },
   {
@@ -108,7 +122,7 @@ export const schoolNavItems: SchoolNavItem[] = [
     label: "Notes",
     href: "/gestion/notes",
     icon: NotebookPen,
-    roles: ["admin", "direction", "teacher", "student", "parent"],
+    roles: ["super_admin", "admin", "direction", "teacher", "student", "parent"],
     phase: "Phase 3",
   },
   {
@@ -116,7 +130,7 @@ export const schoolNavItems: SchoolNavItem[] = [
     label: "Présences",
     href: "/gestion/presences",
     icon: ClipboardCheck,
-    roles: ["admin", "direction", "teacher", "student", "parent"],
+    roles: ["super_admin", "admin", "direction", "secretary", "teacher", "student", "parent"],
     phase: "Phase 3",
   },
   {
@@ -124,7 +138,7 @@ export const schoolNavItems: SchoolNavItem[] = [
     label: "Emploi du temps",
     href: "/gestion/emploi-du-temps",
     icon: CalendarDays,
-    roles: ["admin", "direction", "teacher", "student", "parent"],
+    roles: ["super_admin", "admin", "direction", "teacher", "student", "parent"],
     phase: "Phase 3",
   },
   {
@@ -132,7 +146,7 @@ export const schoolNavItems: SchoolNavItem[] = [
     label: "Devoirs",
     href: "/gestion/devoirs",
     icon: BookOpen,
-    roles: ["admin", "direction", "teacher", "student", "parent"],
+    roles: ["super_admin", "admin", "direction", "teacher", "student", "parent"],
     phase: "Phase 4",
   },
   {
@@ -140,7 +154,7 @@ export const schoolNavItems: SchoolNavItem[] = [
     label: "Frais scolaires",
     href: "/gestion/frais-scolaires",
     icon: CreditCard,
-    roles: ["admin", "direction", "accountant", "parent"],
+    roles: ["super_admin", "admin", "direction", "accountant", "parent"],
     phase: "Phase 5",
   },
   {
@@ -148,7 +162,7 @@ export const schoolNavItems: SchoolNavItem[] = [
     label: "Paiements",
     href: "/gestion/paiements",
     icon: ReceiptText,
-    roles: ["admin", "direction", "accountant", "parent"],
+    roles: ["super_admin", "admin", "direction", "accountant", "parent"],
     phase: "Phase 5",
   },
   {
@@ -156,7 +170,17 @@ export const schoolNavItems: SchoolNavItem[] = [
     label: "Documents",
     href: "/gestion/documents",
     icon: FileText,
-    roles: ["admin", "direction", "teacher", "student", "parent", "accountant"],
+    roles: [
+      "super_admin",
+      "admin",
+      "direction",
+      "secretary",
+      "teacher",
+      "student",
+      "parent",
+      "accountant",
+      "staff",
+    ],
     phase: "Phase 4",
   },
   {
@@ -164,15 +188,33 @@ export const schoolNavItems: SchoolNavItem[] = [
     label: "Annonces",
     href: "/gestion/annonces",
     icon: Bell,
-    roles: ["admin", "direction", "teacher", "student", "parent", "accountant"],
+    roles: [
+      "super_admin",
+      "admin",
+      "direction",
+      "secretary",
+      "teacher",
+      "student",
+      "parent",
+      "accountant",
+      "staff",
+    ],
     phase: "Phase 4",
+  },
+  {
+    key: "reports",
+    label: "Rapports",
+    href: "/gestion/rapports",
+    icon: BarChart3,
+    roles: ["super_admin", "admin", "direction", "accountant"],
+    phase: "Phase 6",
   },
   {
     key: "settings",
     label: "Paramètres",
     href: "/gestion/parametres",
     icon: Settings,
-    roles: ["admin"],
+    roles: ["super_admin", "admin"],
     phase: "Phase 6",
   },
 ];
@@ -191,6 +233,7 @@ export const moduleAliases: Record<string, SchoolModuleKey> = {
   paiements: "payments",
   documents: "documents",
   annonces: "announcements",
+  rapports: "reports",
   parametres: "settings",
 };
 

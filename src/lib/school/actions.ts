@@ -6,7 +6,7 @@ import { requireSchoolSession } from "./auth";
 import { schoolDataRequest, type StudentStatus } from "./data";
 import type { ProfileStatus, SchoolRole } from "./types";
 
-const managerRoles: SchoolRole[] = ["admin", "direction"];
+const managerRoles: SchoolRole[] = ["super_admin", "admin", "direction"];
 const validStudentStatuses: StudentStatus[] = [
   "active",
   "inactive",

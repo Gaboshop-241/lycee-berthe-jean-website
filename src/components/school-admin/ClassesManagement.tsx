@@ -17,7 +17,11 @@ type ClassesManagementProps = {
 };
 
 function canManage(profile: UserProfile) {
-  return profile.role === "admin" || profile.role === "direction";
+  return (
+    profile.role === "super_admin" ||
+    profile.role === "admin" ||
+    profile.role === "direction"
+  );
 }
 
 function teacherName(

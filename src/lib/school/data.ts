@@ -717,7 +717,10 @@ export async function getSchoolDashboardData(
         ),
       [],
     ),
-    role === "admin" || role === "direction" || role === "accountant"
+    (role === "super_admin" ||
+      role === "admin" ||
+      role === "direction" ||
+      role === "accountant")
       ? safeRead(
           () =>
             schoolDataRequest<PaymentRecord[]>(

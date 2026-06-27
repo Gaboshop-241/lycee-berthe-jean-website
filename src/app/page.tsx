@@ -49,8 +49,8 @@ export default async function Home() {
 
         <div className="hero-image">
           <Image
-            src="/assets/real/hero-berthe-jean-gabon4you.jpg"
-            alt={galleryImages[0].alt}
+            src="/assets/real/campus-gardens.jpeg"
+            alt={copy.aboutImageAlt}
             fill
             preload
             sizes="(max-width: 900px) 100vw, 58vw"
@@ -82,8 +82,8 @@ export default async function Home() {
 
         <div className="about-image">
           <Image
-            src="/assets/real/campus-gardens.jpeg"
-            alt={copy.aboutImageAlt}
+            src="/assets/real/class-session.jpg"
+            alt={galleryImages[2].alt}
             fill
             sizes="(max-width: 900px) 100vw, 43vw"
           />

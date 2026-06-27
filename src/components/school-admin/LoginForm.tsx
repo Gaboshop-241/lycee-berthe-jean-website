@@ -10,7 +10,16 @@ type LoginState = {
   message: string;
 };
 
-const rolePills = ["Admin", "Direction", "Enseignant", "Parent", "Élève"];
+const rolePills = [
+  "Super Admin",
+  "Admin",
+  "Direction",
+  "Secrétariat",
+  "Enseignant",
+  "Parent",
+  "Élève",
+  "Comptabilité",
+];
 
 function safeManagementPath(value: string | null, fallback = "/gestion") {
   if (!value) return fallback;
@@ -227,8 +236,8 @@ export function LoginForm() {
       <div className="school-login-security-note">
         <ShieldCheck size={16} />
         <p>
-          Les accès sont attribués selon le rôle : direction, enseignant,
-          parent, élève ou comptabilité.
+          Les accès sont attribués selon le rôle : administration, direction,
+          secrétariat, enseignant, parent, élève ou comptabilité.
         </p>
       </div>
 

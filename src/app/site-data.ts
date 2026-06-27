@@ -403,14 +403,14 @@ export const newsArticles = [
 
 export const galleryImages = [
   {
-    src: "/assets/real/campus-building.jpg",
-    alt: "Bâtiment du Lycée Privé International Berthe et Jean",
-    label: "Lycée Berthe & Jean",
-  },
-  {
     src: "/assets/real/campus-gardens.jpeg",
     alt: "Espaces verts du campus",
     label: "Cadre naturel",
+  },
+  {
+    src: "/assets/real/campus-building.jpg",
+    alt: "Bâtiment du Lycée Privé International Berthe et Jean",
+    label: "Lycée Berthe & Jean",
   },
   {
     src: "/assets/real/class-session.jpg",

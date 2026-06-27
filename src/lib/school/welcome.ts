@@ -1,12 +1,15 @@
 import type { SchoolRole, UserProfile } from "./types";
 
 const roleWelcome: Record<SchoolRole, string> = {
+  super_admin: "Bienvenue dans l'espace Super Admin",
   admin: "Bienvenue dans l'espace Admin",
   direction: "Bienvenue dans l'espace Direction",
+  secretary: "Bienvenue dans l'espace Secrétariat",
   teacher: "Bienvenue dans votre espace Enseignant",
   student: "Bienvenue dans votre espace Élève",
   parent: "Bienvenue dans votre espace Parent",
   accountant: "Bienvenue dans l'espace Comptabilité",
+  staff: "Bienvenue dans l'espace du personnel",
 };
 
 function normalizeName(value: string) {
