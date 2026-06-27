@@ -4605,8 +4605,117 @@ h3 {
 }
 
 .chatbot-window,
+.chatbot-invitation,
 .chatbot-toggle {
   pointer-events: auto;
+}
+
+.chatbot-notification-audio {
+  display: none;
+}
+
+.chatbot-invitation {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  width: min(380px, calc(100vw - 32px));
+  border: 1px solid rgba(6, 61, 32, 0.16);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 100% 0, rgba(212, 151, 40, 0.14), transparent 42%),
+    #fffdf8;
+  box-shadow: 0 18px 46px rgba(6, 32, 18, 0.2);
+  animation: chatbotInvitationIn 420ms cubic-bezier(0.2, 0.82, 0.3, 1.08) both;
+}
+
+.chatbot-invitation::after {
+  position: absolute;
+  right: 28px;
+  bottom: -7px;
+  width: 14px;
+  height: 14px;
+  border-right: 1px solid rgba(6, 61, 32, 0.14);
+  border-bottom: 1px solid rgba(6, 61, 32, 0.14);
+  background: #fffdf8;
+  content: "";
+  transform: rotate(45deg);
+}
+
+.chatbot-invitation-main {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: #183222;
+  cursor: pointer;
+  font: inherit;
+  padding: 15px 8px 15px 15px;
+  text-align: left;
+}
+
+.chatbot-invitation-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(212, 151, 40, 0.58);
+  border-radius: 12px;
+  background: linear-gradient(145deg, #0c5730, #063d20);
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(6, 61, 32, 0.18);
+}
+
+.chatbot-invitation-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.chatbot-invitation-copy strong {
+  color: var(--green-950);
+  font-family: var(--font-playfair), Georgia, "Times New Roman", serif;
+  font-size: 1rem;
+  line-height: 1.1;
+}
+
+.chatbot-invitation-copy span {
+  color: #4d5c51;
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.chatbot-invitation-actions {
+  display: flex;
+  gap: 2px;
+  align-items: flex-start;
+  padding: 9px 8px 0 0;
+}
+
+.chatbot-invitation-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #5c675f;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.chatbot-invitation-actions button:hover {
+  background: rgba(6, 61, 32, 0.08);
+  color: var(--green-950);
+  transform: translateY(-1px);
 }
 
 .chatbot-toggle {
@@ -4642,15 +4751,24 @@ h3 {
   filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
 }
 
-.chatbot-toggle span {
+.chatbot-unread-badge {
   position: absolute;
-  top: 7px;
-  right: 5px;
-  width: 17px;
-  height: 17px;
+  top: 3px;
+  right: 1px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
   border: 2px solid #ffffff;
   border-radius: 999px;
-  background: #cf8705;
+  background: #c87f08;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 5px 12px rgba(117, 70, 0, 0.32);
+  animation: chatbotBadgePop 360ms cubic-bezier(0.18, 0.9, 0.32, 1.28) both;
 }
 
 .chatbot-toggle:hover,
@@ -4660,6 +4778,8 @@ h3 {
 }
 
 .chatbot-toggle:focus-visible,
+.chatbot-invitation-main:focus-visible,
+.chatbot-invitation-actions button:focus-visible,
 .chatbot-icon-button:focus-visible,
 .chatbot-footer button:focus-visible,
 .chatbot-form button:focus-visible,
@@ -5161,6 +5281,32 @@ h3 {
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes chatbotInvitationIn {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes chatbotBadgePop {
+  from {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -6174,6 +6320,32 @@ h3 {
     height: min(690px, calc(100vh - 88px));
     max-height: calc(100dvh - 88px);
     border-radius: 13px;
+  }
+
+  .chatbot-invitation {
+    justify-self: end;
+    width: min(340px, 100%);
+  }
+
+  .chatbot-invitation-main {
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 10px;
+    padding: 13px 4px 13px 13px;
+  }
+
+  .chatbot-invitation-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+
+  .chatbot-invitation-copy span {
+    font-size: 0.8rem;
+  }
+
+  .chatbot-invitation-actions {
+    padding-top: 7px;
+    padding-right: 6px;
   }
 
   .chatbot-header {
